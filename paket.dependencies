@@ -1,0 +1,12 @@
+source https://api.nuget.org/v3/index.json
+
+nuget FSharp.Core redirects:force
+nuget Fable.Core
+nuget Fable.Elmish
+nuget Fable.Elmish.React
+nuget Fable.Elmish.Browser
+nuget Fable.Elmish.Debugger
+nuget Fable.Elmish.HMR
+nuget Fable.React
+nuget Fable.Promise
+nuget Thoth.Json

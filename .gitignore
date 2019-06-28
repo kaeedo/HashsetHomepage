@@ -1,0 +1,7 @@
+.fable
+.ionide
+node_modules
+paket-files
+packages
+**/[Bb]in/
+**/[Oo]bj
