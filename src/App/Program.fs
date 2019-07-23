@@ -1,13 +1,16 @@
 open System
+
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.DependencyInjection
+
 open Giraffe
+
+open App.Views
 
 let webApp =
     choose [
-        route "/ping"   >=> text "pondg"
-        route "/"       >=> htmlFile "/pages/index.html" ]
+        route "/" >=> (Home.view |> htmlView) ]
 
 let configureApp (app : IApplicationBuilder) =
     app.UseGiraffe webApp
