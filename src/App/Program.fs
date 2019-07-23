@@ -8,6 +8,12 @@ open Giraffe
 
 open App.Views
 
+// #353535
+// #3c6e71
+// #FFF
+// #D9D9D9
+// #284B63
+
 let webApp =
     choose [
         route "/" >=> (Home.view |> htmlView) ]
