@@ -8,7 +8,6 @@ open Giraffe
 
 open App.Views
 open FSharp.Literate
-open System.Text
 open Giraffe.GiraffeViewEngine
 open Microsoft.Extensions.FileProviders
 open System.IO
@@ -37,8 +36,8 @@ let webApp =
 
 let configureApp (app : IApplicationBuilder) =
     app.UseStaticFiles() |> ignore
-    //app.UseStaticFiles(StaticFileOptions(RequestPath = PathString("/wwwroot/js"), FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory()))) |> ignore
-    //app.UseStaticFiles(StaticFileOptions(RequestPath = PathString("/wwwroot/css"), FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory()))) |> ignore
+
+#if DEBUG
 
     app.UseDirectoryBrowser(DirectoryBrowserOptions
         (
@@ -46,6 +45,8 @@ let configureApp (app : IApplicationBuilder) =
                 Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
             RequestPath = PathString("")
         )) |> ignore
+
+#endif
 
     app.UseGiraffe webApp
 
