@@ -13,17 +13,8 @@ open Microsoft.Extensions.FileProviders
 open System.IO
 open Microsoft.AspNetCore.Http
 
-// #353535
-// #3c6e71
-// #FFF
-// #D9D9D9
-// #284B63
-
 let getHtml () =
-    let listy = """
-    ### Formatting demo
-    let test = ["one";"two";"three"]
-    (*** include-value:test ***)"""
+    let listy = File.ReadAllText("./Power.md")
 
     let docOl = Literate.ParseMarkdownString(listy)
     let htmlString = Literate.WriteHtml(docOl)
