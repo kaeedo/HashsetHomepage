@@ -108,6 +108,15 @@ pre code {
 }
 
 /*///////////////////////////////////////////////////////////////////////////////*/
+
+:root {
+    --accentColor: #ffff82;
+    --backgroundGreen: #b5d99c;
+    --fontColor: #0f0326;
+    --backgroundContentColor: #fffffb;
+    --backgroundMainColor: #f9f8f8;
+}
+
 html {
     box-sizing: border-box;
     overflow-y: scroll;
@@ -117,12 +126,15 @@ html {
 
 .Main-body {
     margin: 0;
-    background: #497DCE;
+    background: var(--backgroundMainColor);
     font-weight: normal;
 }
 
 .Main-header {
     height: 8rem;
+    color: var(--fontColor);
+    background: var(--backgroundGreen);
+    margin-bottom: 1rem;
 }
 
 .Main-headerTitle {
@@ -149,16 +161,18 @@ html {
 }
 
 .Main-links {
+    margin: 0;
     height: auto;
     padding: 2em;
-    background: #232742;
-    color: #F0F0F1;
+    color: var(--fontColor);
+    background: var(--backgroundGreen);
 }
 
 .Main-content {
     grid-column: 2;
     padding: 2rem;
-    background: #F0F0F1;
+    color: var(--fontColor);
+    background: var(--backgroundContentColor);
     font-family: Bookman;
     font-size: 18px;
     line-height: 20px;
@@ -166,5 +180,5 @@ html {
 }
 
 .Card {
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.16), 0 5px 10px rgba(0,0,0,0.23);
 }

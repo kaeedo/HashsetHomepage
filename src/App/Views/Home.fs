@@ -4,7 +4,8 @@ namespace App.Views
 module Home =
     open Giraffe.GiraffeViewEngine
 
-    let private pageTitle = "Hashset"
+    let private pageTitle = "Hashset.dev"
+
 
     let view content =
         html [ ] [
@@ -21,7 +22,7 @@ module Home =
                 section [ _class "Main-section" ] [
                     nav [ _class "Main-sideNav" ] [
                         ul [ _class "Main-links Card" ] [
-                            li [] [ Text "Home" ]
+                            li [] [ Text "Hofme" ]
                             li [] [ Text "About" ]
                             li [] [ Text "Projects" ]
                             li [] [ Text (System.DateTime.UtcNow.ToString()) ]
