@@ -24,7 +24,7 @@ module Home =
                             li [] [ Text "Home" ]
                             li [] [ Text "About" ]
                             li [] [ Text "Projects" ]
-                            li [] [ Text "Github" ]
+                            li [] [ Text (System.DateTime.UtcNow.ToString()) ]
                         ]
                     ]
                     article [ _class "Main-content Card" ] content

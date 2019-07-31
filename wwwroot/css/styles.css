@@ -111,11 +111,14 @@ pre code {
 html {
     box-sizing: border-box;
     overflow-y: scroll;
+    font-family: Century Gothic, sans-serif;
+    font-weight: 700;
 }
 
 .Main-body {
     margin: 0;
-    background: #eee;
+    background: #497DCE;
+    font-weight: normal;
 }
 
 .Main-header {
@@ -127,6 +130,7 @@ html {
     justify-content: center;
     align-items: center;
     height: 100%;
+    font-size: 34px;
 }
 
 .Main-sideNav {
@@ -146,14 +150,19 @@ html {
 
 .Main-links {
     height: auto;
-    background: #008000;
+    padding: 2em;
+    background: #232742;
+    color: #F0F0F1;
 }
 
 .Main-content {
     grid-column: 2;
     padding: 2rem;
-    background: #fff;
-
+    background: #F0F0F1;
+    font-family: Bookman;
+    font-size: 18px;
+    line-height: 20px;
+    width: 80rem;
 }
 
 .Card {

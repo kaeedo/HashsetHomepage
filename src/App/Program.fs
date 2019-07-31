@@ -13,7 +13,8 @@ open Microsoft.Extensions.FileProviders
 open System.IO
 open Microsoft.AspNetCore.Http
 
-let getHtml () =
+let getHtml =
+    // TODO: This is balls slow
     let listy = File.ReadAllText("./Power.md")
 
     let docOl = Literate.ParseMarkdownString(listy)
@@ -23,7 +24,7 @@ let getHtml () =
 let webApp =
     choose [
         route "/" >=> (Home.view [] |> htmlView)
-        route "/test" >=> ([getHtml ()] |> Home.view |> htmlView)]
+        route "/test" >=> warbler (fun _ -> [getHtml] |> Home.view |> htmlView)]
 
 let configureApp (app : IApplicationBuilder) =
     app.UseStaticFiles() |> ignore
@@ -54,3 +55,16 @@ let main _ =
         .Build()
         .Run()
     0
+
+// https://codeasashu.github.io/hcz-jekyll-blog/jekyll/2016/06/04/welcome-to-jekyll.html
+(*
+    8BA1A8
+    7A787A
+    497DCE
+    232742
+    F0F0F1
+*)
+
+// Bookman
+// Palatino
+// Georgia
