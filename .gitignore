@@ -5,3 +5,4 @@ paket-files
 packages
 **/[Bb]in/
 **/[Oo]bj
+.fake/
