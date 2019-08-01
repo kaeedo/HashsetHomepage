@@ -24,7 +24,7 @@ let getHtml =
 let webApp =
     choose [
         route "/" >=> (Home.view [] |> htmlView)
-        route "/test" >=> (fun _ -> [getHtml] |> Home.view |> htmlView)()]
+        route "/test" >=> warbler (fun _ -> [getHtml] |> Home.view |> htmlView)]
 
 let configureApp (app : IApplicationBuilder) =
     app.UseStaticFiles() |> ignore

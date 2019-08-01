@@ -115,12 +115,15 @@ pre code {
     --fontColor: #0f0326;
     --backgroundContentColor: #fffffb;
     --backgroundMainColor: #f9f8f8;
+
+    --serifFontFamily: Bookman, serif;
+    --sansSerifFontFamily: Arial, sans-serif;
 }
 
 html {
     box-sizing: border-box;
     overflow-y: scroll;
-    font-family: Century Gothic, sans-serif;
+    font-family: var(--sansSerifFontFamily);
     font-weight: 700;
 }
 
@@ -137,18 +140,37 @@ html {
     margin-bottom: 1rem;
 }
 
-.Main-headerTitle {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.Main-headerAbout {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    margin: auto;
+    width: 10rem;
+}
+
+.Main-headerName {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.Main-headerContainer {
+    width: 100rem;
     height: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: max-content auto;
+    column-gap: 1rem;
+}
+
+.Main-headerTitle {
     font-size: 34px;
+    line-height: 34px;
 }
 
 .Main-sideNav {
     grid-column: 1;
     width: 10rem;
     height: auto;
+    font-size: 18px;
 }
 
 .Main-section {
@@ -166,6 +188,19 @@ html {
     padding: 2em;
     color: var(--fontColor);
     background: var(--backgroundGreen);
+    list-style-type: none;
+}
+
+.Main-link {
+    margin: 2rem 1rem;
+}
+
+.Main-link:first-child, .Main-link:last-child {
+    margin: 0 1rem;
+}
+
+.Main-link:hover {
+    background: var(--accentColor);
 }
 
 .Main-content {
@@ -173,7 +208,7 @@ html {
     padding: 2rem;
     color: var(--fontColor);
     background: var(--backgroundContentColor);
-    font-family: Bookman;
+    font-family: var(--serifFontFamily);
     font-size: 18px;
     line-height: 20px;
     width: 80rem;
