@@ -15,17 +15,23 @@ module Home =
             ]
             body [ _class "Main-body" ] [
                 header [ _class "Main-header" ] [
-                    div [ _class "Main-headerTitle" ] [
-                        h1 [] [ Text pageTitle ]
+                    div [ _class "Main-headerContainer" ] [
+                        div [ _class "Main-headerAbout"] [
+                            span [ _class "Main-headerName" ] [ str "Kai Ito" ]
+                            span [] [ str "Software Developer" ]
+                        ]
+                        div [ _class "Main-headerTitle" ] [
+                            h1 [] [ str pageTitle ]
+                        ]
                     ]
                 ]
                 section [ _class "Main-section" ] [
                     nav [ _class "Main-sideNav" ] [
                         ul [ _class "Main-links Card" ] [
-                            li [] [ Text "Hofme" ]
-                            li [] [ Text "About" ]
-                            li [] [ Text "Projects" ]
-                            li [] [ Text (System.DateTime.UtcNow.ToString()) ]
+                            li [ _class "Main-link" ] [ str "Hofme" ]
+                            li [ _class "Main-link" ] [ str "About" ]
+                            li [ _class "Main-link" ] [ str "Projects" ]
+                            li [ _class "Main-link" ] [ str "Github" ]
                         ]
                     ]
                     article [ _class "Main-content Card" ] content
