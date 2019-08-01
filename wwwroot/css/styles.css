@@ -110,11 +110,13 @@ pre code {
 /*///////////////////////////////////////////////////////////////////////////////*/
 
 :root {
-    --accentColor: #ffff82;
-    --backgroundGreen: #b5d99c;
-    --fontColor: #0f0326;
-    --backgroundContentColor: #fffffb;
-    --backgroundMainColor: #f9f8f8;
+    --accentColor: #B8CA28;
+    --backgroundGreen: #009587;
+    --highlightGreen: #007D72;
+    --fontDark: #333;
+    --fontLight: #fff;
+    --backgroundContentColor: #fff;
+    --backgroundMainColor: #eee;
 
     --serifFontFamily: Bookman, serif;
     --sansSerifFontFamily: Arial, sans-serif;
@@ -135,7 +137,7 @@ html {
 
 .Main-header {
     height: 8rem;
-    color: var(--fontColor);
+    color: var(--fontDark);
     background: var(--backgroundGreen);
     margin-bottom: 1rem;
 }
@@ -171,6 +173,7 @@ html {
     width: 10rem;
     height: auto;
     font-size: 18px;
+    color: var(--fontLight);
 }
 
 .Main-section {
@@ -186,7 +189,7 @@ html {
     margin: 0;
     height: auto;
     padding: 2em;
-    color: var(--fontColor);
+    color: var(--fontLight);
     background: var(--backgroundGreen);
     list-style-type: none;
 }
@@ -200,13 +203,13 @@ html {
 }
 
 .Main-link:hover {
-    background: var(--accentColor);
+    background: var(--highlightGreen);
 }
 
 .Main-content {
     grid-column: 2;
     padding: 2rem;
-    color: var(--fontColor);
+    color: var(--fontDark);
     background: var(--backgroundContentColor);
     font-family: var(--serifFontFamily);
     font-size: 18px;
