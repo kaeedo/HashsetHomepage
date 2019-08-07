@@ -5,4 +5,5 @@ paket-files
 packages
 **/[Bb]in/
 **/[Oo]bj
-.fake/
+.fake
+.fake/fcswatch/port.cache
