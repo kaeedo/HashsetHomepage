@@ -10,7 +10,7 @@ module Home =
     let view content =
         html [ ] [
             head [] [
-                title [] [ str pageTitle ]
+                title [] [ str "Power of Active Patterns" ]
                 link [ _rel "stylesheet"; _type "text/css"; _href "css/styles.css" ]
             ]
             body [ _class "Main-body" ] [
@@ -18,10 +18,14 @@ module Home =
                     div [ _class "Main-headerContainer" ] [
                         div [ _class "Main-headerAbout"] [
                             span [ _class "Main-headerName" ] [ str "Kai Ito" ]
-                            span [] [ str "Software Developer" ]
+                            span [ _class "Main-headerJob" ] [ str "Software Developer" ]
                         ]
                         div [ _class "Main-headerTitle" ] [
-                            h1 [] [ str pageTitle ]
+                            h1 [ _class "Main-postTitle" ] [ str "Power of Active Patterns" ]
+                            h6 [ _class "Main-postInfo" ] [
+                                span [ _class "Main-postedDate" ] [ str (System.DateTime.Now.ToShortDateString()) ]
+                                span [ _class "Main-pageTitle" ] [ str pageTitle ]
+                            ]
                         ]
                     ]
                 ]

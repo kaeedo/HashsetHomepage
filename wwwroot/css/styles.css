@@ -126,18 +126,16 @@ html {
     box-sizing: border-box;
     overflow-y: scroll;
     font-family: var(--sansSerifFontFamily);
-    font-weight: 700;
 }
 
 .Main-body {
     margin: 0;
     background: var(--backgroundMainColor);
-    font-weight: normal;
 }
 
 .Main-header {
     height: 8rem;
-    color: var(--fontDark);
+    color: var(--fontLight);
     background: var(--backgroundGreen);
     margin-bottom: 1rem;
 }
@@ -150,8 +148,11 @@ html {
 }
 
 .Main-headerName {
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 20px;
+}
+
+.Main-headerJob {
+    font-size: 18px;
 }
 
 .Main-headerContainer {
@@ -164,8 +165,24 @@ html {
 }
 
 .Main-headerTitle {
-    font-size: 34px;
-    line-height: 34px;
+    font-size: 24px;
+    width: max-content;
+}
+
+.Main-postTitle {
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+.Main-postInfo {
+    margin-top: 0;
+    display: flex;
+    justify-content: space-between;
+    font-weight: normal;
+}
+
+.Main-pageTitle {
+    font-style: italic;
 }
 
 .Main-sideNav {
