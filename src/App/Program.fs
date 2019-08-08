@@ -1,3 +1,5 @@
+namespace Hashset
+
 open System
 
 open Microsoft.AspNetCore.Builder
@@ -6,55 +8,47 @@ open Microsoft.Extensions.DependencyInjection
 
 open Giraffe
 
-open App.Views
-open FSharp.Literate
-open Giraffe.GiraffeViewEngine
 open Microsoft.Extensions.FileProviders
 open System.IO
 open Microsoft.AspNetCore.Http
 
-let getHtml =
-    // TODO: This is balls slow
-    let listy = File.ReadAllText("./Power.md")
+open Hashset.Views
 
-    let docOl = Literate.ParseMarkdownString(listy)
-    let htmlString = Literate.WriteHtml(docOl)
-    Text htmlString
+module App =
+    let private homepage =
+        let masterData =
+            { Author = "Kai Ito"
+              JobTitle = "Software Developer"
+              PageTitle= "Home"
+              ArticleDate = DateTime.Now.ToShortDateString() }
 
-let webApp =
-    choose [
-        route "/" >=> (Home.view [] |> htmlView)
-        route "/test" >=> warbler (fun _ -> [getHtml] |> Home.view |> htmlView)]
+        Home.view
+        |> Master.view masterData
+        |> htmlView
 
-let configureApp (app : IApplicationBuilder) =
-    app.UseStaticFiles() |> ignore
+    let webApp =
+        choose [
+            route "/" >=> homepage]
+            //route "/test" >=> warbler (fun _ -> [getHtml] |> Home.view |> htmlView)]
 
-#if DEBUG
+    let configureApp (app : IApplicationBuilder) =
+        app.UseStaticFiles() |> ignore
 
-    app.UseDirectoryBrowser(DirectoryBrowserOptions
-        (
-            FileProvider = new PhysicalFileProvider(
-                Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
-            RequestPath = PathString("")
-        )) |> ignore
+        app.UseGiraffe webApp
 
-#endif
+    let configureServices (services : IServiceCollection) =
+        services.AddGiraffe() |> ignore
 
-    app.UseGiraffe webApp
-
-let configureServices (services : IServiceCollection) =
-    services.AddGiraffe() |> ignore
-
-[<EntryPoint>]
-let main _ =
-    WebHostBuilder()
-        .UseKestrel()
-        .UseContentRoot(Directory.GetCurrentDirectory())
-        .Configure(Action<IApplicationBuilder> configureApp)
-        .ConfigureServices(configureServices)
-        .Build()
-        .Run()
-    0
+    [<EntryPoint>]
+    let main _ =
+        WebHostBuilder()
+            .UseKestrel()
+            .UseContentRoot(Directory.GetCurrentDirectory())
+            .Configure(Action<IApplicationBuilder> configureApp)
+            .ConfigureServices(configureServices)
+            .Build()
+            .Run()
+        0
 
 // https://codeasashu.github.io/hcz-jekyll-blog/jekyll/2016/06/04/welcome-to-jekyll.html
 (*
