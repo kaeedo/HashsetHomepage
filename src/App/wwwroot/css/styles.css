@@ -148,11 +148,12 @@ html {
 }
 
 .Main-headerName {
-    font-size: 20px;
+    font-size: 18px;
+    margin-bottom: 2px;
 }
 
 .Main-headerJob {
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .Main-headerContainer {
@@ -167,6 +168,7 @@ html {
 .Main-headerTitle {
     font-size: 24px;
     width: max-content;
+    padding-left: 3rem;
 }
 
 .Main-postTitle {
@@ -212,11 +214,12 @@ html {
 }
 
 .Main-link {
-    margin: 2rem 1rem;
+    width: 5rem;
+    height: 4rem;
 }
 
-.Main-link:first-child, .Main-link:last-child {
-    margin: 0 1rem;
+.Main-linkText {
+    line-height: 4rem;
 }
 
 .Main-link:hover {
