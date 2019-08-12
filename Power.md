@@ -1,7 +1,7 @@
-# Power of Active Patterns
+Power of Active Patterns
 ========================
 
-I’ve been working on a dotnet core global tool. One of the things that such a tool has, is many command line options. I found Argu to parse these command line options. However I ran into the problem that I was left with a very large amount of if/else statements. Perhaps I don’t know what the “proper” way is of handling this, but this was my naive approach.
+I’ve been working on a [dotnet core global tool](https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools). One of the things that such a tool has, is many command line options. I found Argu to parse these command line options. However I ran into the problem that I was left with a very large amount of if/else statements. Perhaps I don’t know what the “proper” way is of handling this, but this was my naive approach.
 
 
 ```
