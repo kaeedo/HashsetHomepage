@@ -3,9 +3,11 @@ namespace Hashset
 open FSharp.Literate
 open System.IO
 open FSharp.Markdown
+open System
 
 module Reader =
-    let a = 1
+    let (++) a b = Path.Combine(a,b)
+
     let private getContent key parsed =
         parsed
         |> List.find (fun (span, _) ->
@@ -15,9 +17,11 @@ module Reader =
 
 
     let write =
-        let listy = File.ReadAllText("./Power.md")
+        let personalDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
+        let srcDir = personalDir ++ "hashset" ++ "source"
+        let parsedDir = personalDir ++ "hashset" ++ "parsed"
 
-        let parsed = Literate.ProcessMarkdown("./Power.md", generateAnchors = true)
+        let parsed = Literate.ProcessMarkdown(srcDir ++ "./Power.md", generateAnchors = true)
 
         let pageTitle =
             parsed.Parameters
@@ -26,9 +30,6 @@ module Reader =
         let content =
             parsed.Parameters
             |> getContent "document"
-
-        let docOl = Literate.ParseMarkdownString(listy)
-        let htmlString = Literate.WriteHtml(docOl)
 
         //Text htmlString
         parsed.ContentTag.ToString()
