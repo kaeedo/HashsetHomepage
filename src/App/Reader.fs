@@ -6,10 +6,7 @@ open FSharp.Markdown
 open System
 open Newtonsoft.Json
 
-type ParsedDocument =
-    { Title: string
-      Document: string
-      Tooltips: string }
+open Hashset.Views
 
 module Reader =
     let (++) a b = Path.Combine(a,b)
@@ -35,6 +32,7 @@ module Reader =
             use fs = latest.OpenText()
             fs.ReadToEnd()
 
+        // CLIMutable attribute. Remember that. Then maybe System.TextJson will work
         JsonConvert.DeserializeObject<ParsedDocument>(fileContents)
 
     let write() =
@@ -43,7 +41,7 @@ module Reader =
 
         let parsed = Literate.ProcessMarkdown(srcDir ++ "./Power.md", generateAnchors = true)
 
-        let parsedDocument = { Title = parsed.Parameters |> getContent "page-title"; Document = parsed.Parameters |> getContent "document"; Tooltips = parsed.Parameters |> getContent "tooltips" }
+        let parsedDocument = { ParsedDocument.Title = parsed.Parameters |> getContent "page-title"; Document = parsed.Parameters |> getContent "document"; Tooltips = parsed.Parameters |> getContent "tooltips" }
 
         let json = JsonConvert.SerializeObject(parsedDocument)
         File.WriteAllText(parsedDir ++ "power.json", json)

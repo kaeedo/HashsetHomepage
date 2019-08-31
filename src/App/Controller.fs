@@ -6,14 +6,14 @@ open Giraffe
 
 module Controller =
     let homepage () : HttpHandler  =
+        let latestPost = Reader.getLatestPost()
+
         let masterData =
             { MasterContent.Author = "Kai Ito"
               JobTitle = "Software Developer"
-              PageTitle= "Home"
+              PageTitle= latestPost.Title
               ArticleDate = DateTime.Now.ToShortDateString() }
 
-        let asdf = Reader.getLatestPost()
-
-        Home.view
+        Home.view latestPost
         |> Master.view masterData
         |> htmlView
