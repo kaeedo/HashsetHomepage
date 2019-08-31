@@ -17,22 +17,24 @@ open Hashset.Views
 module App =
     let webApp =
         choose [
-            route "/" >=> Controller.homepage() ]
-            //route "/test" >=> warbler (fun _ -> [getHtml] |> Home.view |> htmlView)]
+            route "/" >=> warbler (fun _ -> Controller.homepage()) ]
 
     let configureApp (app : IApplicationBuilder) =
-        app.UseStaticFiles() |> ignore
-
-        app.UseGiraffe webApp
+        app.UseStaticFiles()
+           .UseGiraffe(webApp)
 
     let configureServices (services : IServiceCollection) =
         services.AddGiraffe() |> ignore
 
     [<EntryPoint>]
     let main _ =
+        let contentRoot = Directory.GetCurrentDirectory()
+        let webRoot     = Path.Combine(contentRoot, "WebRoot")
+
         WebHostBuilder()
             .UseKestrel()
-            .UseContentRoot(Directory.GetCurrentDirectory())
+            .UseContentRoot(contentRoot)
+            .UseWebRoot(webRoot)
             .Configure(Action<IApplicationBuilder> configureApp)
             .ConfigureServices(configureServices)
             .Build()
