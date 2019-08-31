@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/App/bin/Debug/netcoreapp2.2/App.dll",
+            "program": "${workspaceFolder}/src/App/bin/Debug/netcoreapp3.0/App.dll",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "stopAtEntry": false
@@ -26,7 +26,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "emitCompilerTmp",
-            "program": "${workspaceFolder}/src/App/bin/Debug/netcoreapp2.2/App.dll",
+            "program": "${workspaceFolder}/src/App/bin/Debug/netcoreapp3.0/App.dll",
         }
     ]
 }
