@@ -4,8 +4,7 @@ open FSharp.Literate
 open System.IO
 open FSharp.Markdown
 open System
-open System.Text.Json
-open System.Text.Json.Serialization
+open Newtonsoft.Json
 
 type ParsedDocument =
     { Title: string
@@ -14,6 +13,9 @@ type ParsedDocument =
 
 module Reader =
     let (++) a b = Path.Combine(a,b)
+    let private personalDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
+    let private srcDir = personalDir ++ "hashset" ++ "source"
+    let private parsedDir = personalDir ++ "hashset" ++ "parsed"
 
     let private getContent key parsed =
         parsed
@@ -22,22 +24,29 @@ module Reader =
         )
         |> fun (_, value) -> value
 
+    let getLatestPost() =
+        let directory = DirectoryInfo(parsedDir)
+        let latest =
+            directory.GetFiles()
+            |> Array.sortByDescending (fun f -> f.LastWriteTimeUtc)
+            |> Array.head
 
-    let write =
-        let personalDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
-        let srcDir = personalDir ++ "hashset" ++ "source"
-        let parsedDir = personalDir ++ "hashset" ++ "parsed"
+        let fileContents =
+            use fs = latest.OpenText()
+            fs.ReadToEnd()
 
+        JsonConvert.DeserializeObject<ParsedDocument>(fileContents)
+
+    let write() =
         Directory.CreateDirectory(srcDir) |> ignore
         Directory.CreateDirectory(parsedDir) |> ignore
 
         let parsed = Literate.ProcessMarkdown(srcDir ++ "./Power.md", generateAnchors = true)
 
         let parsedDocument = { Title = parsed.Parameters |> getContent "page-title"; Document = parsed.Parameters |> getContent "document"; Tooltips = parsed.Parameters |> getContent "tooltips" }
-        use outFile = File.CreateText(parsedDir ++ "power.json")
 
-        outFile.Write(JsonSerializer.Serialize<ParsedDocument>(parsedDocument))
-        outFile.Flush()
+        let json = JsonConvert.SerializeObject(parsedDocument)
+        File.WriteAllText(parsedDir ++ "power.json", json)
 
         //Text htmlString
         parsed.ContentTag.ToString()
