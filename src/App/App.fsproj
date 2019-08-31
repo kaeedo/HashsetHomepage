@@ -7,6 +7,7 @@
     <Compile Include="Views/Master.fs" />
     <Compile Include="Views/Home.fs" />
     <Compile Include="Reader.fs" />
+    <Compile Include="Controller.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
