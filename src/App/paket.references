@@ -1,5 +1,4 @@
 FSharp.Core
 Giraffe
 Microsoft.AspNetCore.App
-FSharp.Formatting
-Newtonsoft.Json
+FSharp.Literate

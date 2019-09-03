@@ -1,5 +1,6 @@
 namespace Hashset.Views
 
+[<CLIMutable>]
 type ParsedDocument =
     { Title: string
       Document: string
@@ -8,7 +9,8 @@ type ParsedDocument =
 module Home =
     open Giraffe.GiraffeViewEngine
 
-    let private pageTitle = "hashset.dev"
-
     let view parsedDocument =
-        p [] [ Text parsedDocument.Document ]
+        div [] [
+            p [] [ Text parsedDocument.Document ]
+            Text parsedDocument.Tooltips
+        ]

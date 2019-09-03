@@ -11,6 +11,8 @@ type MasterContent =
 module Master =
     open Giraffe.GiraffeViewEngine
 
+    let private pageTitle = "hashset.dev"
+
     let view (masterData: MasterContent) (content: XmlNode) =
         html [ ] [
             head [] [
@@ -28,7 +30,7 @@ module Master =
                             h1 [ _class "Main-postTitle" ] [ str masterData.PageTitle ]
                             h6 [ _class "Main-postInfo" ] [
                                 span [ _class "Main-postedDate" ] [ str (masterData.ArticleDate) ]
-                                span [ _class "Main-pageTitle" ] [ str masterData.PageTitle ]
+                                span [ _class "Main-pageTitle" ] [ str pageTitle ]
                             ]
                         ]
                     ]
