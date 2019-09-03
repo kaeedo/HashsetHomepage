@@ -28,6 +28,7 @@ module App =
 
     [<EntryPoint>]
     let main _ =
+        Reader.write() |> ignore
         let contentRoot = Directory.GetCurrentDirectory()
         let webRoot     = Path.Combine(contentRoot, "WebRoot")
 
@@ -40,11 +41,6 @@ module App =
             .Build()
             .Run()
         0
-
-    (* [<EntryPoint>]
-    let main _ =
-        Reader.write() |> ignore
-        0 *)
 
 // https://codeasashu.github.io/hcz-jekyll-blog/jekyll/2016/06/04/welcome-to-jekyll.html
 (*

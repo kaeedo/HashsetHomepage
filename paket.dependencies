@@ -1,9 +1,7 @@
 source https://api.nuget.org/v3/index.json
 
 nuget FSharp.Core redirects:force
-nuget FSharp.Formatting
+nuget FSharp.Literate
 nuget Giraffe
 # nuget FSharp.SystemTextJson  #  remember this
 nuget Microsoft.AspNetCore.App
-nuget Newtonsoft.Json
-
