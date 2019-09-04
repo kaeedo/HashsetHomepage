@@ -10,6 +10,21 @@
     <Compile Include="Controller.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
+
+  <ItemGroup>
+    <SamplePosts Include="..\..\SamplePosts\**\*.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UserProfile Include="%USERPROFILE%" />
+  </ItemGroup>
+
+  <Target Name="SamplePosts" AfterTargets="BeforeBuild">
+    <Copy
+        SourceFiles="@(SamplePosts)"
+        DestinationFiles="@(SamplePosts->'$(USERPROFILE)\documents\hashset\source\%(RecursiveDir)%(Filename)%(Extension)')"  />
+  </Target>
+
   <ItemGroup>
     <Content Include="WebRoot\**\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
