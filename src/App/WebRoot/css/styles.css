@@ -222,6 +222,14 @@ html {
     line-height: 4rem;
 }
 
+.Main-linkSelected::before {
+    content: '';
+    position: inherit;
+    border: 0.15rem solid var(--backgroundContentColor);
+    margin-left: -0.5rem;
+    margin-right: 0.2rem;
+}
+
 .Main-link:hover {
     background: var(--highlightGreen);
 }
