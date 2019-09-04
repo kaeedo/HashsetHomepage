@@ -38,14 +38,14 @@ module Master =
                 section [ _class "Main-section" ] [
                     nav [ _class "Main-sideNav" ] [
                         ul [ _class "Main-links Card" ] [
-                            li [ _class (sprintf "Main-link %s" (if "Home" = masterData.PageTitle then "Main-linkSelected" else String.Empty)) ] [
-                                span [ _class "Main-linkText" ] [ str "Home" ]
+                            li [ _class "Main-link" ] [
+                                span [ _class (sprintf "Main-linkText %s" (if masterData.PageTitle = "Home" then "Main-linkSelected" else String.Empty)) ] [ str "Home" ]
                             ]
-                            li [ _class (sprintf "Main-link %s" (if "Projects" = masterData.PageTitle then "Main-linkSelected" else String.Empty)) ] [
-                                span [ _class "Main-linkText" ] [ str "Projects" ]
+                            li [ _class "Main-link" ] [
+                                span [ _class (sprintf "Main-linkText %s" (if masterData.PageTitle = "Posts" then "Main-linkSelected" else String.Empty)) ] [ str "Posts" ]
                             ]
-                            li [ _class (sprintf "Main-link %s" (if "About" = masterData.PageTitle then "Main-linkSelected" else String.Empty)) ] [
-                                span [ _class "Main-linkText" ] [ str "About" ]
+                            li [ _class "Main-link" ] [
+                                span [ _class (sprintf "Main-linkText %s" (if masterData.PageTitle = "About" then "Main-linkSelected" else String.Empty)) ] [ str "About" ]
                             ]
                         ]
                     ]

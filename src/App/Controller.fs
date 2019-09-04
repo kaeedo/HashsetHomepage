@@ -11,7 +11,7 @@ module Controller =
         let masterData =
             { MasterContent.Author = "Kai Ito"
               JobTitle = "Software Developer"
-              PageTitle= latestPost.Title.Trim()
+              PageTitle= "Home"
               ArticleDate = DateTime.Now.ToShortDateString() }
 
         Home.view latestPost
