@@ -30,7 +30,7 @@ module App =
     let main _ =
         Reader.write() |> ignore
         let contentRoot = Directory.GetCurrentDirectory()
-        let webRoot     = Path.Combine(contentRoot, "WebRoot")
+        let webRoot = Path.Combine(contentRoot, "WebRoot")
 
         WebHostBuilder()
             .UseKestrel()
@@ -42,7 +42,9 @@ module App =
             .Run()
         0
 
-// https://codeasashu.github.io/hcz-jekyll-blog/jekyll/2016/06/04/welcome-to-jekyll.html
+// https://www.phillipsj.net/
+
+
 (*
     8BA1A8
     7A787A

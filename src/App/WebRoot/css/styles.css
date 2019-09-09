@@ -129,11 +129,41 @@ html {
 }
 
 .Main-body {
-    margin: 0;
+    margin: 0.5rem;
     background: var(--backgroundMainColor);
 }
 
-.Main-header {
+.Main-headerTopBar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.Main-headerNav {
+    width: 10%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.Main-titleContainer {
+    background: lightgray;
+    height: 10rem;
+    display: flex;
+}
+
+.Main-title {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 5rem;
+}
+
+.Main-section {
+    margin: auto;
+    width: 80rem;
+}
+
+/* .Main-header {
     height: 8rem;
     color: var(--fontLight);
     background: var(--backgroundGreen);
@@ -247,4 +277,4 @@ html {
 
 .Card {
     box-shadow: 0 5px 10px rgba(0,0,0,0.16), 0 5px 10px rgba(0,0,0,0.23);
-}
+} */
