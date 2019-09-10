@@ -70,6 +70,12 @@ pre a.fssniplink {
   color: #a8a8a8;
 }
 
+table.pre {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Optionally, also configure how the PRE element and TABLE.PRE look */
 table.pre pre {
   padding: 0px;
@@ -103,88 +109,115 @@ table.pre td.snippet {
 code,
 pre,
 pre code {
-  font-family: 9pt consolas, monaco, "Lucida Console", monospace;
-  line-height: 13pt;
+  font-size: 12pt;
+  font-family: "Lucida Console", monaco, monospace;
+  line-height: 16pt;
 }
 
 /*///////////////////////////////////////////////////////////////////////////////*/
 
 :root {
-    --accentColor: #B8CA28;
-    --backgroundGreen: #009587;
-    --highlightGreen: #007D72;
-    --fontDark: #333;
-    --fontLight: #fff;
-    --backgroundContentColor: #fff;
-    --backgroundMainColor: #eee;
+  --accentColor: #b8ca28;
+  --backgroundGreen: #009587;
+  --highlightGreen: #007d72;
+  --fontDark: #333;
+  --fontLight: #fff;
+  --backgroundContentColor: #fff;
+  --backgroundMainColor: #eee;
 
-    --serifFontFamily: Bookman, serif;
-    --sansSerifFontFamily: Arial, sans-serif;
+  --serifFontFamily: Bookman, serif;
+  --sansSerifFontFamily: Arial, sans-serif;
 
-    --marginSize: 8px;
+  --marginSize: 8px;
 }
 
 html {
-    box-sizing: border-box;
-    overflow-y: scroll;
-    font-family: var(--sansSerifFontFamily);
+  box-sizing: border-box;
+  overflow-y: scroll;
+  font-family: var(--sansSerifFontFamily);
 }
 
 .Main-body {
-    margin: 0.5rem;
-    background: var(--backgroundMainColor);
+  margin: 0.5rem;
+  background: var(--backgroundMainColor);
 }
 
 .Main-header {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .Main-headerTopBar {
-    display: flex;
-    justify-content: space-between;
-    position: fixed;
-    right: var(--marginSize);
-    left: var(--marginSize);
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  right: var(--marginSize);
+  left: var(--marginSize);
 
-    background: darkgray;
-    color: var(--fontLight);
-    margin: calc(-1 * var(--marginSize));
-    padding: var(--marginSize);
-    font-size: 16pt;
-    font-weight: 700;
+  background: darkgray;
+  color: var(--fontLight);
+  margin: calc(-1 * var(--marginSize));
+  padding: var(--marginSize);
+  font-size: 16pt;
+  font-weight: 700;
 }
 
 .Main-headerNav {
-    width: 10%;
-    justify-self: end;
-    display: flex;
-    justify-content: space-between;
-    font-weight: normal;
+  width: 10%;
+  justify-self: end;
+  display: flex;
+  justify-content: space-between;
+  font-weight: normal;
 }
 
 .Main-titleContainer {
-    background: lightgray;
-    display: flex;
-    margin: 2rem calc(-1 * var(--marginSize)) 0 calc(-1 * var(--marginSize));
-    padding: 5rem 0;
+  background: lightgray;
+  display: flex;
+  margin: 2rem calc(-1 * var(--marginSize)) 0 calc(-1 * var(--marginSize));
+  padding: 5rem 0;
 }
 
 .Main-title {
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100;
-    position: relative;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100;
+  position: relative;
 }
 
 .Main-section {
-    margin: auto;
-    width: 80rem;
+  margin: auto;
+  width: 80rem;
 }
 
 .Main-postTitle {
-    font-size: 42pt;
-    font-weight: 700;
+  font-size: 42pt;
+  font-weight: 700;
+}
+
+.PostContents > h1 > a {
+  font-size: 24pt;
+}
+
+.PostContents > p {
+  font-size: 18pt;
+  line-height: 26pt;
+  font-family: var(--serifFontFamily);
+}
+
+.PostContents > p > a:link {
+  text-decoration: inherit;
+}
+
+.PostContents > h1 > a:link {
+  text-decoration: inherit;
+  color: inherit;
+  cursor: auto;
+}
+
+.PostContents > h1 > a:visited {
+  text-decoration: inherit;
+  color: inherit;
+  cursor: auto;
 }

@@ -46,7 +46,7 @@ module Master =
                 ]
 
                 section [ _class "Main-section" ] [
-                    article [ _class "Main-content Card" ] [ content ]
+                    article [ _class "Main-content" ] [ content ]
                 ]
             ]
             script [ _async; _defer; _src "js/tips.js"; _type "text/javascript" ] []
