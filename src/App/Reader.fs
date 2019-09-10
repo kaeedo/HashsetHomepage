@@ -3,6 +3,7 @@ namespace Hashset
 open FSharp.Literate
 open System.IO
 open FSharp.Markdown
+open FSharp.Formatting.Common
 open System
 open System.Text.RegularExpressions
 open System.Text.Json
@@ -44,13 +45,13 @@ module Reader =
         let allFiles = DirectoryInfo(srcDir).GetFiles()
 
         allFiles
-        |> Seq.map (fun af ->
-            let parsed = Literate.ProcessMarkdown(af.ToString(), generateAnchors = true)
+        |> Seq.map (fun f ->
+            let parsed = Literate.ProcessMarkdown(f.ToString(), generateAnchors = true)
 
             let title = parsed.Parameters |> getContent "page-title"
             let title = Regex.Replace(title, @"\s+", String.Empty)
 
-            let createdDate = af.LastWriteTimeUtc
+            let createdDate = f.LastWriteTimeUtc
 
             let parsedDocument =
                 { ParsedDocument.Title = parsed.Parameters |> getContent "page-title"
