@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Views/Master.fs" />
-    <Compile Include="Views/Home.fs" />
+    <Compile Include="Views/Post.fs" />
     <Compile Include="Reader.fs" />
     <Compile Include="Controller.fs" />
     <Compile Include="Program.fs" />
