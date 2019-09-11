@@ -150,16 +150,32 @@ html {
 .Main-headerTopBar {
   display: flex;
   justify-content: space-between;
-  position: fixed;
+  position: absolute;
+  top: var(--marginSize);
   right: var(--marginSize);
   left: var(--marginSize);
 
-  background: darkgray;
-  color: var(--fontLight);
+  transition: background-color 0.3s;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  background: transparent;
+
+  color: var(--fontDark);
   margin: calc(-1 * var(--marginSize));
   padding: var(--marginSize);
   font-size: 16pt;
   font-weight: 700;
+}
+
+.Main-headerTopBar.is-fixed {
+    position: fixed;
+    top: -41px;
+    transition: transform 0.3s;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.Main-headerTopBar.is-visible {
+    transform: translate3d(0, 100%, 0);
 }
 
 .Main-headerNav {

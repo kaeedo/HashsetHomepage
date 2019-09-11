@@ -6,10 +6,11 @@ if (window.innerWidth > MQL) {
     var headerHeight = topBar.style.height;
 
     window.addEventListener('scroll', function () {
-        var currentTop = window.scrollTop;
-        console.log(currentTop) // this is undefined
+        var currentTop = window.scrollY;
         //check if user is scrolling up
         if (currentTop < this.previousTop || 0) {
+        console.log('going up')
+
             //if scrolling up...
             if (currentTop > 0 && topBar.classList.contains('is-fixed')) {
                 topBar.classList.add('is-visible');
@@ -19,6 +20,7 @@ if (window.innerWidth > MQL) {
             }
         } else {
             //if scrolling down...
+            console.log('down')
             topBar.classList.remove('is-visible');
             if (currentTop > headerHeight && !topBar.classList.contains('is-fixed')) {
                 topBar.classList.add('is-fixed');
