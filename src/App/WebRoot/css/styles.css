@@ -169,7 +169,7 @@ html {
 
 .Main-headerTopBar.is-fixed {
     position: fixed;
-    top: -41px;
+    top: -33px;
     transition: transform 0.3s;
     background-color: rgba(255, 255, 255, 0.9);
 }
