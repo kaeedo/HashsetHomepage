@@ -50,5 +50,5 @@ module Master =
                 ]
             ]
             script [ _async; _defer; _src "js/tips.js"; _type "text/javascript" ] []
-            script [ _async; _defer; _src "js/tt.js"; _type "text/javascript"; ] []
+            script [ _async; _defer; _src "js/topBar.js"; _type "text/javascript"; ] []
         ]

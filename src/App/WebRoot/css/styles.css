@@ -122,7 +122,7 @@ pre code {
   --highlightGreen: #007d72;
   --fontDark: #333;
   --fontLight: #fff;
-  --backgroundContentColor: #fff;
+  --backgroundContentColor: #f2f2f2;
   --backgroundMainColor: #eee;
 
   --serifFontFamily: Bookman, serif;
@@ -132,18 +132,16 @@ pre code {
 }
 
 html {
-  box-sizing: border-box;
   overflow-y: scroll;
   font-family: var(--sansSerifFontFamily);
 }
 
 .Main-body {
-  margin: 0.5rem;
   background: var(--backgroundMainColor);
 }
 
 .Main-header {
-  width: 100%;
+  width: 99vw;
   height: 100%;
 }
 
@@ -151,46 +149,48 @@ html {
   display: flex;
   justify-content: space-between;
   position: absolute;
-  top: var(--marginSize);
-  right: var(--marginSize);
-  left: var(--marginSize);
+  width: inherit;
 
-  transition: background-color 0.3s;
+  transition: background-color 0.5s;
+  transition: color 0.1s;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   background: transparent;
 
-  color: var(--fontDark);
   margin: calc(-1 * var(--marginSize));
   padding: var(--marginSize);
-  font-size: 16pt;
+  font-size: 20pt;
   font-weight: 700;
+  color: var(--backgroundContentColor);
 }
 
 .Main-headerTopBar.is-fixed {
     position: fixed;
-    top: -33px;
+    top: -40px;
     transition: transform 0.3s;
     background-color: rgba(255, 255, 255, 0.9);
 }
 
 .Main-headerTopBar.is-visible {
     transform: translate3d(0, 100%, 0);
+    color: var(--fontDark);
 }
 
 .Main-headerNav {
-  width: 10%;
-  justify-self: end;
-  display: flex;
-  justify-content: space-between;
+  width: 15%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   font-weight: normal;
 }
 
 .Main-titleContainer {
-  background: lightgray;
+  background-image: linear-gradient(-20deg, #d558c8 0%, #24d292 100%);
+  margin-top: calc(-1 * var(--marginSize));
+  margin-left: calc(-1 * var(--marginSize));
+  margin-right: calc(-1 * var(--marginSize));
+  margin-bottom: 2rem;
   display: flex;
-  margin: 2rem calc(-1 * var(--marginSize)) 0 calc(-1 * var(--marginSize));
-  padding: 5rem 0;
+  padding: 7rem 0;
 }
 
 .Main-title {
@@ -198,18 +198,23 @@ html {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 100;
-  position: relative;
+  color: var(--backgroundContentColor);
 }
 
 .Main-section {
   margin: auto;
-  width: 80rem;
 }
 
 .Main-postTitle {
   font-size: 42pt;
   font-weight: 700;
+}
+
+.PostContents {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    max-width: 80rem;
 }
 
 .PostContents > h1 > a {
