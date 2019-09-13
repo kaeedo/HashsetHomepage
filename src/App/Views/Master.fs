@@ -53,7 +53,7 @@ module Master =
                     article [ _class "Main-content" ] [ content ]
                 ]
             ]
-            script [ _src "js/particles.min.js"; _type "text/javascript"; ] []
+            script [ _async; _defer; _src "js/particles.min.js"; _type "text/javascript"; ] []
             script [ _async; _defer; _src "js/tips.js"; _type "text/javascript" ] []
             script [ _async; _defer; _src "js/main.js"; _type "text/javascript"; ] []
         ]
