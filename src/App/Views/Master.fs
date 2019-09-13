@@ -21,18 +21,16 @@ module Master =
             ]
             body [ _class "Main-body" ] [
                 header [ _class "Main-header" ] [
-                    div [ _class "Main-headerTopBar" ] [
-                        span [] [ str masterData.Author ]
-                        nav [ _class "Main-headerNav" ] [
-                            a [ _class "Main-headerLink" ] [
-                                str "Home"
-                            ]
-                            a [ _class "Main-headerLink" ] [
-                                str "Posts"
-                            ]
-                            a [ _class "Main-headerLink" ] [
-                                str "About"
-                            ]
+                    span [] [ str masterData.Author ]
+                    nav [ _class "Main-headerNav" ] [
+                        a [ _class "Main-headerLink" ] [
+                            str "Home"
+                        ]
+                        a [ _class "Main-headerLink" ] [
+                            str "Posts"
+                        ]
+                        a [ _class "Main-headerLink" ] [
+                            str "About"
                         ]
                     ]
                 ]

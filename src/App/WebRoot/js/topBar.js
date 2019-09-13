@@ -1,4 +1,4 @@
-const topBar = document.getElementsByClassName('Main-headerTopBar')[0];
+const topBar = document.getElementsByClassName('Main-header')[0];
 
 const headerHeight = topBar.style.height;
 
