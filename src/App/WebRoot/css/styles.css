@@ -188,6 +188,10 @@ html {
   padding-right: var(--marginSize);
 }
 
+.Main-headerLink {
+  color: inherit;
+}
+
 .Main-titleContainer {
   background-image: linear-gradient(-20deg, #d558c8 0%, #24d292 100%);
   margin-top: calc(-1 * var(--marginSize));
@@ -232,18 +236,32 @@ html {
   font-family: var(--serifFontFamily);
 }
 
-.PostContents > p > a:link {
-  text-decoration: inherit;
+a {
+  text-decoration: none;
 }
 
 .PostContents > h1 > a:link {
-  text-decoration: inherit;
   color: inherit;
   cursor: auto;
 }
 
 .PostContents > h1 > a:visited {
-  text-decoration: inherit;
   color: inherit;
   cursor: auto;
+}
+
+.About-socialList {
+  list-style: none;
+  padding: 0;
+}
+
+.About-socialLink {
+  display: flex;
+  line-height: 26pt;
+  font-size: 16pt;
+  margin-bottom: 0.5rem;
+}
+
+.About-socialLink > i {
+  margin-right: 1rem;
 }

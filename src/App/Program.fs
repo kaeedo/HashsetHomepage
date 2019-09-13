@@ -17,7 +17,8 @@ open Hashset.Views
 module App =
     let webApp =
         choose [
-            route "/" >=> warbler (fun _ -> Controller.homepage()) ]
+            route "/" >=> warbler (fun _ -> Controller.homepage())
+            route "/about" >=> Controller.about() ]
 
     let configureApp (app : IApplicationBuilder) =
         app.UseStaticFiles()

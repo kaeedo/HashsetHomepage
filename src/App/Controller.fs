@@ -12,8 +12,19 @@ module Controller =
             { MasterContent.Author = "Kai Ito"
               JobTitle = "Software Developer"
               PageTitle= latestPost.Title
-              ArticleDate = DateTime.Now.ToShortDateString() }
+              ArticleDate = Some DateTime.Now }
 
-        Home.view latestPost
+        Post.view latestPost
+        |> Master.view masterData
+        |> htmlView
+
+    let about (): HttpHandler =
+        let masterData =
+            { MasterContent.Author = "Kai Ito"
+              JobTitle = "Software Developer"
+              PageTitle= "About Me"
+              ArticleDate = None }
+
+        About.view
         |> Master.view masterData
         |> htmlView
