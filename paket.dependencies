@@ -4,5 +4,4 @@ nuget FSharp.Core redirects:force
 nuget FSharp.Literate
 nuget Giraffe
 # nuget FSharp.SystemTextJson  #  remember this
-nuget Microsoft.AspNetCore.App
-nuget FortuneVoronoi
+#nuget Microsoft.AspNetCore.App

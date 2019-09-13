@@ -29,6 +29,7 @@ module App =
 
     [<EntryPoint>]
     let main _ =
+
         Reader.write() |> ignore
         let contentRoot = Directory.GetCurrentDirectory()
         let webRoot = Path.Combine(contentRoot, "WebRoot")
@@ -57,3 +58,5 @@ module App =
 // Bookman
 // Palatino
 // Georgia
+
+// https://webdevresources.info/
