@@ -3,34 +3,26 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Views/Master.fs" />
     <Compile Include="Views/About.fs" />
     <Compile Include="Views/Post.fs" />
-    <Compile Include="Reader.fs" />
+    <Compile Include="Posts.fs" />
     <Compile Include="Controller.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
-    <SamplePosts Include="..\..\SamplePosts\**\*.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UserProfile Include="%USERPROFILE%" />
-  </ItemGroup>
-
-  <Target Name="SamplePosts" AfterTargets="BeforeBuild">
-    <Copy
-        SourceFiles="@(SamplePosts)"
-        DestinationFiles="@(SamplePosts->'$(USERPROFILE)\documents\hashset\source\%(RecursiveDir)%(Filename)%(Extension)')"  />
-  </Target>
-
-  <ItemGroup>
-    <Content Include="WebRoot\**\*">
+    <Content Include="WebRoot/**/*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
+  <ItemGroup>
+    <Content Include="posts/**/*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="../../.paket/Paket.Restore.targets" />
 </Project>
