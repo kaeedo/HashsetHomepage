@@ -255,6 +255,15 @@ a {
   padding: 0;
 }
 
+.About-socialList > a:link {
+  color: inherit;
+  cursor: pointer;
+}
+
+.About-socialList > a:visited {
+  color: inherit;
+}
+
 .About-socialLink {
   display: flex;
   line-height: 26pt;
