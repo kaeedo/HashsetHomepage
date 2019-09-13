@@ -1,3 +1,1 @@
-Suggested to use fcswatch
-
-https://github.com/humhei/FCSWatch/
+Requires .Net Core 3.x
