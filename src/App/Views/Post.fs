@@ -6,7 +6,7 @@ type ParsedDocument =
       Document: string
       Tooltips: string }
 
-module Home =
+module Post =
     open Giraffe.GiraffeViewEngine
 
     let view parsedDocument =

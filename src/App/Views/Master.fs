@@ -6,12 +6,16 @@ type MasterContent =
     { Author: string
       JobTitle: string
       PageTitle: string
-      ArticleDate: string }
+      ArticleDate: DateTime option }
 
 module Master =
     open Giraffe.GiraffeViewEngine
 
-    let private pageTitle = "hashset.dev"
+    let private getDate (date: DateTime option) =
+        match date with
+        | Some d -> d.ToShortDateString()
+        | None -> String.Empty
+
 
     let view (masterData: MasterContent) (content: XmlNode) =
         html [ ] [
@@ -29,7 +33,7 @@ module Master =
                         a [ _class "Main-headerLink" ] [
                             str "Posts"
                         ]
-                        a [ _class "Main-headerLink" ] [
+                        a [ _class "Main-headerLink"; _href "/about" ] [
                             str "About"
                         ]
                     ]
@@ -38,7 +42,7 @@ module Master =
                 div [ _class "Main-titleContainer" ] [
                     div [ _class "Main-title" ] [
                         div [ _class "Main-postTitle" ] [ str masterData.PageTitle ]
-                        div [ _class "Main-postDate" ] [ str masterData.ArticleDate ]
+                        div [ _class "Main-postDate" ] [ str <| getDate masterData.ArticleDate ]
                         // div [ _class "Main-postTags" ] [ str "Tags" ]
                     ]
                 ]
