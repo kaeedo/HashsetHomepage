@@ -27,7 +27,7 @@ module Master =
                 header [ _class "Main-header" ] [
                     span [] [ str masterData.Author ]
                     nav [ _class "Main-headerNav" ] [
-                        a [ _class "Main-headerLink" ] [
+                        a [ _class "Main-headerLink"; _href "/" ] [
                             str "Home"
                         ]
                         a [ _class "Main-headerLink" ] [
