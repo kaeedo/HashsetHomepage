@@ -71,9 +71,7 @@ pre a.fssniplink {
 }
 
 table.pre {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: var(--contentWidth);
 }
 
 /* Optionally, also configure how the PRE element and TABLE.PRE look */
@@ -129,6 +127,8 @@ pre code {
   --sansSerifFontFamily: Arial, sans-serif;
 
   --marginSize: 8px;
+
+  --contentWidth: 80rem;
 }
 
 html {
@@ -138,18 +138,16 @@ html {
 
 .Main-body {
   background: var(--backgroundMainColor);
+  box-sizing: border-box;
 }
 
 .Main-header {
-  width: 99vw;
-  height: 100%;
-}
+  position: fixed;
+  color: var(--backgroundContentColor);
 
-.Main-headerTopBar {
   display: flex;
   justify-content: space-between;
-  position: absolute;
-  width: inherit;
+  width: calc(100% - var(--marginSize));
 
   transition: background-color 0.5s;
   transition: color 0.1s;
@@ -157,30 +155,30 @@ html {
   backface-visibility: hidden;
   background: transparent;
 
-  margin: calc(-1 * var(--marginSize));
+  margin-left: -8px;
   padding: var(--marginSize);
   font-size: 20pt;
   font-weight: 700;
-  color: var(--backgroundContentColor);
 }
 
-.Main-headerTopBar.is-fixed {
+.Main-header.is-fixed {
     position: fixed;
-    top: -40px;
+    top: -47px;
     transition: transform 0.3s;
     background-color: rgba(255, 255, 255, 0.9);
 }
 
-.Main-headerTopBar.is-visible {
+.Main-header.is-visible {
     transform: translate3d(0, 100%, 0);
     color: var(--fontDark);
 }
 
 .Main-headerNav {
-  width: 15%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  grid-column-gap: 10px;
   font-weight: normal;
+  padding-right: var(--marginSize);
 }
 
 .Main-titleContainer {
@@ -214,7 +212,7 @@ html {
     display: flex;
     flex-direction: column;
     margin: auto;
-    max-width: 80rem;
+    max-width: var(--contentWidth);
 }
 
 .PostContents > h1 > a {
