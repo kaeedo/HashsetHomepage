@@ -6,15 +6,28 @@ open Giraffe
 
 module Controller =
     let homepage () : HttpHandler  =
-        let latestPost = Reader.getLatestPost()
+        let latestPost = Posts.getLatestPost()
 
         let masterData =
             { MasterContent.Author = "Kai Ito"
               JobTitle = "Software Developer"
-              PageTitle= latestPost.Title
+              PageTitle = latestPost.Title
               ArticleDate = Some DateTime.Now }
 
         Post.view latestPost
+        |> Master.view masterData
+        |> htmlView
+
+    let posts (): HttpHandler =
+        let masterData =
+            { MasterContent.Author = "Kai Ito"
+              JobTitle = "Software Developer"
+              PageTitle = "About Me"
+              ArticleDate = None }
+
+        let posts = Posts.getPosts()
+
+        About.view
         |> Master.view masterData
         |> htmlView
 
@@ -22,7 +35,7 @@ module Controller =
         let masterData =
             { MasterContent.Author = "Kai Ito"
               JobTitle = "Software Developer"
-              PageTitle= "About Me"
+              PageTitle = "About Me"
               ArticleDate = None }
 
         About.view

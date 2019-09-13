@@ -18,6 +18,7 @@ module App =
     let webApp =
         choose [
             route "/" >=> warbler (fun _ -> Controller.homepage())
+            route "/posts" >=> warbler (fun _ -> Controller.posts())
             route "/about" >=> Controller.about() ]
 
     let configureApp (app : IApplicationBuilder) =
@@ -29,8 +30,7 @@ module App =
 
     [<EntryPoint>]
     let main _ =
-
-        Reader.write() |> ignore
+        Posts.parseAll() |> ignore
         let contentRoot = Directory.GetCurrentDirectory()
         let webRoot = Path.Combine(contentRoot, "WebRoot")
 
@@ -43,20 +43,3 @@ module App =
             .Build()
             .Run()
         0
-
-// https://www.phillipsj.net/
-
-
-(*
-    8BA1A8
-    7A787A
-    497DCE
-    232742
-    F0F0F1
-*)
-
-// Bookman
-// Palatino
-// Georgia
-
-// https://webdevresources.info/

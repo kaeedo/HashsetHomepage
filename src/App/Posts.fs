@@ -7,13 +7,14 @@ open FSharp.Formatting.Common
 open System
 open System.Text.RegularExpressions
 open System.Text.Json
+open System.Reflection
 open Hashset.Views
 
-module Reader =
-    let (++) a b = Path.Combine(a,b)
-    let private personalDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
-    let private srcDir = personalDir ++ "hashset" ++ "source"
-    let private parsedDir = personalDir ++ "hashset" ++ "parsed"
+module Posts =
+    let (++) a b = Path.Combine(a, b)
+    let private personalDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)
+    let private srcDir = personalDir ++ "posts" ++ "source"
+    let private parsedDir = personalDir ++ "posts" ++ "parsed"
 
     let private getContent key parsed =
         parsed
@@ -38,7 +39,16 @@ module Reader =
 
         JsonSerializer.Deserialize<ParsedDocument>(fileContents)
 
-    let write() =
+    let getPosts() =
+        let directory = DirectoryInfo(parsedDir)
+
+        let latestFiles =
+            directory.GetFiles()
+            |> Seq.sortByDescending (fun f -> f.Name.Split('_').[0])
+
+        latestFiles
+
+    let parseAll() =
         Directory.CreateDirectory(srcDir) |> ignore
         Directory.CreateDirectory(parsedDir) |> ignore
 
@@ -51,7 +61,8 @@ module Reader =
             let title = parsed.Parameters |> getContent "page-title"
             let title = Regex.Replace(title, @"\s+", String.Empty)
 
-            let createdDate = f.LastWriteTimeUtc
+            let createdDate = f.Name.Split('_').[0]
+            let createdDate = DateTime.Parse(createdDate)
 
             let parsedDocument =
                 { ParsedDocument.Title = parsed.Parameters |> getContent "page-title"
@@ -62,6 +73,7 @@ module Reader =
 
             json, sprintf "%s_%s.json" (createdDate.ToString("yyyy'-'MM'-'dd")) title
         )
-        |> Seq.iter (fun (json, fileName) ->
+        |> Seq.toList
+        |> List.iter (fun (json, fileName) ->
             File.WriteAllText(parsedDir ++ fileName, json)
         )
