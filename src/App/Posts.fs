@@ -43,7 +43,7 @@ module Posts =
 
         let file =
             DirectoryInfo(parsedDir).GetFiles()
-            |> Seq.find(fun f -> f.Name.ToLowerInvariant() = postFileName)
+            |> Seq.find(fun f -> f.Name.ToLowerInvariant().Contains(postFileName))
 
         let fileContents =
             use fs = file.OpenText()

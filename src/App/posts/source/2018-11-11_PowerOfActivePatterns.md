@@ -48,7 +48,8 @@ The entire time I was thinking that there must be a better way. After mulling ov
 
 
 ```
-let (|ShowInformation|HasPostalCode|UpdateCountry|ListAvailable|ListSupported|HasClearDatabase|HelpRequested|) (input: ParseResults<Arguments>) =
+let (|ShowInformation|HasPostalCode|UpdateCountry|ListAvailable|ListSupported|HasClearDatabase|HelpRequested|)
+    (input: ParseResults<Arguments>) =
     if input.Contains Info then ShowInformation
     elif input.Contains PostalCode then HasPostalCode
     elif input.Contains Update then UpdateCountry
@@ -65,6 +66,8 @@ let (|ShowInformation|HasPostalCode|UpdateCountry|ListAvailable|ListSupported|Ha
     elif input.Contains ClearDatabase then HasClearDatabase
     else HelpRequested
 ```
+
+Here we have the definition of the Active Pattern. Each command line option is is own possible pattern, then we have a much more manageable and readable block that returns the selected options. Now, we only need to define what should happen with these options.
 
 ```
 match arguments with
@@ -90,4 +93,4 @@ match arguments with
 ```
 
 
-Much better.
+Much better. This is a lot more clear to read and understand which command line options map to what functionality.

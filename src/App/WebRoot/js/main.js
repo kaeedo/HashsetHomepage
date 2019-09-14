@@ -1,6 +1,22 @@
 function init() {
     animateTopBar();
     particleBackground();
+    resizeTitleCanvas();
+};
+
+function resizeTitleCanvas() {
+    const headerTitle = document.querySelector('.Main-titleContainer');
+    const headerBackground = document.getElementById('headerBackground');
+
+    const setHeight = () => {
+        const titleHeight = headerTitle.offsetHeight;
+        if(titleHeight < 372) { return; }
+        headerBackground.style.height = titleHeight + 'px';
+    };
+
+    window.addEventListener('resize', setHeight);
+
+    setHeight();
 };
 
 function animateTopBar() {
