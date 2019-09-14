@@ -2,40 +2,62 @@ namespace Hashset
 
 open Hashset.Views
 open System
+open System.IO
+open System.Text.Json
 open Giraffe
 
 module Controller =
-    let homepage () : HttpHandler  =
-        let latestPost = Posts.getLatestPost()
-
+    let renderPostPage post =
         let masterData =
-            { MasterContent.Author = "Kai Ito"
-              JobTitle = "Software Developer"
-              PageTitle = latestPost.Title
-              ArticleDate = Some DateTime.Now }
+            { MasterContent.PageTitle = post.Title
+              ArticleDate = Some post.ArticleDate }
 
-        Post.view latestPost
+        Post.view post
         |> Master.view masterData
         |> htmlView
 
+    let homepage () : HttpHandler  =
+        let latestPost = Posts.getLatestPost()
+
+        renderPostPage latestPost
+
+    let post postName : HttpHandler =
+        renderPostPage <| Posts.getPost postName
+
     let posts (): HttpHandler =
+        // TODO: Server side paging
         let masterData =
-            { MasterContent.Author = "Kai Ito"
-              JobTitle = "Software Developer"
-              PageTitle = "About Me"
+            { MasterContent.PageTitle = "All Posts"
               ArticleDate = None }
 
-        let posts = Posts.getPosts()
+        let getFirstParagraph (content: string) =
+            let firstIndex = content.IndexOf("<p>") + 3
+            let lastIndex = content.IndexOf("</p>")
+            let count = lastIndex - firstIndex
 
-        About.view
+            content.Substring(firstIndex, count)
+
+        let posts =
+            Posts.getPosts()
+            |> Seq.map (fun p ->
+                use fs = p.OpenText()
+                let fileContents = fs.ReadToEnd()
+
+                JsonSerializer.Deserialize<ParsedDocument>(fileContents)
+            )
+            |> Seq.map (fun (p: ParsedDocument) ->
+                { PostStub.Title = p.Title.Trim()
+                  Date = p.ArticleDate
+                  Description = getFirstParagraph p.Document }
+            )
+
+        LatestPosts.view posts
         |> Master.view masterData
         |> htmlView
 
     let about (): HttpHandler =
         let masterData =
-            { MasterContent.Author = "Kai Ito"
-              JobTitle = "Software Developer"
-              PageTitle = "About Me"
+            { MasterContent.PageTitle = "About Me"
               ArticleDate = None }
 
         About.view

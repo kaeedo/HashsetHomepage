@@ -6,7 +6,9 @@
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Types.fs" />
     <Compile Include="Views/Master.fs" />
+    <Compile Include="Views/LatestPosts.fs" />
     <Compile Include="Views/About.fs" />
     <Compile Include="Views/Post.fs" />
     <Compile Include="Posts.fs" />
