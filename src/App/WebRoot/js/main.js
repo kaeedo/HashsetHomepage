@@ -2,21 +2,18 @@ function init() {
     animateTopBar();
     particleBackground();
     resizeTitleCanvas();
+
+    window.addEventListener('resize', resizeTitleCanvas);
+
 };
 
 function resizeTitleCanvas() {
     const headerTitle = document.querySelector('.Main-titleContainer');
     const headerBackground = document.getElementById('headerBackground');
 
-    const setHeight = () => {
-        const titleHeight = headerTitle.offsetHeight;
-        if(titleHeight < 372) { return; }
-        headerBackground.style.height = titleHeight + 'px';
-    };
-
-    window.addEventListener('resize', setHeight);
-
-    setHeight();
+    const titleHeight = headerTitle.offsetHeight;
+    if(titleHeight < 300) { return; }
+    headerBackground.style.height = titleHeight + 'px';
 };
 
 function animateTopBar() {
@@ -46,6 +43,7 @@ function animateTopBar() {
 function particleBackground() {
     if (window.particlesJS) {
         window.particlesJS.load('headerBackground', '/assets/particles.json');
+        resizeTitleCanvas();
     } else {
         setTimeout(particleBackground);
     }
@@ -53,10 +51,10 @@ function particleBackground() {
 }
 
 if (
-    document.readyState === "complete" ||
-    (document.readyState !== "loading" && !document.documentElement.doScroll)
+    document.readyState === 'complete' ||
+    (document.readyState !== 'loading' && !document.documentElement.doScroll)
 ) {
     init();
 } else {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener('DOMContentLoaded', init);
 }

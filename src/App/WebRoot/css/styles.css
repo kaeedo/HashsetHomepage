@@ -212,7 +212,7 @@ html {
   background-position: 50% 50%;
   background-repeat: no-repeat;
 
-  height: 372px;
+  height: 300px;
   margin-left: calc(-1 * var(--marginSize));
   margin-right: calc(-1 * var(--marginSize));
 }
