@@ -212,7 +212,7 @@ html {
   background-position: 50% 50%;
   background-repeat: no-repeat;
 
-  height: 315px;
+  height: 372px;
   margin-left: calc(-1 * var(--marginSize));
   margin-right: calc(-1 * var(--marginSize));
 }
@@ -232,6 +232,7 @@ html {
 .Main-postTitle {
   font-size: 42pt;
   font-weight: 700;
+  max-width: 80rem;
 }
 
 .PostContents {
@@ -251,6 +252,11 @@ html {
   font-family: var(--serifFontFamily);
 }
 
+.PostContents > p > img {
+    display: block;
+    margin: auto;
+}
+
 a {
   text-decoration: none;
 }
@@ -261,6 +267,16 @@ a {
 }
 
 .PostContents > h1 > a:visited {
+  color: inherit;
+  cursor: auto;
+}
+
+.PostContents > h3 > a:link {
+  color: inherit;
+  cursor: auto;
+}
+
+.PostContents > h3 > a:visited {
   color: inherit;
   cursor: auto;
 }
@@ -293,7 +309,7 @@ a {
 .LatestPosts-entry {
     display: grid;
     grid-template-columns: auto min-content;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 0fr 1fr;
     margin-bottom: 5rem;
 }
 
