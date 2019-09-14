@@ -24,9 +24,8 @@ module Posts =
         |> fun (_, value) -> value
 
     let getLatestPost() =
-        let directory = DirectoryInfo(parsedDir)
         let latest =
-            directory.GetFiles()
+            DirectoryInfo(parsedDir).GetFiles()
             |> Array.sortByDescending (fun f ->
                 let createdDate = f.Name.Substring(0, 10)
                 DateTime.Parse(createdDate)
@@ -39,11 +38,22 @@ module Posts =
 
         JsonSerializer.Deserialize<ParsedDocument>(fileContents)
 
-    let getPosts() =
-        let directory = DirectoryInfo(parsedDir)
+    let getPost (postName: string) =
+        let postFileName = sprintf "%s.json" <| postName.Replace("+", String.Empty).ToLowerInvariant()
 
+        let file =
+            DirectoryInfo(parsedDir).GetFiles()
+            |> Seq.find(fun f -> f.Name.ToLowerInvariant() = postFileName)
+
+        let fileContents =
+            use fs = file.OpenText()
+            fs.ReadToEnd()
+
+        JsonSerializer.Deserialize<ParsedDocument>(fileContents)
+
+    let getPosts() =
         let latestFiles =
-            directory.GetFiles()
+            DirectoryInfo(parsedDir).GetFiles()
             |> Seq.sortByDescending (fun f -> f.Name.Split('_').[0])
 
         latestFiles
@@ -52,9 +62,7 @@ module Posts =
         Directory.CreateDirectory(srcDir) |> ignore
         Directory.CreateDirectory(parsedDir) |> ignore
 
-        let allFiles = DirectoryInfo(srcDir).GetFiles()
-
-        allFiles
+        DirectoryInfo(srcDir).GetFiles()
         |> Seq.map (fun f ->
             let parsed = Literate.ProcessMarkdown(f.ToString(), generateAnchors = true)
 
@@ -67,6 +75,7 @@ module Posts =
             let parsedDocument =
                 { ParsedDocument.Title = parsed.Parameters |> getContent "page-title"
                   Document = parsed.Parameters |> getContent "document"
+                  ArticleDate = createdDate
                   Tooltips = parsed.Parameters |> getContent "tooltips" }
 
             let json = JsonSerializer.Serialize(parsedDocument)

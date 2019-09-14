@@ -29,7 +29,7 @@ function animateTopBar() {
 
 function particleBackground() {
     if (window.particlesJS) {
-        window.particlesJS.load('headerBackground', 'assets/particles.json');
+        window.particlesJS.load('headerBackground', '/assets/particles.json');
     } else {
         setTimeout(particleBackground);
     }

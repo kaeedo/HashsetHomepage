@@ -1,10 +1,6 @@
 namespace Hashset.Views
 
-[<CLIMutable>]
-type ParsedDocument =
-    { Title: string
-      Document: string
-      Tooltips: string }
+open Hashset
 
 module Post =
     open Giraffe.GiraffeViewEngine

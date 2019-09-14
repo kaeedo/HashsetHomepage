@@ -2,30 +2,26 @@ namespace Hashset.Views
 
 open System
 
-type MasterContent =
-    { Author: string
-      JobTitle: string
-      PageTitle: string
-      ArticleDate: DateTime option }
+open Hashset
 
 module Master =
     open Giraffe.GiraffeViewEngine
 
     let private getDate (date: DateTime option) =
         match date with
-        | Some d -> d.ToShortDateString()
+        | Some d -> d.ToString("dd MMMM, yyyy")
         | None -> String.Empty
 
 
     let view (masterData: MasterContent) (content: XmlNode) =
         html [ ] [
             head [] [
-                title [] [ str masterData.PageTitle ]
-                link [ _rel "stylesheet"; _type "text/css"; _href "css/styles.css" ]
+                title [] [ str <| sprintf "%s - Hashset.dev" masterData.PageTitle ]
+                link [ _rel "stylesheet"; _type "text/css"; _href "/css/styles.css" ]
             ]
             body [ _class "Main-body" ] [
                 header [ _class "Main-header" ] [
-                    span [] [ str masterData.Author ]
+                    span [] [ str "Kai Ito" ]
                     nav [ _class "Main-headerNav" ] [
                         a [ _class "Main-headerLink"; _href "/" ] [
                             str "Home"
@@ -53,7 +49,7 @@ module Master =
                     article [ _class "Main-content" ] [ content ]
                 ]
             ]
-            script [ _async; _defer; _src "js/particles.min.js"; _type "text/javascript"; ] []
-            script [ _async; _defer; _src "js/tips.js"; _type "text/javascript" ] []
-            script [ _async; _defer; _src "js/main.js"; _type "text/javascript"; ] []
+            script [ _async; _defer; _src "/js/particles.min.js"; _type "text/javascript"; ] []
+            script [ _async; _defer; _src "/js/tips.js"; _type "text/javascript" ] []
+            script [ _async; _defer; _src "/js/main.js"; _type "text/javascript"; ] []
         ]
