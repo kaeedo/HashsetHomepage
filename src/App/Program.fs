@@ -39,6 +39,7 @@ module App =
             .UseKestrel()
             .UseContentRoot(contentRoot)
             .UseWebRoot(webRoot)
+            .UseUrls("http://0.0.0.0:5000")
             .Configure(Action<IApplicationBuilder> configureApp)
             .ConfigureServices(configureServices)
             .Build()

@@ -69,7 +69,7 @@ div.tip {
 }
 
 table.pre {
-  width: var(--contentWidth);
+  width: 80rem;
 }
 
 table.pre pre {
@@ -120,41 +120,23 @@ pre {
 }
 
 /*///////////////////////////////////////////////////////////////////////////////*/
-
-:root {
-  --accentColor: #b8ca28;
-  --backgroundGreen: #009587;
-  --highlightGreen: #007d72;
-  --fontDark: #333;
-  --fontLight: #fff;
-  --backgroundContentColor: #f2f2f2;
-  --backgroundMainColor: #eee;
-
-  --serifFontFamily: Bookman, serif;
-  --sansSerifFontFamily: Arial, sans-serif;
-
-  --marginSize: 8px;
-
-  --contentWidth: 80rem;
-}
-
 html {
   overflow-y: scroll;
-  font-family: var(--sansSerifFontFamily);
+  font-family: var(Arial, sans-serif);
 }
 
 .Main-body {
-  background: var(--backgroundMainColor);
+  background: #eee;
   box-sizing: border-box;
 }
 
 .Main-header {
   position: fixed;
-  color: var(--backgroundContentColor);
+  color: #f2f2f2;
 
   display: flex;
   justify-content: space-between;
-  width: calc(100% - var(--marginSize));
+  width: calc(100% - 8px);
 
   transition: background-color 0.5s;
   transition: color 0.1s;
@@ -163,7 +145,7 @@ html {
   background: transparent;
 
   margin-left: -8px;
-  padding: var(--marginSize);
+  padding: 8px;
   font-size: 20pt;
   font-weight: 700;
 }
@@ -177,7 +159,7 @@ html {
 
 .Main-header.is-visible {
   transform: translate3d(0, 100%, 0);
-  color: var(--fontDark);
+  color: #333;
 }
 
 .Main-headerNav {
@@ -185,7 +167,7 @@ html {
   grid-template-columns: 1fr 1fr 1fr;
   grid-column-gap: 2rem;
   font-weight: normal;
-  padding-right: var(--marginSize);
+  padding-right: 8px;
 }
 
 .Main-headerLink {
@@ -193,9 +175,9 @@ html {
 }
 
 .Main-titleContainer {
-  margin-top: calc(-1 * var(--marginSize));
-  margin-left: calc(-1 * var(--marginSize));
-  margin-right: calc(-1 * var(--marginSize));
+  margin-top: calc(-1 * 8px);
+  margin-left: calc(-1 * 8px);
+  margin-right: calc(-1 * 8px);
   margin-bottom: 2rem;
   display: flex;
   padding: 7rem 0;
@@ -213,16 +195,17 @@ html {
   background-repeat: no-repeat;
 
   height: 300px;
-  margin-left: calc(-1 * var(--marginSize));
-  margin-right: calc(-1 * var(--marginSize));
+  margin-left: calc(-1 * 8px);
+  margin-right: calc(-1 * 8px);
 }
 
 .Main-title {
   margin: auto;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  color: var(--backgroundContentColor);
+  color: #f2f2f2;
 }
 
 .Main-section {
@@ -239,7 +222,7 @@ html {
   display: flex;
   flex-direction: column;
   margin: auto;
-  max-width: var(--contentWidth);
+  max-width: 80rem;
 }
 
 .PostContents > h1 > a {
@@ -249,7 +232,7 @@ html {
 .PostContents > p {
   font-size: 18pt;
   line-height: 26pt;
-  font-family: var(--serifFontFamily);
+  font-family: var(Bookman, serif);
 }
 
 .PostContents > p > img {
