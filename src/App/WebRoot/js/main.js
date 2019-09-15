@@ -4,25 +4,24 @@ function init() {
     resizeTitleCanvas();
 
     window.addEventListener('resize', resizeTitleCanvas);
-
 };
 
 function resizeTitleCanvas() {
-    const headerTitle = document.querySelector('.Main-titleContainer');
-    const headerBackground = document.getElementById('headerBackground');
+    var headerTitle = document.querySelector('.Main-titleContainer');
+    var headerBackground = document.getElementById('headerBackground');
 
-    const titleHeight = headerTitle.offsetHeight;
+    var titleHeight = headerTitle.offsetHeight;
     if(titleHeight < 300) { return; }
     headerBackground.style.height = titleHeight + 'px';
 };
 
 function animateTopBar() {
-    const topBar = document.getElementsByClassName('Main-header')[0];
+    var topBar = document.getElementsByClassName('Main-header')[0];
 
-    const headerHeight = topBar.style.height;
+    var headerHeight = topBar.style.height;
 
     window.addEventListener('scroll', function() {
-        const currentTop = window.scrollY;
+        var currentTop = window.scrollY;
         if (currentTop < this.previousTop || 0) {
             if (currentTop > 0 && topBar.classList.contains('is-fixed')) {
                 topBar.classList.add('is-visible');
