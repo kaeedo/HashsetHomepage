@@ -269,12 +269,12 @@ a {
   padding: 0;
 }
 
-.About-socialList > a:link {
+.About-socialAnchor:link {
   color: inherit;
   cursor: pointer;
 }
 
-.About-socialList > a:visited {
+.About-socialAnchor:visited {
   color: inherit;
 }
 
@@ -285,8 +285,12 @@ a {
   margin-bottom: 0.5rem;
 }
 
-.About-socialLink > i {
+.About-socialIcon {
   margin-right: 1rem;
+}
+
+.About-socialText {
+  position: absolute;
 }
 
 .LatestPosts-entry {
