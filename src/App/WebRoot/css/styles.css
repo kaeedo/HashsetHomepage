@@ -60,7 +60,7 @@ span.omitted {
 div.tip {
   background: #475b5f;
   border-radius: 4px;
-  font: 12pt "Droid Sans", arial, sans-serif;
+  font-family: "Droid Sans", arial, sans-serif;
   padding: 6px 8px 6px 8px;
   display: none;
   color: #d1d1d1;
@@ -78,14 +78,25 @@ table.pre pre {
   border: none;
 }
 
+tbody > tr {
+    line-height: 16pt;
+    font-size: 12pt;
+}
+
+@media screen and (max-width: 667px) {
+    tbody > tr {
+        line-height: 12pt;
+        font-size: 8pt;
+    }
+  }
+
 table.pre,
 pre.fssnip,
 pre {
   border: 1px solid #d8d8d8;
   border-collapse: separate;
   white-space: pre;
-  font: 12pt "Lucida Console", monaco, monospace;
-  line-height: 16pt;
+  font-family: "Lucida Console", monaco, monospace;
   width: 90%;
   margin: 10px 20px 20px 20px;
   background-color: #212d30;
@@ -94,8 +105,7 @@ pre {
   color: #d1d1d1;
 }
 pre.fssnip code {
-  font: 12pt "Lucida Console", monaco, monospace;
-  line-height: 16pt;
+  font-family: "Lucida Console", monaco, monospace;
 }
 
 table.pre pre {
@@ -163,6 +173,12 @@ html {
   padding-right: 8px;
 }
 
+@media screen and (max-width: 667px) {
+    .Main-headerNav {
+        grid-column-gap: 1rem;
+      }
+  }
+
 .Main-headerLink {
   color: inherit;
 }
@@ -210,6 +226,12 @@ html {
   font-weight: 700;
   max-width: 80rem;
 }
+
+@media screen and (max-width: 667px) {
+    .Main-postTitle {
+        font-size: 22pt;
+      }
+  }
 
 .PostContents {
   display: flex;

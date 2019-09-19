@@ -1,9 +1,13 @@
 function init() {
-    animateTopBar();
+    affixTopBar();
     particleBackground();
     resizeTitleCanvas();
 
     window.addEventListener('resize', resizeTitleCanvas);
+
+    setTimeout(function() {
+        window.scrollTo(0, window.scrollY);
+    }, 100);
 };
 
 function resizeTitleCanvas() {
@@ -15,7 +19,7 @@ function resizeTitleCanvas() {
     headerBackground.style.height = titleHeight + 'px';
 };
 
-function animateTopBar() {
+function affixTopBar() {
     var topBar = document.getElementsByClassName('Main-header')[0];
 
     var headerHeight = topBar.style.height;
