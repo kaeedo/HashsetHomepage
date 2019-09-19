@@ -140,7 +140,6 @@ html {
 
   transition: background-color 0.5s;
   transition: color 0.1s;
-  transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   background: transparent;
 
@@ -152,13 +151,7 @@ html {
 
 .Main-header.is-fixed {
   position: fixed;
-  top: -47px;
-  transition: transform 0.3s;
   background-color: rgba(255, 255, 255, 0.9);
-}
-
-.Main-header.is-visible {
-  transform: translate3d(0, 100%, 0);
   color: #333;
 }
 

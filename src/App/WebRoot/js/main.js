@@ -11,7 +11,7 @@ function resizeTitleCanvas() {
     var headerBackground = document.getElementById('headerBackground');
 
     var titleHeight = headerTitle.offsetHeight;
-    if(titleHeight < 300) { return; }
+    if (titleHeight < 300) { return; }
     headerBackground.style.height = titleHeight + 'px';
 };
 
@@ -20,17 +20,11 @@ function animateTopBar() {
 
     var headerHeight = topBar.style.height;
 
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', function () {
         var currentTop = window.scrollY;
-        if (currentTop < this.previousTop || 0) {
-            if (currentTop > 0 && topBar.classList.contains('is-fixed')) {
-                topBar.classList.add('is-visible');
-            } else {
-                topBar.classList.remove('is-visible');
-                topBar.classList.remove('is-fixed');
-            }
+        if ((currentTop < this.previousTop || 0) && !(currentTop > 0 && topBar.classList.contains('is-fixed'))) {
+            topBar.classList.remove('is-fixed');
         } else {
-            topBar.classList.remove('is-visible');
             if (currentTop > headerHeight && !topBar.classList.contains('is-fixed')) {
                 topBar.classList.add('is-fixed');
             }

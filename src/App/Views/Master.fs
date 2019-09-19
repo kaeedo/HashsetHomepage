@@ -18,6 +18,8 @@ module Master =
             head [] [
                 title [] [ str <| sprintf "%s - Hashset.dev" masterData.PageTitle ]
                 link [ _rel "stylesheet"; _type "text/css"; _href "/css/styles.css" ]
+                meta [ _charset "utf-8" ]
+                meta [ _name "viewport"; _content "width=device-width, initial-scale=1.0" ]
             ]
             body [ _class "Main-body" ] [
                 header [ _class "Main-header" ] [
@@ -46,7 +48,7 @@ module Master =
                 div [ _id "headerBackground" ] []
 
                 section [ _class "Main-section" ] [
-                    article [ _class "Main-content" ] [ content ]
+                    content
                 ]
             ]
             script [ _async; _defer; _src "/js/particles.min.js"; _type "text/javascript"; ] []
