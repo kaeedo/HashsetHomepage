@@ -6,7 +6,7 @@ module Post =
     open Giraffe.GiraffeViewEngine
 
     let view parsedDocument =
-        div [ _class "PostContents" ] [
+        article [ _class "PostContents" ] [
             Text parsedDocument.Document
             Text parsedDocument.Tooltips
         ]
