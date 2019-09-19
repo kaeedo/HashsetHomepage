@@ -104,6 +104,15 @@ pre {
   border-radius: 5px;
   color: #d1d1d1;
 }
+
+@media screen and (max-width: 667px) {
+    table.pre,
+    pre.fssnip,
+    pre {
+        width: 75%;
+    }
+}
+
 pre.fssnip code {
   font-family: "Lucida Console", monaco, monospace;
 }
@@ -112,7 +121,6 @@ table.pre pre {
   padding: 0px;
   margin: 0px;
   border-radius: 0px;
-  width: 100%;
 }
 
 table.pre td {
@@ -248,6 +256,13 @@ html {
   font-size: 18pt;
   line-height: 26pt;
   font-family: var(Bookman, serif);
+}
+
+@media screen and (max-width: 667px) {
+    .PostContents > p {
+        font-size: 14pt;
+        line-height: 22pt;
+  }
 }
 
 .PostContents > p > img {
