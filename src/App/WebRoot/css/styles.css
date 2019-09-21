@@ -143,6 +143,10 @@ html {
   font-family: var(Arial, sans-serif);
 }
 
+a {
+  text-decoration: none;
+}
+
 .Main-body {
   background: #eee;
   box-sizing: border-box;
@@ -225,10 +229,6 @@ html {
   color: #f2f2f2;
 }
 
-.Main-section {
-  margin: auto;
-}
-
 .Main-postTitle {
   font-size: 42pt;
   font-weight: 700;
@@ -240,6 +240,10 @@ html {
         font-size: 22pt;
       }
   }
+
+.Main-section {
+  margin: auto;
+}
 
 .PostContents {
   display: flex;
@@ -268,10 +272,6 @@ html {
 .PostContents > p > img {
     display: block;
     margin: auto;
-}
-
-a {
-  text-decoration: none;
 }
 
 .PostContents > h1 > a:link {
