@@ -23,7 +23,7 @@ module Master =
             ]
             body [ _class "Main-body" ] [
                 header [ _class "Main-header" ] [
-                    span [] [ str "Kai Ito" ]
+                    span [] [ str "Kai Itof" ]
                     nav [ _class "Main-headerNav" ] [
                         a [ _class "Main-headerLink"; _href "/" ] [
                             str "Home"
