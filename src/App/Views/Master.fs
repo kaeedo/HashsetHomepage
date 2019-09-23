@@ -121,7 +121,7 @@ module Master =
                     }
                     "
                 ]
-                //link [ _rel "stylesheet"; _type "text/css"; _href "/css/styles.css" ]
+                link [ _rel "stylesheet"; _type "text/css"; _href "/css/styles.css" ]
                 meta [ _charset "utf-8" ]
                 meta [ _name "viewport"; _content "width=device-width, initial-scale=1.0" ]
             ]
@@ -155,7 +155,7 @@ module Master =
                     content
                 ]
             ]
-            //script [ _async; _defer; _src "/js/particles.min.js"; _type "text/javascript"; ] []
+            script [ _async; _defer; _src "/js/particles.min.js"; _type "text/javascript"; ] []
             script [ _async; _defer; _src "/js/tips.js"; _type "text/javascript" ] []
             script [ _async; _defer; _src "/js/main.js"; _type "text/javascript"; ] []
         ]
