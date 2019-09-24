@@ -8,9 +8,12 @@ RUN echo "http://dl-4.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
     curl \
     make \
     mono \
+    ca-certificates \
     && rm -rf /var/cache/apk/*
 
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+RUN cert-sync /etc/ssl/certs/ca-certificates.crt
 
 RUN mkdir app
 

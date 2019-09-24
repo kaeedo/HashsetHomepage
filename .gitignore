@@ -8,3 +8,4 @@ packages
 .fake
 .fake/fcswatch/port.cache
 Build
+packages-microsoft-prod.deb
