@@ -1,6 +1,6 @@
 source https://api.nuget.org/v3/index.json
 
-nuget FSharp.Core redirects:force
+nuget FSharp.Core 4.7.0 redirects:force
 nuget FSharp.Literate
 nuget Giraffe
 # nuget FSharp.SystemTextJson  #  remember this

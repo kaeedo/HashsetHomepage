@@ -147,6 +147,10 @@ a {
   text-decoration: none;
 }
 
+.CodeBlock {
+    overflow-x: scroll;
+}
+
 .Main-body {
   background: #eee;
   box-sizing: border-box;

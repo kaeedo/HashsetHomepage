@@ -126,30 +126,32 @@ module Master =
                 meta [ _name "viewport"; _content "width=device-width, initial-scale=1.0" ]
             ]
             body [ _class "Main-body" ] [
-                header [ _class "Main-header" ] [
-                    span [] [ str "Kai Ito" ]
-                    nav [ _class "Main-headerNav" ] [
-                        a [ _class "Main-headerLink"; _href "/" ] [
-                            str "Home"
-                        ]
-                        a [ _class "Main-headerLink"; _href "/posts" ] [
-                            str "Posts"
-                        ]
-                        a [ _class "Main-headerLink"; _href "/about" ] [
-                            str "About"
+                header [ _class "Main-headerContainer" ] [
+                    div [ _class "Main-header" ] [
+                        span [] [ str "Kai Ito" ]
+                        nav [ _class "Main-headerNav" ] [
+                            a [ _class "Main-headerLink"; _href "/" ] [
+                                str "Home"
+                            ]
+                            a [ _class "Main-headerLink"; _href "/posts" ] [
+                                str "Posts"
+                            ]
+                            a [ _class "Main-headerLink"; _href "/about" ] [
+                                str "About"
+                            ]
                         ]
                     ]
-                ]
 
-                div [ _class "Main-titleContainer" ] [
-                    div [ _class "Main-title" ] [
-                        div [ _class "Main-postTitle" ] [ str masterData.PageTitle ]
-                        div [ _class "Main-postDate" ] [ str <| getDate masterData.ArticleDate ]
-                        // div [ _class "Main-postTags" ] [ str "Tags" ]
+                    div [ _class "Main-titleContainer" ] [
+                        div [ _class "Main-title" ] [
+                            div [ _class "Main-postTitle" ] [ str masterData.PageTitle ]
+                            div [ _class "Main-postDate" ] [ str <| getDate masterData.ArticleDate ]
+                            // div [ _class "Main-postTags" ] [ str "Tags" ]
+                        ]
                     ]
-                ]
 
-                div [ _id "headerBackground" ] []
+                    div [ _id "headerBackground" ] []
+                ]
 
                 section [ _class "Main-section" ] [
                     content
