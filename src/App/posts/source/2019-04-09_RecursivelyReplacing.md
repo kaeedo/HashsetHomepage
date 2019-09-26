@@ -5,45 +5,47 @@ I’m slowly building a .Net Core global tool to do some REST API testing. One i
 
 Now came the task of actually replacing the brackets. As I have a strong C# background, an approach I like to use is to code what I want to accomplish in an OOP or imperative style, and then to refactor it to a functional style.
 
+    [hide]
+    open System
+    open System.Text
+    open System.Text.RegularExpressions
+    let variableRegex: Regex = Regex("")
+
 Here my imperative approach:
 
-```
-let mutable match = variableRegex.Match(url)
-let mutable currentIndex = 0
-while match.Success do
-    let variableToReplace = match.Groups.[0]
-    let length = variableToReplace.Index - currentIndex
-    let subUrl = url.Substring(currentIndex, length)
-    builder.Append(subUrl) |> ignore
-    let replaceWith =
-        match match.Groups.[1].Value with
-        | "INT" -> "INTEGER" // replace with int generator
-        | _ -> "OBJECT" // optionally other data types
-    builder.Append(replaceWith) |> ignore
-    currentIndex <- subUrl.Length + variableToReplace.Length
-    match <- match.NextMatch()
-builder.ToString()
-```
-
-And here after refactoring to a functional recursive Approach:
-
-```
-let rec build currentIndex (currentMatch: Match) =
-    if currentMatch.Success then
-        let variableToReplace = currentMatch.Groups.[0]
+    let mutable regexMatch = variableRegex.Match("http://www.example.com/?id={{INT}}")
+    let mutable currentIndex = 0
+    while regexMatch.Success do
+        let variableToReplace = regexMatch.Groups.[0]
         let length = variableToReplace.Index - currentIndex
         let subUrl = url.Substring(currentIndex, length)
         builder.Append(subUrl) |> ignore
         let replaceWith =
-            match currentMatch.Groups.[1].Value with
+            match regexMatch.Groups.[1].Value with
             | "INT" -> "INTEGER" // replace with int generator
             | _ -> "OBJECT" // optionally other data types
         builder.Append(replaceWith) |> ignore
-        build (subUrl.Length + variableToReplace.Length) (currentMatch.NextMatch())
-    else
-        builder.ToString()
-build 0 (variableRegex.Match(url))
-```
+        currentIndex <- subUrl.Length + variableToReplace.Length
+        regexMatch <- regexMatch.NextMatch()
+    builder.ToString()
+
+And here after refactoring to a functional recursive Approach:
+
+    let rec build currentIndex (currentMatch: Match) =
+        if currentMatch.Success then
+            let variableToReplace = currentMatch.Groups.[0]
+            let length = variableToReplace.Index - currentIndex
+            let subUrl = url.Substring(currentIndex, length)
+            builder.Append(subUrl) |> ignore
+            let replaceWith =
+                match currentMatch.Groups.[1].Value with
+                | "INT" -> "INTEGER" // replace with int generator
+                | _ -> "OBJECT" // optionally other data types
+            builder.Append(replaceWith) |> ignore
+            build (subUrl.Length + variableToReplace.Length) (currentMatch.NextMatch())
+        else
+            builder.ToString()
+    build 0 (variableRegex.Match(url))
 
 This approach has really helped me in not ripping my hair out while I’m trying to simultaneously figure out what it is I need to do, while also figuring out how to properly recurse over whatever it is I’m doing.
 
