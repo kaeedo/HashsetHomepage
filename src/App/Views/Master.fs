@@ -39,7 +39,6 @@ module Master =
 
                       display: flex;
                       justify-content: space-between;
-                      width: calc(100% - 8px);
 
                       transition: background-color 0.5s;
                       transition: color 0.1s;

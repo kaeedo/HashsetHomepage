@@ -2,6 +2,7 @@ function init() {
     affixTopBar();
     particleBackground();
     resizeTitleCanvas();
+    resizeHeaderNav();
 
     window.addEventListener('resize', resizeTitleCanvas);
 
@@ -11,6 +12,13 @@ function init() {
 };
 
 function resizeTitleCanvas() {
+    var headerBar = document.querySelector('.Main-header');
+
+    var viewWidth = document.documentElement.clientWidth - 8;
+    headerBar.style.width = viewWidth + 'px';
+};
+
+function resizeHeaderNav() {
     var headerTitle = document.querySelector('.Main-titleContainer');
     var headerBackground = document.getElementById('headerBackground');
 
