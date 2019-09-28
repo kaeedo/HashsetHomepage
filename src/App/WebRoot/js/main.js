@@ -2,7 +2,6 @@ function init() {
     affixTopBar();
     particleBackground();
     resizeTitleCanvas();
-    surroundTables();
 
     window.addEventListener('resize', resizeTitleCanvas);
 
@@ -44,20 +43,6 @@ function particleBackground() {
         resizeTitleCanvas();
     } else {
         setTimeout(particleBackground);
-    }
-}
-
-function surroundTables() {
-    var tables = document.querySelectorAll('table');
-    console.log(tables)
-
-    for (var i = 0; i < tables.length; i++) {
-        var table = tables[i]
-        var newDiv = document.createElement('div')
-        newDiv.className += ' CodeBlock';
-        newDiv.innerHTML=table.outerHTML;
-        table.parentNode.insertBefore(newDiv, table);
-        table.parentNode.removeChild(table);
     }
 }
 

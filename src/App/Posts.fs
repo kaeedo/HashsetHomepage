@@ -58,6 +58,32 @@ module Posts =
 
         latestFiles
 
+    // UGLY HACK
+    // TODO: Figure out how to do this using FSharp.Literate
+    let transformHtml (document: string) =
+        let tableStartTag = "<table class=\"pre\">"
+        let tableEndTag = "</table>"
+        let divStartTag = "<div class=\"CodeBlock\">"
+        let divEndTag = "</div>"
+
+        let rec buildDocument (accumulator: string) (markupToParse: string) =
+            let startTableIndex = markupToParse.IndexOf(tableStartTag)
+            let endTableIndex = markupToParse.IndexOf(tableEndTag) + tableEndTag.Length
+
+            let untilTable = markupToParse.Substring(0, startTableIndex)
+            let table = markupToParse.Substring(startTableIndex, endTableIndex - startTableIndex)
+            let afterTable = markupToParse.Substring(endTableIndex)
+
+            let surrounded = sprintf "%s%s<div class=\"CodeBlock\">%s</div>" accumulator untilTable table
+
+            if afterTable.Contains(tableStartTag)
+            then buildDocument surrounded afterTable
+            else surrounded + markupToParse
+
+        if document.Contains(tableStartTag)
+        then buildDocument String.Empty document
+        else document
+
     let parseAll() =
         Directory.CreateDirectory(srcDir) |> ignore
         Directory.CreateDirectory(parsedDir) |> ignore
@@ -74,7 +100,7 @@ module Posts =
 
             let parsedDocument =
                 { ParsedDocument.Title = parsed.Parameters |> getContent "page-title"
-                  Document = parsed.Parameters |> getContent "document"
+                  Document = parsed.Parameters |> getContent "document" |> transformHtml
                   ArticleDate = createdDate
                   Tooltips = parsed.Parameters |> getContent "tooltips" }
 
