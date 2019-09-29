@@ -11,14 +11,14 @@ function init() {
     }, 100);
 };
 
-function resizeTitleCanvas() {
+function resizeHeaderNav() {
     var headerBar = document.querySelector('.Main-header');
 
     var viewWidth = document.documentElement.clientWidth - 8;
     headerBar.style.width = viewWidth + 'px';
 };
 
-function resizeHeaderNav() {
+function resizeTitleCanvas() {
     var headerTitle = document.querySelector('.Main-titleContainer');
     var headerBackground = document.getElementById('headerBackground');
 

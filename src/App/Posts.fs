@@ -78,7 +78,7 @@ module Posts =
 
             if afterTable.Contains(tableStartTag)
             then buildDocument surrounded afterTable
-            else surrounded + markupToParse
+            else surrounded + afterTable
 
         if document.Contains(tableStartTag)
         then buildDocument String.Empty document
