@@ -3,6 +3,7 @@ function init() {
     particleBackground();
     resizeTitleCanvas();
     resizeHeaderNav();
+    zoomableImages();
 
     window.addEventListener('resize', resizeTitleCanvas);
 
@@ -10,6 +11,26 @@ function init() {
         window.scrollTo(0, window.scrollY);
     }, 100);
 };
+
+function zoomableImages() {
+    var images = document.querySelectorAll('.PostContents > p > img');
+
+    for (var i = 0; i < images.length; i++) {
+        var img = images[i];
+        img.addEventListener('click', toggleZoom);
+    }
+}
+
+function toggleZoom(image) {
+    var img = image.target
+    if (img.hasAttribute('data-original')) {
+        img.style.width = '100%';
+        img.removeAttribute('data-original')
+    } else {
+        img.style.width = 'inherit';
+        img.setAttribute('data-original', true)
+    }
+}
 
 function resizeHeaderNav() {
     var headerBar = document.querySelector('.Main-header');
