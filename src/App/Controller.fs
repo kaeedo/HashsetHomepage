@@ -6,6 +6,11 @@ open System.IO
 open System.Text.Json
 open Giraffe
 
+module Load =
+    let styledMasterView =
+        let aboveTheFoldCss = File.ReadAllText("WebRoot/css/aboveTheFold.css")
+        Master.view aboveTheFoldCss
+
 module Controller =
     let renderPostPage post =
         let masterData =
@@ -13,7 +18,7 @@ module Controller =
               ArticleDate = Some post.ArticleDate }
 
         Post.view post
-        |> Master.view masterData
+        |> Load.styledMasterView masterData
         |> htmlView
 
     let homepage () : HttpHandler  =
@@ -52,7 +57,7 @@ module Controller =
             )
 
         LatestPosts.view posts
-        |> Master.view masterData
+        |> Load.styledMasterView masterData
         |> htmlView
 
     let about (): HttpHandler =
@@ -61,5 +66,5 @@ module Controller =
               ArticleDate = None }
 
         About.view
-        |> Master.view masterData
+        |> Load.styledMasterView masterData
         |> htmlView
