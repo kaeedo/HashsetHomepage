@@ -138,40 +138,10 @@ pre {
 }
 
 /*///////////////////////////////////////////////////////////////////////////////*/
-html {
-  overflow-y: scroll;
-  font-family: var(Arial, sans-serif);
-}
 
-a {
-  text-decoration: none;
-}
 
 .CodeBlock {
     overflow-x: scroll;
-}
-
-.Main-body {
-  background: #eee;
-  box-sizing: border-box;
-}
-
-.Main-header {
-  position: fixed;
-  color: #f2f2f2;
-
-  display: flex;
-  justify-content: space-between;
-
-  transition: background-color 0.5s;
-  transition: color 0.1s;
-  backface-visibility: hidden;
-  background: transparent;
-
-  margin-left: -8px;
-  padding: 8px;
-  font-size: 20pt;
-  font-weight: 700;
 }
 
 .Main-header.is-fixed {
@@ -180,80 +150,15 @@ a {
   color: #333;
 }
 
-.Main-headerNav {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-column-gap: 2rem;
-  font-weight: normal;
-  padding-right: 8px;
-}
 
-@media screen and (max-width: 667px) {
-    .Main-headerNav {
-        grid-column-gap: 1rem;
-      }
-  }
 
-.Main-headerLink {
-  color: inherit;
-}
 
-.Main-titleContainer {
-  margin-top: calc(-1 * 8px);
-  margin-left: calc(-1 * 8px);
-  margin-right: calc(-1 * 8px);
-  margin-bottom: 2rem;
-  display: flex;
-  padding: 7rem 0;
-}
 
-#headerBackground {
-  position: absolute;
-  top: 0;
-  z-index: -54654654654;
 
-  width: 100%;
-  background-color: #2c2e43;
-  background-size: cover;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
 
-  height: 300px;
-  margin-left: calc(-1 * 8px);
-  margin-right: calc(-1 * 8px);
-}
 
-.Main-title {
-  margin: auto;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  color: #f2f2f2;
-}
 
-.Main-postTitle {
-  font-size: 42pt;
-  font-weight: 700;
-  max-width: 80rem;
-}
 
-@media screen and (max-width: 667px) {
-    .Main-postTitle {
-        font-size: 22pt;
-      }
-  }
-
-.Main-section {
-  margin: auto;
-}
-
-.PostContents {
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  max-width: 80rem;
-}
 
 .PostContents > h1 > a {
   font-size: 24pt;
