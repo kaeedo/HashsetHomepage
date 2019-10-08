@@ -4,6 +4,8 @@ NUGET
   remote: https://api.nuget.org/v3/index.json
     BlackFox.VsWhere (1.0)
       FSharp.Core (>= 4.2.3)
+    EcmaScript.NET (2.0)
+      System.Reflection.Emit (>= 4.3)
     Fake.Core.CommandLineParsing (5.16.1)
       FParsec (>= 1.0.3)
       FSharp.Core (>= 4.7)
@@ -691,3 +693,5 @@ NUGET
       System.Xml.ReaderWriter (>= 4.3)
       System.Xml.XmlDocument (>= 4.3)
       System.Xml.XPath (>= 4.3)
+    YUICompressor.NET (3.0)
+      EcmaScript.NET (>= 2.0)
