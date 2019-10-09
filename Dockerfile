@@ -21,7 +21,9 @@ WORKDIR app
 
 COPY . .
 
-RUN dotnet build -c Release -o ./Build ./Homepage.sln
+RUN dotnet tool restore
+
+RUN dotnet fake build
 
 #################################
 
@@ -33,7 +35,7 @@ RUN mkdir app
 
 WORKDIR app
 
-COPY --from=builder /app/Build .
+COPY --from=builder /app/build .
 
 EXPOSE 5000
 
