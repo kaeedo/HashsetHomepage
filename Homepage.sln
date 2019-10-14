@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{783962a9-026
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "App", "src\App\App.fsproj", "{3AE90AE1-C913-45AC-AFC9-C1CA05935AC2}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "App", "src\DataAccess\DataAccess.fsproj", "{bdc4a0f1-0e4b-41f5-9bfd-df3d186b8ad6}"
+EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Rezoom.SQL.Compiler", "lib\Rezoom.SQL.Compiler\Rezoom.SQL.Compiler.fsproj", "{2648162e-fe61-431c-872d-f5b2ca21fef2}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Rezoom.SQL.Provider", "lib\Rezoom.SQL.Provider\Rezoom.SQL.Provider.fsproj", "{924887a7-3725-47d7-9782-6355540a8a6b}"
