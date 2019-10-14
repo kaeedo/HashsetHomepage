@@ -30,8 +30,8 @@ module Master =
                             a [ _class "Main-headerLink"; _href "/" ] [
                                 str "Home"
                             ]
-                            a [ _class "Main-headerLink"; _href "/posts" ] [
-                                str "Posts"
+                            a [ _class "Main-headerLink"; _href "/articles" ] [
+                                str "Articles"
                             ]
                             a [ _class "Main-headerLink"; _href "/about" ] [
                                 str "About"
