@@ -5,15 +5,15 @@ open System.Net
 
 open Hashset
 
-module LatestPosts =
+module LatestArticles =
     open Giraffe.GiraffeViewEngine
 
-    let private posts (content: PostStub seq) =
+    let private articles (content: ArticleStub seq) =
         content
         |> Seq.map (fun c ->
             div [ _class "LatestPosts-entry" ] [
                 h3 [ _class "LatestPosts-entryTitle" ] [
-                    a [ _href <| sprintf "posts/%s_%s" (c.Date.ToString("yyyy'-'MM'-'dd")) (WebUtility.UrlEncode(c.Title)) ] [
+                    a [ _href <| sprintf "articles/%s_%s" (c.Date.ToString("yyyy'-'MM'-'dd")) (WebUtility.UrlEncode(c.Title)) ] [
                         str c.Title
                     ]
                 ]
@@ -22,8 +22,8 @@ module LatestPosts =
             ]
         )
 
-    let view (content: PostStub seq) =
+    let view (content: ArticleStub seq) =
         div [ _class "PostContents" ] [
-            yield! posts content
+            yield! articles content
         ]
 

@@ -21,9 +21,3 @@ module Db =
                 LogMigrationRan = fun m -> printfn "Ran migration: %s" m.MigrationName }
 
         MyModel.Migrate(config)
-
-    let a id =
-        use connection = new ConnectionContext()
-        let users = MyQuery.Command(id).Execute(connection)
-        users
-        |> Seq.head

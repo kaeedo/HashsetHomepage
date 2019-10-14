@@ -52,12 +52,12 @@ module Controller =
                 JsonSerializer.Deserialize<ParsedDocument>(fileContents)
             )
             |> Seq.map (fun (p: ParsedDocument) ->
-                { PostStub.Title = p.Title.Trim()
+                { ArticleStub.Title = p.Title.Trim()
                   Date = p.ArticleDate
                   Description = getFirstParagraph p.Document }
             )
 
-        LatestPosts.view articles
+        LatestArticles.view articles
         |> Load.styledMasterView masterData
         |> htmlView
 

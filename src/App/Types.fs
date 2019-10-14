@@ -6,7 +6,7 @@ type MasterContent =
     { PageTitle: string
       ArticleDate: DateTime option }
 
-type PostStub =
+type ArticleStub =
     { Title: string
       Date: DateTime
       Description: string }

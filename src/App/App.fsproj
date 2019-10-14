@@ -10,7 +10,7 @@
   <ItemGroup>
     <Compile Include="Types.fs" />
     <Compile Include="Views/Master.fs" />
-    <Compile Include="Views/LatestPosts.fs" />
+    <Compile Include="Views/LatestArticles.fs" />
     <Compile Include="Views/About.fs" />
     <Compile Include="Views/Article.fs" />
     <Compile Include="Articles.fs" />

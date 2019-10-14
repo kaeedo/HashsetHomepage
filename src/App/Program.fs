@@ -20,8 +20,8 @@ module App =
     let webApp =
         choose [
             routeCi "/" >=> warbler (fun _ -> Controller.homepage())
-            routeCi "/posts" >=> warbler (fun _ -> Controller.articles())
-            routeCif "/posts/%s" Controller.article
+            routeCi "/articles" >=> warbler (fun _ -> Controller.articles())
+            routeCif "/articles/%s" Controller.article
             routeCi "/about" >=> Controller.about() ]
 
     let configureApp (app : IApplicationBuilder) =
@@ -34,8 +34,6 @@ module App =
     [<EntryPoint>]
     let main _ =
         Db.migrate()
-
-        printfn "%O" <| Db.a 1
 
         Articles.parseAll() |> ignore
         let contentRoot = Directory.GetCurrentDirectory()
@@ -50,4 +48,5 @@ module App =
             .ConfigureServices(configureServices)
             .Build()
             .Run()
+
         0
