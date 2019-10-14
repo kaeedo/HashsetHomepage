@@ -31,7 +31,11 @@ module App =
 
     [<EntryPoint>]
     let main _ =
-        Posts.parseAll() |> ignore
+        Db.migrate()
+
+        printfn "First User: %O\nSecond User: %O" (Db.a 1).Name (Db.a 2).Name
+
+        (* Posts.parseAll() |> ignore
         let contentRoot = Directory.GetCurrentDirectory()
         let webRoot = Path.Combine(contentRoot, "WebRoot")
 
@@ -43,5 +47,5 @@ module App =
             .Configure(Action<IApplicationBuilder> configureApp)
             .ConfigureServices(configureServices)
             .Build()
-            .Run()
+            .Run() *)
         0

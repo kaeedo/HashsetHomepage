@@ -5,7 +5,15 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D69BD1F8-E776-4415-B50E-0428C028E886}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{783962a9-0269-4303-8b66-49273a290622}"
+EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "App", "src\App\App.fsproj", "{3AE90AE1-C913-45AC-AFC9-C1CA05935AC2}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Rezoom.SQL.Compiler", "lib\Rezoom.SQL.Compiler\Rezoom.SQL.Compiler.fsproj", "{2648162e-fe61-431c-872d-f5b2ca21fef2}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Rezoom.SQL.Provider", "lib\Rezoom.SQL.Provider\Rezoom.SQL.Provider.fsproj", "{924887a7-3725-47d7-9782-6355540a8a6b}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Rezoom.SQL.Mapping", "lib\Rezoom.SQL.Mapping\Rezoom.SQL.Mapping.fsproj", "{bf16285f-b59e-421b-a9b3-b2985c29a30a}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +40,7 @@ Global
 		{3AE90AE1-C913-45AC-AFC9-C1CA05935AC2}.Release|x64.Build.0 = Release|Any CPU
 		{3AE90AE1-C913-45AC-AFC9-C1CA05935AC2}.Release|x86.ActiveCfg = Release|Any CPU
 		{3AE90AE1-C913-45AC-AFC9-C1CA05935AC2}.Release|x86.Build.0 = Release|Any CPU
+
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3AE90AE1-C913-45AC-AFC9-C1CA05935AC2} = {D69BD1F8-E776-4415-B50E-0428C028E886}

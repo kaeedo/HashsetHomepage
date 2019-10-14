@@ -1,3 +1,4 @@
 FSharp.Core
 Giraffe
 FSharp.Literate
+Microsoft.Data.Sqlite

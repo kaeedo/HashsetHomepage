@@ -4,4 +4,10 @@ nuget FSharp.Core 4.7.0 redirects:force
 nuget FSharp.Literate
 nuget Giraffe 4.0
 # nuget FSharp.SystemTextJson  #  remember this
-#nuget Microsoft.AspNetCore.App
+nuget Microsoft.Data.Sqlite
+nuget LicenseToCIL 1.0.0
+nuget Rezoom 1.0.0
+nuget System.Configuration.ConfigurationManager 4.5.0
+nuget System.Reflection.Emit 4.3.0
+nuget FParsec-Pipes 1.1.0
+nuget System.Data.SqlClient 4.5.1
