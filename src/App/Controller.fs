@@ -11,28 +11,29 @@ module Load =
         let aboveTheFoldCss = File.ReadAllText("WebRoot/css/aboveTheFold.css")
         Master.view aboveTheFoldCss
 
+[<RequireQualifiedAccess>]
 module Controller =
-    let renderPostPage post =
+    let private renderArticlePage article =
         let masterData =
-            { MasterContent.PageTitle = post.Title
-              ArticleDate = Some post.ArticleDate }
+            { MasterContent.PageTitle = article.Title
+              ArticleDate = Some article.ArticleDate }
 
-        Post.view post
+        Article.view article
         |> Load.styledMasterView masterData
         |> htmlView
 
     let homepage () : HttpHandler  =
-        let latestPost = Posts.getLatestPost()
+        let latestArticle = Articles.getLatestArticle()
 
-        renderPostPage latestPost
+        renderArticlePage latestArticle
 
-    let post postName : HttpHandler =
-        renderPostPage <| Posts.getPost postName
+    let article articleName : HttpHandler =
+        renderArticlePage <| Articles.getArticle articleName
 
-    let posts (): HttpHandler =
+    let articles (): HttpHandler =
         // TODO: Server side paging
         let masterData =
-            { MasterContent.PageTitle = "All Posts"
+            { MasterContent.PageTitle = "All Articles"
               ArticleDate = None }
 
         let getFirstParagraph (content: string) =
@@ -42,8 +43,8 @@ module Controller =
 
             content.Substring(firstIndex, count)
 
-        let posts =
-            Posts.getPosts()
+        let articles =
+            Articles.getArticles()
             |> Seq.map (fun p ->
                 use fs = p.OpenText()
                 let fileContents = fs.ReadToEnd()
@@ -56,7 +57,7 @@ module Controller =
                   Description = getFirstParagraph p.Document }
             )
 
-        LatestPosts.view posts
+        LatestPosts.view articles
         |> Load.styledMasterView masterData
         |> htmlView
 

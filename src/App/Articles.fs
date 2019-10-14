@@ -10,7 +10,8 @@ open System.Text.Json
 open System.Reflection
 open Hashset.Views
 
-module Posts =
+[<RequireQualifiedAccess>]
+module Articles =
     let (++) a b = Path.Combine(a, b)
     let private personalDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)
     let private srcDir = personalDir ++ "posts" ++ "source"
@@ -23,7 +24,7 @@ module Posts =
         )
         |> fun (_, value) -> value
 
-    let getLatestPost() =
+    let getLatestArticle() =
         let latest =
             DirectoryInfo(parsedDir).GetFiles()
             |> Array.sortByDescending (fun f ->
@@ -38,12 +39,12 @@ module Posts =
 
         JsonSerializer.Deserialize<ParsedDocument>(fileContents)
 
-    let getPost (postName: string) =
-        let postFileName = sprintf "%s.json" <| postName.Replace("+", String.Empty).ToLowerInvariant()
+    let getArticle (articleName: string) =
+        let articleFileName = sprintf "%s.json" <| articleName.Replace("+", String.Empty).ToLowerInvariant()
 
         let file =
             DirectoryInfo(parsedDir).GetFiles()
-            |> Seq.find(fun f -> f.Name.ToLowerInvariant().Contains(postFileName))
+            |> Seq.find(fun f -> f.Name.ToLowerInvariant().Contains(articleFileName))
 
         let fileContents =
             use fs = file.OpenText()
@@ -51,7 +52,7 @@ module Posts =
 
         JsonSerializer.Deserialize<ParsedDocument>(fileContents)
 
-    let getPosts() =
+    let getArticles() =
         let latestFiles =
             DirectoryInfo(parsedDir).GetFiles()
             |> Seq.sortByDescending (fun f -> f.Name.Split('_').[0])

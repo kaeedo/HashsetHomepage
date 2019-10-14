@@ -2,7 +2,7 @@ namespace Hashset.Views
 
 open Hashset
 
-module Post =
+module Article =
     open Giraffe.GiraffeViewEngine
 
     let view parsedDocument =

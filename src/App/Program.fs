@@ -14,12 +14,14 @@ open Microsoft.AspNetCore.Http
 
 open Hashset.Views
 
+open DataAccess
+
 module App =
     let webApp =
         choose [
             routeCi "/" >=> warbler (fun _ -> Controller.homepage())
-            routeCi "/posts" >=> warbler (fun _ -> Controller.posts())
-            routeCif "/posts/%s" Controller.post
+            routeCi "/posts" >=> warbler (fun _ -> Controller.articles())
+            routeCif "/posts/%s" Controller.article
             routeCi "/about" >=> Controller.about() ]
 
     let configureApp (app : IApplicationBuilder) =
@@ -33,9 +35,9 @@ module App =
     let main _ =
         Db.migrate()
 
-        printfn "First User: %O\nSecond User: %O" (Db.a 1).Name (Db.a 2).Name
+        printfn "%O" <| Db.a 1
 
-        (* Posts.parseAll() |> ignore
+        Articles.parseAll() |> ignore
         let contentRoot = Directory.GetCurrentDirectory()
         let webRoot = Path.Combine(contentRoot, "WebRoot")
 
@@ -47,5 +49,5 @@ module App =
             .Configure(Action<IApplicationBuilder> configureApp)
             .ConfigureServices(configureServices)
             .Build()
-            .Run() *)
+            .Run()
         0
