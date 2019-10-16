@@ -4,20 +4,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="./hashset.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Migrations/**/*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="rzsql.json" />
+    <None Include="paket.references" />
+    <None Include="v1.articles.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../lib/Rezoom.SQL.Provider/Rezoom.SQL.Provider.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Library.fs" />
+    <Compile Include="Setup.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

@@ -33,7 +33,7 @@ module App =
 
     [<EntryPoint>]
     let main _ =
-        Db.migrate()
+        Setup.migrate()
 
         Articles.parseAll() |> ignore
         let contentRoot = Directory.GetCurrentDirectory()
