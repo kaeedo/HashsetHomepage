@@ -8,6 +8,7 @@
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="paket.references" />
     <Compile Include="Types.fs" />
     <Compile Include="Views/Master.fs" />
     <Compile Include="Views/LatestArticles.fs" />
