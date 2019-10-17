@@ -51,12 +51,11 @@ type DefaultConnectionProvider() =
             failwith "No connection string by the expected name"
         else
             connectionString
-            //"Host=172.22.230.195:5432;Database=rzsql;Username=postgres;Password=password"
     static member Open(name) =
         let connectionString = DefaultConnectionProvider.ResolveConnectionString(name)
         //let provider : DbProviderFactory = DbProviderFactories.GetFactory(connectionString.ProviderName)
-        //let provider = Npgsql.NpgsqlFactory.Instance
-        let provider = Microsoft.Data.Sqlite.SqliteFactory.Instance
+        let provider = Npgsql.NpgsqlFactory.Instance
+        //let provider = Microsoft.Data.Sqlite.SqliteFactory.Instance
         let conn = provider.CreateConnection()
         conn.ConnectionString <- connectionString.ConnectionString
         conn.Open()
@@ -67,5 +66,3 @@ type DefaultConnectionProvider() =
             cmd.ExecuteNonQuery() |> ignore
         conn
     override __.Open(name) = DefaultConnectionProvider.Open(name)
-
-
