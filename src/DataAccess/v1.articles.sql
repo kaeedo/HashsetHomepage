@@ -1,4 +1,4 @@
-create table Articles
+create table articles
     ( Id INT PRIMARY KEY autoincrement,
       Title string,
       Source string,
@@ -6,13 +6,13 @@ create table Articles
       CreatedOn datetime
     );
 
-create table Tags
+create table tags
     ( Id INT PRIMARY KEY autoincrement,
       Name string
     );
 
 
-create table ArticleTags
+create table article_tags
     ( ArticleId INT REFERENCES Articles(Id),
       TagId INT REFERENCES Tags(Id)
     );

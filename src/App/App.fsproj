@@ -37,5 +37,8 @@
   <ItemGroup>
     <ProjectReference Include="../DataAccess/DataAccess.fsproj" />
   </ItemGroup>
+  <PropertyGroup>
+    <RestoreSources>https://api.nuget.org/v3/index.json</RestoreSources>
+  </PropertyGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
