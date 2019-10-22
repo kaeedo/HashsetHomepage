@@ -3,6 +3,7 @@ create table articles
       Title string,
       Source string,
       Parsed string,
+      Tooltips string,
       CreatedOn datetime
     );
 

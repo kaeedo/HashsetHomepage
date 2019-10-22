@@ -6,11 +6,10 @@ open Rezoom.SQL.Synchronous
 open Rezoom.SQL.Migrations
 open System.IO
 
-type MyModel = SQLModel<".">
+type internal HashsetModel = SQLModel<".">
 
-type MyQuery = SQL<"""
-    select * FROM Articles
-    WHERE Id = @id
+type internal AllArticles = SQL<"""
+    select * FROM articles
 """>
 
 [<RequireQualifiedAccess>]
@@ -20,4 +19,4 @@ module Setup =
             { MigrationConfig.Default with
                 LogMigrationRan = fun m -> printfn "Ran migration: %s" m.MigrationName }
 
-        MyModel.Migrate(config)
+        HashsetModel.Migrate(config)
