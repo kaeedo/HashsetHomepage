@@ -1,6 +1,6 @@
 {
     "backend": "postgres",
-    "connectionname": "rzsql",
+    "connectionname": "hashset",
     "optionals":  "f#",
     "migrations": "."
   }
