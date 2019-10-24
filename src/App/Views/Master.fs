@@ -2,7 +2,7 @@ namespace Hashset.Views
 
 open System
 
-open Hashset
+open Model
 
 module Master =
     open Giraffe.GiraffeViewEngine

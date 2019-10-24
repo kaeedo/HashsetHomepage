@@ -3,7 +3,7 @@ namespace Hashset.Views
 open System
 open System.Net
 
-open Hashset
+open Model
 
 module LatestArticles =
     open Giraffe.GiraffeViewEngine
@@ -26,4 +26,3 @@ module LatestArticles =
         div [ _class "PostContents" ] [
             yield! articles content
         ]
-

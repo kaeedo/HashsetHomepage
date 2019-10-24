@@ -1,4 +1,4 @@
-namespace Hashset
+﻿namespace Model
 
 open System
 
@@ -11,9 +11,15 @@ type ArticleStub =
       Date: DateTime
       Description: string }
 
+type Tag =
+    { Id: int
+      Name: string}
+
 [<CLIMutable>]
 type ParsedDocument =
     { Title: string
       ArticleDate: DateTime
+      Source: string
       Document: string
-      Tooltips: string }
+      Tooltips: string
+      Tags: Option<Tag list> }

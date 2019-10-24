@@ -9,7 +9,7 @@ create table articles
 
 create table tags
     ( Id INT PRIMARY KEY autoincrement,
-      Name string
+      Name string unique
     );
 
 

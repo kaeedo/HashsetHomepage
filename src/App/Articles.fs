@@ -2,13 +2,11 @@ namespace Hashset
 
 open FSharp.Literate
 open System.IO
-open FSharp.Markdown
-open FSharp.Formatting.Common
 open System
-open System.Text.RegularExpressions
 open System.Text.Json
 open System.Reflection
-open Hashset.Views
+open Model
+open DataAccess
 
 [<RequireQualifiedAccess>]
 module Articles =
@@ -85,31 +83,19 @@ module Articles =
         then buildDocument String.Empty document
         else document
 
-    let parseAll() =
+    let parse (file: string) (createdDate: string) (tags: string list) =
         Directory.CreateDirectory(srcDir) |> ignore
-        Directory.CreateDirectory(parsedDir) |> ignore
+        let fileName = DirectoryInfo(srcDir).GetFiles() |> Seq.find (fun f -> f.ToString().Contains(file))
+        let parsed = Literate.ProcessMarkdown(fileName.FullName, generateAnchors = true)
 
-        DirectoryInfo(srcDir).GetFiles()
-        |> Seq.map (fun f ->
-            let parsed = Literate.ProcessMarkdown(f.ToString(), generateAnchors = true)
+        let parsedDocument =
+            { ParsedDocument.Title = parsed.Parameters |> getContent "page-title"
+              Source = File.ReadAllText(file)
+              Document = parsed.Parameters |> getContent "document" |> transformHtml
+              ArticleDate =  DateTime.Parse(createdDate)
+              Tooltips = parsed.Parameters |> getContent "tooltips"
+              Tags = None }
 
-            let title = parsed.Parameters |> getContent "page-title"
-            let title = Regex.Replace(title, @"\s+", String.Empty)
+        Repository.insertArticle parsedDocument tags
 
-            let createdDate = f.Name.Split('_').[0]
-            let createdDate = DateTime.Parse(createdDate)
-
-            let parsedDocument =
-                { ParsedDocument.Title = parsed.Parameters |> getContent "page-title"
-                  Document = parsed.Parameters |> getContent "document" |> transformHtml
-                  ArticleDate = createdDate
-                  Tooltips = parsed.Parameters |> getContent "tooltips" }
-
-            let json = JsonSerializer.Serialize(parsedDocument)
-
-            json, sprintf "%s_%s.json" (createdDate.ToString("yyyy'-'MM'-'dd")) title
-        )
-        |> Seq.toList
-        |> List.iter (fun (json, fileName) ->
-            File.WriteAllText(parsedDir ++ fileName, json)
-        )
+        ()

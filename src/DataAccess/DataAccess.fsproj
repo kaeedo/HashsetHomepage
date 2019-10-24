@@ -1,18 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../lib/Rezoom.SQL.Provider/Rezoom.SQL.Provider.fsproj" />
+    <ProjectReference Include="../Model/Model.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="rzsql.json" />
     <None Include="paket.references" />
     <None Include="v1.articles.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="../../lib/Rezoom.SQL.Provider/Rezoom.SQL.Provider.fsproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Setup.fs" />
+    <Compile Include="Repository.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

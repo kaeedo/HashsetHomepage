@@ -33,9 +33,11 @@ module App =
 
     [<EntryPoint>]
     let main _ =
-        Setup.migrate()
+        Repository.migrate()
 
-        Articles.parseAll() |> ignore
+        Articles.parse @"2018-11-11_PowerOfActivePatterns.md" "2018-11-11" ["F#"] |> ignore
+        Articles.parse @"2018-11-17_UserDefinedFunction.md" "2018-11-17" ["F#"; "SQLite"] |> ignore
+
         let contentRoot = Directory.GetCurrentDirectory()
         let webRoot = Path.Combine(contentRoot, "WebRoot")
 
