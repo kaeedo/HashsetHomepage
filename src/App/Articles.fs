@@ -84,9 +84,9 @@ module Articles =
         else document
 
     let parse (file: string) (createdDate: string) (tags: string list) =
-        Directory.CreateDirectory(srcDir) |> ignore
-        let fileName = DirectoryInfo(srcDir).GetFiles() |> Seq.find (fun f -> f.ToString().Contains(file))
-        let parsed = Literate.ProcessMarkdown(fileName.FullName, generateAnchors = true)
+        //Directory.CreateDirectory(srcDir) |> ignore
+        //let fileName = DirectoryInfo(srcDir).GetFiles() |> Seq.find (fun f -> f.ToString().Contains(file))
+        let parsed = Literate.ProcessMarkdown(file, generateAnchors = true)
 
         let parsedDocument =
             { ParsedDocument.Title = parsed.Parameters |> getContent "page-title"
