@@ -5,6 +5,7 @@ open System
 open System.IO
 open System.Text.Json
 open Giraffe
+open Model
 
 module Load =
     let styledMasterView =

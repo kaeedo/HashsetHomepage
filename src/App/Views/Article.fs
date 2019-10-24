@@ -1,6 +1,6 @@
 namespace Hashset.Views
 
-open Hashset
+open Model
 
 module Article =
     open Giraffe.GiraffeViewEngine
