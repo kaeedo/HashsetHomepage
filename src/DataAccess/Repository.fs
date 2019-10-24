@@ -1,6 +1,8 @@
 ﻿namespace DataAccess
 
+open Rezoom
 open Rezoom.SQL
+open Rezoom.SQL.Plans
 open Rezoom.SQL.Synchronous
 open Rezoom.SQL.Migrations
 open Model
@@ -11,7 +13,7 @@ type internal InsertTag = SQL<"""
     insert into tags
     row
         Name = @name;
-    select lastval() as tagId;
+    select lastval() as Id;
 """>
 
 type internal GetTag = SQL<"""
@@ -27,7 +29,7 @@ type internal InsertArticle = SQL<"""
         Parsed = @parsed,
         Tooltips = @tooltips,
         CreatedOn = @createdOn;
-    select lastval() as tagId;
+    select lastval() as Id;
 """>
 
 type internal InsertArticleTagsMapping = SQL<"""
@@ -46,47 +48,45 @@ module Repository =
 
         HashsetModel.Migrate(config)
 
-    let private insertArticleTagsMapping (articleId: int) (tagIds: int list) (context: ConnectionContext) =
-        tagIds
-        |> List.iter (fun tagId ->
-            InsertArticleTagsMapping.Command(articleId = articleId, tagId = tagId).Execute(context)
-        )
-        ()
-
-    let insertTag (name: string) (context: ConnectionContext) =
-        let tagId = InsertTag.Command(name = name).ExecuteScalar(context)
-
-        { Tag.Id = tagId; Name = name }
-
-    let getTags (names: string list) =
-        use context = new ConnectionContext()
-
-        names
-        |> List.map (fun name ->
-            let persistedTag =
-                GetTag.Command(name = name).ExecuteTryExactlyOne(context)
+    let private getTag (name: string) =
+        plan {
+            let! persistedTag =
+                GetTag.Command(name = name).TryExactlyOne()
 
             match persistedTag with
-            | None -> insertTag name context
-            | Some tag -> { Tag.Id = tag.Id; Name = tag.Name }
-        )
+            | None ->
+                let! insertedTag = InsertTag.Command(name = name).Plan()
+                return { Tag.Id = insertedTag.Id; Name = name }
+            | Some tag ->
+                return { Tag.Id = tag.Id; Name = tag.Name }
+        }
 
     let insertArticle (document: ParsedDocument) (tags: string list) =
-        let (tags: Tag list) = getTags tags
-        let document = { document with Tags = Some tags }
+        let insertPlan =
+            plan {
+                let! tags =
+                    Plan.concurrentList
+                        [ for tagName in tags do
+                              getTag tagName ]
 
-        use context = new ConnectionContext()
+                let document = { document with Tags = Some tags }
 
-        let articleId =
-            InsertArticle.Command(
-                title = document.Title,
-                source = document.Source,
-                parsed = document.Document,
-                tooltips = document.Tooltips,
-                createdOn = document.ArticleDate
-                )
-                .ExecuteScalar(context)
+                let! article =
+                    InsertArticle.Command(
+                        title = document.Title,
+                        source = document.Source,
+                        parsed = document.Document,
+                        tooltips = document.Tooltips,
+                        createdOn = document.ArticleDate
+                        )
+                        .Plan()
 
-        let tagIds = tags |> List.map (fun tag -> tag.Id)
-        insertArticleTagsMapping articleId tagIds context
-        ()
+                let tagIds = tags |> List.map (fun tag -> tag.Id)
+
+                for tagId in batch tagIds do
+                    do! InsertArticleTagsMapping.Command(articleId = article.Id, tagId = tagId).Plan()
+            }
+
+        let config = Execution.ExecutionConfig.Default
+        (Execution.execute config insertPlan).Result
+        // TODO: Use TaskBuilder

@@ -15,7 +15,7 @@ open Yahoo.Yui.Compressor
 
 // Properties
 let buildDir = "./build/"
-let solutionFile = "./Homepage.sln"
+let solutionFile = "./Hashset.sln"
 
 // Targets
 Target.create "Clean" (fun _ ->
