@@ -35,8 +35,10 @@ module App =
     let main _ =
         Repository.migrate()
 
-        Articles.parse @"C:\Users\kait\dev\Hashset\src\App\posts\source\2018-11-11_PowerOfActivePatterns.md" "2018-11-11" ["F#"] |> ignore
-        Articles.parse @"C:\Users\kait\dev\Hashset\src\App\posts\source\2018-11-17_UserDefinedFunction.md" "2018-11-17" ["F#"; "SQLite"] |> ignore
+        //Articles.parse @"/home/kai/dev/Hashset/src/App/bin/Debug/netcoreapp3.0/posts/source/2018-11-11_PowerOfActivePatterns.md" "2018-11-11" ["F#"] |> ignore
+        //Articles.parse @"/home/kai/dev/Hashset/src/App/bin/Debug/netcoreapp3.0/posts/source/2018-11-17_UserDefinedFunction.md" "2018-11-17" ["F#"; "SQLite"] |> ignore
+
+        //Repository.getArticle "Power of Active Patterns" |> ignore
 
         let contentRoot = Directory.GetCurrentDirectory()
         let webRoot = Path.Combine(contentRoot, "WebRoot")

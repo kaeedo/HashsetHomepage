@@ -39,6 +39,16 @@ type internal InsertArticleTagsMapping = SQL<"""
         TagId = @tagId
 """>
 
+type internal GetArticle = SQL<"""
+    select
+        a.Source, a.Parsed, a.Tooltips, a.CreatedOn,
+        many tags(t.Id as TagId, t.Name)
+    from articles a
+    join article_tags at on a.Id = at.ArticleId
+    join tags t on t.id = at.TagId
+    where a.Title = @title
+""">
+
 [<RequireQualifiedAccess>]
 module Repository =
     let migrate () =
