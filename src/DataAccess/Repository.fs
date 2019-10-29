@@ -39,14 +39,13 @@ type internal InsertArticleTagsMapping = SQL<"""
         TagId = @tagId
 """>
 
-type internal GetArticle = SQL<"""
+type internal GetArticles = SQL<"""
     select
-        a.Source, a.Parsed, a.Tooltips, a.CreatedOn,
-        many tags(t.Id as TagId, t.Name)
+        a.*,
+        many tags(t.*)
     from articles a
     join article_tags at on a.Id = at.ArticleId
     join tags t on t.id = at.TagId
-    where a.Title = @title
 """>
 
 [<RequireQualifiedAccess>]
@@ -98,5 +97,36 @@ module Repository =
             }
 
         let config = Execution.ExecutionConfig.Default
-        (Execution.execute config insertPlan).Result
+        (Execution.execute config insertPlan).Result // execute returns Task<'a>
         // TODO: Use TaskBuilder
+
+    let getArticles () =
+        let getPlan =
+            plan {
+                let! articles = GetArticles.Command().Plan()
+
+                let getTags (articleRow: GetArticles.Row) =
+                    if articleRow.tags |> Seq.isEmpty
+                    then None
+                    else
+                        let tags = articleRow.tags
+                        let tagList =
+                            tags
+                            |> Seq.map (fun t -> { Tag.Id = t.Id; Name = t.Name })
+                            |> Seq.toList
+                        Some tagList
+
+                return
+                    articles
+                    |> Seq.map (fun a ->
+                        { ParsedDocument.Title = a.Title
+                          ArticleDate = a.CreatedOn
+                          Source = a.Source
+                          Document = a.Parsed
+                          Tooltips = a.Tooltips
+                          Tags = getTags a }
+                    )
+            }
+
+        let config = Execution.ExecutionConfig.Default
+        (Execution.execute config getPlan).Result
