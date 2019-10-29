@@ -89,7 +89,7 @@ module Articles =
         let parsed = Literate.ProcessMarkdown(file, generateAnchors = true)
 
         let parsedDocument =
-            { ParsedDocument.Title = parsed.Parameters |> getContent "page-title"
+            { ParsedDocument.Title = (parsed.Parameters |> getContent "page-title").Trim()
               Source = File.ReadAllText(file)
               Document = parsed.Parameters |> getContent "document" |> transformHtml
               ArticleDate =  DateTime.Parse(createdDate)
