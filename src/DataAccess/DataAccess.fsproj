@@ -10,6 +10,7 @@
     <Content Include="rzsql.json" />
     <None Include="paket.references" />
     <None Include="v1.articles.sql" />
+    <Compile Include="Queries.fs" />
     <Compile Include="Repository.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
