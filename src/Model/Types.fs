@@ -17,9 +17,10 @@ type Tag =
 
 [<CLIMutable>]
 type ParsedDocument =
-    { Title: string
+    { Id: int
+      Title: string
       ArticleDate: DateTime
       Source: string
       Document: string
       Tooltips: string
-      Tags: Option<Tag list> }
+      Tags: Tag list }
