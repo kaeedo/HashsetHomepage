@@ -7,7 +7,8 @@ type MasterContent =
       ArticleDate: DateTime option }
 
 type ArticleStub =
-    { Title: string
+    { Id: int
+      Title: string
       Date: DateTime
       Description: string }
 
@@ -15,7 +16,6 @@ type Tag =
     { Id: int
       Name: string}
 
-[<CLIMutable>]
 type ParsedDocument =
     { Id: int
       Title: string
@@ -23,4 +23,10 @@ type ParsedDocument =
       Source: string
       Document: string
       Tooltips: string
+      Tags: Tag list }
+
+[<CLIMutable>]
+type UpsertDocument =
+    { Id: int option
+      Source: string
       Tags: Tag list }

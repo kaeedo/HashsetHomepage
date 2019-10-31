@@ -13,7 +13,7 @@ module LatestArticles =
         |> Seq.map (fun c ->
             div [ _class "LatestPosts-entry" ] [
                 h3 [ _class "LatestPosts-entryTitle" ] [
-                    a [ _href <| sprintf "articles/%s_%s" (c.Date.ToString("yyyy'-'MM'-'dd")) (WebUtility.UrlEncode(c.Title)) ] [
+                    a [ _href <| sprintf "article/%i" c.Id ] [
                         str c.Title
                     ]
                 ]
