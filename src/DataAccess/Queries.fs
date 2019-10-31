@@ -71,6 +71,7 @@ module Queries =
         from articles a
         join article_tags at on a.Id = at.ArticleId
         join tags t on t.id = at.TagId
+        order by a.CreatedOn desc
     """>
 
     let inline mapArticle row =

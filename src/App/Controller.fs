@@ -28,8 +28,8 @@ module Controller =
 
         renderArticlePage latestArticle
 
-    let article articleName : HttpHandler =
-        renderArticlePage <| Articles.getArticle articleName
+    let article articleId : HttpHandler =
+        renderArticlePage <| Articles.getArticle articleId
 
     let articles (): HttpHandler =
         // TODO: Server side paging
@@ -46,14 +46,9 @@ module Controller =
 
         let articles =
             Articles.getArticles()
-            |> Seq.map (fun p ->
-                use fs = p.OpenText()
-                let fileContents = fs.ReadToEnd()
-
-                JsonSerializer.Deserialize<ParsedDocument>(fileContents)
-            )
             |> Seq.map (fun (p: ParsedDocument) ->
-                { ArticleStub.Title = p.Title.Trim()
+                { ArticleStub.Id = p.Id
+                  Title = p.Title
                   Date = p.ArticleDate
                   Description = getFirstParagraph p.Document }
             )
