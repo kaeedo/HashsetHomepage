@@ -38,7 +38,10 @@ module App =
         //Articles.parse @"C:\Users\kait\dev\Hashset\src\App\posts\source\2018-11-11_PowerOfActivePatterns.md" "2018-11-11" ["F#"] |> ignore
         //Articles.parse @"C:\Users\kait\dev\Hashset\src\App\posts\source\2018-11-17_UserDefinedFunction.md" "2018-11-17" ["F#"; "SQLite"] |> ignore
 
-        let a = Repository.getArticles ()
+        let a = Repository.getLatestArticle ()
+        let b = Repository.getArticles ()
+        let c = Repository.getArticleById 1
+        let d = Repository.getArticleById 2
 
         let contentRoot = Directory.GetCurrentDirectory()
         let webRoot = Path.Combine(contentRoot, "WebRoot")

@@ -8,21 +8,21 @@ open Model
 
 [<RequireQualifiedAccess>]
 module Queries =
-    type internal HashsetModel = SQLModel<".">
+    type HashsetModel = SQLModel<".">
 
-    type internal InsertTag = SQL<"""
+    type InsertTag = SQL<"""
         insert into tags
         row
             Name = @name;
         select lastval() as Id;
     """>
 
-    type internal GetTag = SQL<"""
+    type GetTag = SQL<"""
         select * from tags
         where Name = @name
     """>
 
-    type internal InsertArticle = SQL<"""
+    type InsertArticle = SQL<"""
         insert into articles
         row
             Title = @title,
@@ -33,14 +33,14 @@ module Queries =
         select lastval() as Id;
     """>
 
-    type internal InsertArticleTagsMapping = SQL<"""
+    type InsertArticleTagsMapping = SQL<"""
         insert into article_tags
         row
             ArticleId = @articleId,
             TagId = @tagId
     """>
 
-    type internal GetLatestArticle = SQL<"""
+    type GetLatestArticle = SQL<"""
         select
             a.*,
             many tags(t.*)
@@ -48,7 +48,10 @@ module Queries =
         join article_tags at on a.Id = at.ArticleId
         join tags t on t.id = at.TagId
         order by a.CreatedOn desc
-        limit 1
+        limit (select count(*) as count
+                from articles a
+                join article_tags at on a.Id = at.ArticleId
+                join tags t on t.id = at.TagId)
     """>
 
     type GetArticleById = SQL<"""
@@ -70,7 +73,7 @@ module Queries =
         join tags t on t.id = at.TagId
     """>
 
-    let inline internal mapArticle row =
+    let inline mapArticle row =
         { ParsedDocument.Id = (^a: (member get_Id: unit -> int)(row))
           Title = (^a: (member get_Title: unit -> string)(row))
           ArticleDate = (^a: (member get_CreatedOn: unit -> System.DateTime)(row))

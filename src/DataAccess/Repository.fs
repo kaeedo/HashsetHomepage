@@ -61,9 +61,22 @@ module Repository =
     let getArticleById id =
         let getPlan =
             plan {
-                let! article = Queries.GetArticleById.Command(id = id).ExactlyOne()
+                let! article =
+                    Queries.GetArticleById.Command(id = id).ExactlyOne()
 
                 return Queries.mapArticle article
+            }
+
+        let config = Execution.ExecutionConfig.Default
+        (Execution.execute config getPlan).Result
+        // TODO: Use TaskBuilder
+
+    let getLatestArticle () =
+        let getPlan =
+            plan {
+                let! articles = Queries.GetLatestArticle.Command().Plan()
+
+                return Queries.mapArticle (articles.[0])
             }
 
         let config = Execution.ExecutionConfig.Default
