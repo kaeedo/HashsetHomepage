@@ -55,8 +55,7 @@ module Repository =
             }
 
         let config = Execution.ExecutionConfig.Default
-        (Execution.execute config insertPlan).Result // execute returns Task<'a>
-        // TODO: Use TaskBuilder
+        Execution.execute config insertPlan
 
     let getArticleById id =
         let getPlan =

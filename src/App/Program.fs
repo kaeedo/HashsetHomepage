@@ -22,11 +22,11 @@ module App =
             GET >=> choose [
                 routeCi "/" >=> warbler (fun _ -> Controller.homepage())
                 routeCi "/articles" >=> warbler (fun _ -> Controller.articles())
-                routeCi "/articles/upsert" >=> text "wef" //Controller.upsert
+                routeCif "/articles/upsert/%i" Controller.upsert
                 routeCif "/article/%i" Controller.article
                 routeCi "/about" >=> Controller.about() ]
             POST >=> choose [
-                routeCi "/add" >=> text "wwwavv"  //Controller.add
+                routeCi "/add" >=> Controller.add
                 routeCi "/edit" >=> text "jjj" //Controller.edit
             ]
         ]
