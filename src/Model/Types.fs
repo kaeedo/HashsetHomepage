@@ -14,7 +14,7 @@ type ArticleStub =
 
 type Tag =
     { Id: int
-      Name: string}
+      Name: string }
 
 type ParsedDocument =
     { Id: int
@@ -27,6 +27,7 @@ type ParsedDocument =
 
 [<CLIMutable>]
 type UpsertDocument =
-    { Id: int option
+    { Id: int
+      Title: string
       Source: string
-      Tags: Tag list }
+      Tags: string list }

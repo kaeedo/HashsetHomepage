@@ -1,5 +1,6 @@
 namespace Hashset
 
+open FSharp.Control.Tasks.V2.ContextInsensitive
 open Hashset.Views
 open System
 open System.IO
@@ -14,7 +15,7 @@ module Load =
 
 [<RequireQualifiedAccess>]
 module Controller =
-    let private renderArticlePage article =
+    let private renderArticlePage (article: ParsedDocument) =
         let masterData =
             { MasterContent.PageTitle = article.Title
               ArticleDate = Some article.ArticleDate }
@@ -30,6 +31,31 @@ module Controller =
 
     let article articleId : HttpHandler =
         renderArticlePage <| Articles.getArticle articleId
+
+    let upsert articleId : HttpHandler =
+        let masterData =
+            { MasterContent.PageTitle = "Upsert"
+              ArticleDate = None }
+
+        let upsertDocument =
+            { UpsertDocument.Id = 0
+              Title = String.Empty
+              Source = String.Empty
+              Tags = [] }
+
+        Add.view upsertDocument
+        |> Load.styledMasterView masterData
+        |> htmlView
+
+    let add : HttpHandler =
+        handleContext(
+            fun ctx ->
+                task {
+                    let! document = ctx.BindFormAsync<UpsertDocument>()
+                    let! inserted = Articles.parse document.Title document.Source document.Tags
+                    return! ctx.WriteTextAsync (inserted.ToString())
+                })
+
 
     let articles (): HttpHandler =
         // TODO: Server side paging

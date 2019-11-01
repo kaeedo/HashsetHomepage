@@ -1,6 +1,6 @@
 namespace Hashset
 
-open FSharp.Literate
+open FSharp.Markdown
 open System.IO
 open System
 open System.Text.Json
@@ -52,20 +52,16 @@ module Articles =
     let getArticles = Repository.getArticles
     let getArticle (articleId: int) = Repository.getArticleById articleId
 
-    let parse (file: string) (createdDate: string) (tags: string list) =
-        //Directory.CreateDirectory(srcDir) |> ignore
-        //let fileName = DirectoryInfo(srcDir).GetFiles() |> Seq.find (fun f -> f.ToString().Contains(file))
-        let parsed = Literate.ProcessMarkdown(file, generateAnchors = true)
+    let parse (title: string) (source: string) (tags: string list) =
+        let parsed = Markdown.Parse(source)
 
         let parsedDocument =
             { ParsedDocument.Id = Unchecked.defaultof<int>
-              Title = (parsed.Parameters |> getContent "page-title").Trim()
-              Source = File.ReadAllText(file)
-              Document = parsed.Parameters |> getContent "document" |> transformHtml
-              ArticleDate =  DateTime.Parse(createdDate)
-              Tooltips = parsed.Parameters |> getContent "tooltips"
+              Title = title.Trim()
+              Source = source
+              Document = Markdown.WriteHtml(parsed) |> transformHtml
+              ArticleDate =  DateTime.Now
+              Tooltips = "parsed.Parameters |> getContent tooltips"
               Tags = [] }
 
         Repository.insertArticle parsedDocument tags
-
-        ()
