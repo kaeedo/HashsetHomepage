@@ -17,13 +17,18 @@ module Add =
             ]
             div [] [
                 label [ _for "Source" ] [ str "Source" ]
-                textarea [ _id "Source"; _name "Source" ] [ str upsertDocument.Source ]
+                textarea [ _rows "40"; _cols "160"; _id "Source"; _name "Source" ] [ str upsertDocument.Source ]
             ]
             div [] [
-                label [] [ str "Tags" ]
-                input [ _type "text"; _name "Tags"; _id "Tags"; _value "we" ]
-                input [ _type "text"; _name "Tags"; _id "Tags"; _value "wecc" ]
-                input [ _type "text"; _name "Tags"; _id "Tags"; _value "waaea" ]
+                label [ _id "TagLabel" ] [ str "Tags" ]
+                ul [ _id "TagList" ] [
+                    li [] [
+                        input [ _type "text"; _name "Tags"; ]
+                    ]
+
+                ]
             ]
             input [ _type "Submit" ]
+
+            script [ _async; _defer; _src "/js/upsert.js"; _type "text/javascript"; ] []
         ]

@@ -1,9 +1,9 @@
 namespace Hashset
 
-open FSharp.Markdown
+open FSharp.Control.Tasks.V2.ContextInsensitive
+open FSharp.Literate
 open System.IO
 open System
-open System.Text.Json
 open System.Reflection
 open Model
 open DataAccess
@@ -48,20 +48,30 @@ module Articles =
         then buildDocument String.Empty document
         else document
 
+
     let getLatestArticle = Repository.getLatestArticle
     let getArticles = Repository.getArticles
     let getArticle (articleId: int) = Repository.getArticleById articleId
 
-    let parse (title: string) (source: string) (tags: string list) =
-        let parsed = Markdown.Parse(source)
+    let parse (title: string) (source: string) =
+        task {
+            let tmpFileName = "/tmp/" ++ Guid.NewGuid().ToString()
 
-        let parsedDocument =
-            { ParsedDocument.Id = Unchecked.defaultof<int>
-              Title = title.Trim()
-              Source = source
-              Document = Markdown.WriteHtml(parsed) |> transformHtml
-              ArticleDate =  DateTime.Now
-              Tooltips = "parsed.Parameters |> getContent tooltips"
-              Tags = [] }
+            do! File.WriteAllTextAsync(tmpFileName, source)
 
-        Repository.insertArticle parsedDocument tags
+            let parsed = Literate.ProcessMarkdown(tmpFileName, generateAnchors = true)
+
+            let parsedDocument =
+                { ParsedDocument.Id = Unchecked.defaultof<int>
+                  Title = title.Trim()
+                  Source = source
+                  Document = parsed.Parameters |> getContent "document" |> transformHtml
+                  ArticleDate =  DateTime.Now
+                  Tooltips = parsed.Parameters |> getContent "tooltips"
+                  Tags = [] }
+
+            do File.Delete(tmpFileName)
+
+            return parsedDocument
+        }
+
