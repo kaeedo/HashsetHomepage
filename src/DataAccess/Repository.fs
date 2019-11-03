@@ -67,8 +67,7 @@ module Repository =
             }
 
         let config = Execution.ExecutionConfig.Default
-        (Execution.execute config getPlan).Result
-        // TODO: Use TaskBuilder
+        Execution.execute config getPlan
 
     let getLatestArticle () =
         let getPlan =
@@ -79,8 +78,7 @@ module Repository =
             }
 
         let config = Execution.ExecutionConfig.Default
-        (Execution.execute config getPlan).Result
-        // TODO: Use TaskBuilder
+        Execution.execute config getPlan
 
     let getArticles () =
         let getPlan =
@@ -93,5 +91,4 @@ module Repository =
             }
 
         let config = Execution.ExecutionConfig.Default
-        (Execution.execute config getPlan).Result
-        // TODO: Use TaskBuilder
+        Execution.execute config getPlan

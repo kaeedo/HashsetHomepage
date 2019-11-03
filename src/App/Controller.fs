@@ -1,14 +1,15 @@
 namespace Hashset
 
+open Microsoft.AspNetCore.Http
 open FSharp.Control.Tasks.V2.ContextInsensitive
 open Hashset.Views
 open System
 open System.IO
-open System.Text.Json
 open Giraffe
 open Model
+open DataAccess
 
-module Load =
+module private Load =
     let styledMasterView =
         let aboveTheFoldCss = File.ReadAllText("WebRoot/css/aboveTheFold.css")
         Master.view aboveTheFoldCss
@@ -24,70 +25,99 @@ module Controller =
         |> Load.styledMasterView masterData
         |> htmlView
 
-    let homepage () : HttpHandler  =
-        let latestArticle = Articles.getLatestArticle()
+    let homepage: HttpHandler  =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                let! latestArticle = Articles.getLatestArticle()
 
-        renderArticlePage latestArticle
+                return! renderArticlePage latestArticle next ctx
+            }
 
-    let article articleId : HttpHandler =
-        renderArticlePage <| Articles.getArticle articleId
+    let article articleId: HttpHandler =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                let! article = Articles.getArticle articleId
 
-    let upsert articleId : HttpHandler =
-        let masterData =
-            { MasterContent.PageTitle = "Upsert"
-              ArticleDate = None }
+                return! renderArticlePage article next ctx
+            }
 
-        let upsertDocument =
-            { UpsertDocument.Id = 0
-              Title = String.Empty
-              Source = String.Empty
-              Tags = [] }
+    let upsert articleId: HttpHandler =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                let masterData =
+                    { MasterContent.PageTitle = "Upsert"
+                      ArticleDate = None }
 
-        Add.view upsertDocument
-        |> Load.styledMasterView masterData
-        |> htmlView
+                let upsertDocument =
+                    { UpsertDocument.Id = 0
+                      Title = String.Empty
+                      Source = String.Empty
+                      Tags = [] }
 
-    let add : HttpHandler =
-        handleContext(
-            fun ctx ->
-                task {
-                    let! document = ctx.BindFormAsync<UpsertDocument>()
-                    let! inserted = Articles.parse document.Title document.Source document.Tags
-                    return! ctx.WriteTextAsync (inserted.ToString())
-                })
+                let view =
+                    Add.view upsertDocument
+                    |> Load.styledMasterView masterData
+                    |> htmlView
+
+                return! view next ctx
+            }
+
+    let add: HttpHandler =
+        fun (next : HttpFunc) (ctx : HttpContext) ->
+            task {
+                let! document = ctx.BindFormAsync<UpsertDocument>()
+                let! parsedDocument = Articles.parse document.Title document.Source
+
+                do! Repository.insertArticle parsedDocument document.Tags
+
+                return! next ctx
+            }
 
 
-    let articles (): HttpHandler =
-        // TODO: Server side paging
-        let masterData =
-            { MasterContent.PageTitle = "All Articles"
-              ArticleDate = None }
+    let articles: HttpHandler =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+            // TODO: Server side paging
+                let masterData =
+                    { MasterContent.PageTitle = "All Articles"
+                      ArticleDate = None }
 
-        let getFirstParagraph (content: string) =
-            let firstIndex = content.IndexOf("<p>") + 3
-            let lastIndex = content.IndexOf("</p>")
-            let count = lastIndex - firstIndex
+                let getFirstParagraph (content: string) =
+                    let firstIndex = content.IndexOf("<p>") + 3
+                    let lastIndex = content.IndexOf("</p>")
+                    let count = lastIndex - firstIndex
 
-            content.Substring(firstIndex, count)
+                    content.Substring(firstIndex, count)
 
-        let articles =
-            Articles.getArticles()
-            |> Seq.map (fun (p: ParsedDocument) ->
-                { ArticleStub.Id = p.Id
-                  Title = p.Title
-                  Date = p.ArticleDate
-                  Description = getFirstParagraph p.Document }
-            )
+                let! articles = Articles.getArticles()
+                let articles =
+                    articles
+                    |> Seq.map (fun (p: ParsedDocument) ->
+                        { ArticleStub.Id = p.Id
+                          Title = p.Title
+                          Date = p.ArticleDate
+                          Description = getFirstParagraph p.Document }
+                    )
 
-        LatestArticles.view articles
-        |> Load.styledMasterView masterData
-        |> htmlView
+                let view =
+                    LatestArticles.view articles
+                    |> Load.styledMasterView masterData
+                    |> htmlView
 
-    let about (): HttpHandler =
-        let masterData =
-            { MasterContent.PageTitle = "About Me"
-              ArticleDate = None }
+                return! view next ctx
+            }
 
-        About.view
-        |> Load.styledMasterView masterData
-        |> htmlView
+    let about: HttpHandler =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                let masterData =
+                    { MasterContent.PageTitle = "About Me"
+                      ArticleDate = None }
+
+                let view =
+                    About.view
+                    |> Load.styledMasterView masterData
+                    |> htmlView
+
+                return! view next ctx
+            }
