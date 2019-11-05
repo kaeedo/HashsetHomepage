@@ -1,26 +1,42 @@
 namespace Hashset
 
 open System
+open System.Configuration
+open System.IO
 
+open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Configuration
+open Microsoft.Extensions.Configuration.UserSecrets
+open Microsoft.AspNetCore.Authentication
+
+open FSharp.Control.Tasks.V2.ContextInsensitive
 
 open Giraffe
 
-open Microsoft.Extensions.FileProviders
-open System.IO
-open Microsoft.AspNetCore.Http
-
 open Hashset.Views
-
 open DataAccess
 
-module App =
+module Program =
+
+    let challenge (redirectUri : string) : HttpHandler =
+        fun (next : HttpFunc) (ctx : HttpContext) ->
+            task {
+                do! ctx.ChallengeAsync(
+                    "Google",
+                        AuthenticationProperties(RedirectUri = redirectUri))
+                return! next ctx
+            }
+
+    let googleAuth = challenge "/articles"
+
     let webApp =
         choose [
             GET >=> choose [
-                routeCi "/" >=> Controller.homepage
+                routeCi "/"  >=> Controller.homepage
+                routeCi "/login"  >=> googleAuth
                 routeCi "/articles" >=> Controller.articles
                 routeCif "/articles/upsert/%i" Controller.upsert
                 routeCif "/article/%i" Controller.article
@@ -31,11 +47,29 @@ module App =
             ]
         ]
 
-    let configureApp (app : IApplicationBuilder) =
+    let configureApp (app: IApplicationBuilder) =
+        //let env = app.ApplicationServices.GetService<IHostingEnvironment>()
         app.UseStaticFiles()
+           .UseAuthentication()
            .UseGiraffe(webApp)
 
-    let configureServices (services : IServiceCollection) =
+    let configureAppConfiguration (context: WebHostBuilderContext) (config: IConfigurationBuilder) =
+        config
+            //.AddJsonFile("appsettings.json",false,true)
+            //.AddJsonFile(sprintf "appsettings.%s.json" context.HostingEnvironment.EnvironmentName ,true)
+            .AddEnvironmentVariables()
+            .AddUserSecrets(System.Reflection.Assembly.GetCallingAssembly()) |> ignore
+
+    let configureServices (services: IServiceCollection) =
+        let sp  = services.BuildServiceProvider()
+        let conf = sp.GetService<IConfiguration>()
+        services.AddAuthentication()
+                .AddGoogle("Google", fun opt ->
+                    let googleAuthNSection: IConfigurationSection = conf.GetSection("Authentication:Google")
+
+                    opt.ClientId <- googleAuthNSection.["ClientId"]
+                    opt.ClientSecret <- googleAuthNSection.["ClientSecret"]
+                ) |> ignore
         services.AddGiraffe() |> ignore
 
     [<EntryPoint>]
@@ -49,9 +83,10 @@ module App =
             .UseKestrel()
             .UseContentRoot(contentRoot)
             .UseWebRoot(webRoot)
-            .UseUrls("http://0.0.0.0:5000")
+            .ConfigureAppConfiguration(configureAppConfiguration)
             .Configure(Action<IApplicationBuilder> configureApp)
             .ConfigureServices(configureServices)
+            .UseUrls("http://0.0.0.0:5000")
             .Build()
             .Run()
 

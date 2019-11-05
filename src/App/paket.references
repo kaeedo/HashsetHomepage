@@ -1,3 +1,6 @@
 FSharp.Core
 Giraffe
 FSharp.Literate
+Microsoft.AspNetCore.Authentication.Google
+Microsoft.Extensions.Configuration.Json
+Microsoft.Extensions.Configuration.UserSecrets

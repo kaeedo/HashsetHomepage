@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,6 +6,7 @@
     <LangVersion>preview</LangVersion>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
+    <UserSecretsId>043bee96-2eb5-415c-b811-3bcedcd3be86</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
@@ -33,7 +34,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="../DataAccess/DataAccess.fsproj" />
     <ProjectReference Include="../Model/Model.fsproj" />
