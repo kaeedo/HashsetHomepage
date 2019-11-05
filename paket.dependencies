@@ -3,6 +3,9 @@ source https://api.nuget.org/v3/index.json
 nuget FSharp.Core 4.7.0 redirects:force
 nuget FSharp.Literate
 nuget Giraffe 4.0
+nuget Microsoft.AspNetCore.Authentication.Google
+nuget Microsoft.Extensions.Configuration.Json
+nuget Microsoft.Extensions.Configuration.UserSecrets
 # nuget FSharp.SystemTextJson  #  remember this
 nuget LicenseToCIL 1.0.0
 nuget Rezoom 1.0.0
