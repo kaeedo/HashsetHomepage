@@ -8,7 +8,9 @@ open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.AspNetCore.Authentication
+open Microsoft.AspNetCore.Authentication.Cookies
 open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Logging
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.Configuration.UserSecrets
 
@@ -46,9 +48,13 @@ module Program =
             ]
         ]
 
+    let error (ex : Exception) _ =
+        clearResponse >=> setStatusCode 500 >=> text (sprintf "%s\n%s" ex.Message (ex.StackTrace.ToString()))
+
     let configureApp (app: IApplicationBuilder) =
         //let env = app.ApplicationServices.GetService<IHostingEnvironment>()
         app.UseStaticFiles()
+           .UseGiraffeErrorHandler(error)
            .UseAuthentication()
            .UseGiraffe(webApp)
 
@@ -62,14 +68,23 @@ module Program =
     let configureServices (services: IServiceCollection) =
         let sp  = services.BuildServiceProvider()
         let conf = sp.GetService<IConfiguration>()
-        services.AddAuthentication()
+        services.AddAuthentication(fun options ->
+                    options.DefaultAuthenticateScheme <- CookieAuthenticationDefaults.AuthenticationScheme
+                    options.DefaultSignInScheme <- CookieAuthenticationDefaults.AuthenticationScheme
+                    options.DefaultChallengeScheme <- "Google"
+                )
+                .AddCookie()
                 .AddGoogle("Google", fun opt ->
                     let googleAuthNSection: IConfigurationSection = conf.GetSection("Authentication:Google")
-
+                    opt.CallbackPath <- PathString("/login")
                     opt.ClientId <- googleAuthNSection.["ClientId"]
                     opt.ClientSecret <- googleAuthNSection.["ClientSecret"]
                 ) |> ignore
         services.AddGiraffe() |> ignore
+//https://www.eelcomulder.nl/2018/06/12/secure-your-giraffe-application-with-an-oauth-provider/
+    let configureLogging (builder : ILoggingBuilder) =
+        let filter (l : LogLevel) = l.Equals LogLevel.Error
+        builder.AddFilter(filter).AddConsole().AddDebug() |> ignore
 
     [<EntryPoint>]
     let main _ =
@@ -84,8 +99,8 @@ module Program =
                 { EndpointConfiguration.Default with
                     Port      = Some 44340
                     Scheme    = Https
-                    StoreName = Some "My"
-                    FilePath  = Some "CurrentUser"
+                    //StoreName = Some "My"
+                    FilePath  = Some ""
                     Password  = None } ]
 
         WebHostBuilder()
@@ -95,7 +110,7 @@ module Program =
             .ConfigureAppConfiguration(configureAppConfiguration)
             .Configure(Action<IApplicationBuilder> configureApp)
             .ConfigureServices(configureServices)
-            //.UseUrls("http://0.0.0.0:5000")
+            .ConfigureLogging(configureLogging)
             .Build()
             .Run()
 
