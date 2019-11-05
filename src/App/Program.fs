@@ -7,10 +7,10 @@ open System.IO
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
+open Microsoft.AspNetCore.Authentication
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.Configuration.UserSecrets
-open Microsoft.AspNetCore.Authentication
 
 open FSharp.Control.Tasks.V2.ContextInsensitive
 
@@ -18,15 +18,14 @@ open Giraffe
 
 open Hashset.Views
 open DataAccess
+open HttpsConfig
 
 module Program =
 
     let challenge (redirectUri : string) : HttpHandler =
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {
-                do! ctx.ChallengeAsync(
-                    "Google",
-                        AuthenticationProperties(RedirectUri = redirectUri))
+                do! ctx.ChallengeAsync("Google", AuthenticationProperties(RedirectUri = redirectUri))
                 return! next ctx
             }
 
@@ -79,14 +78,24 @@ module Program =
         let contentRoot = Directory.GetCurrentDirectory()
         let webRoot = Path.Combine(contentRoot, "WebRoot")
 
+        let endpoints =
+            [
+                EndpointConfiguration.Default
+                { EndpointConfiguration.Default with
+                    Port      = Some 44340
+                    Scheme    = Https
+                    StoreName = Some "My"
+                    FilePath  = Some "CurrentUser"
+                    Password  = None } ]
+
         WebHostBuilder()
-            .UseKestrel()
+            .UseKestrel(fun o -> o.ConfigureEndpoints endpoints)
             .UseContentRoot(contentRoot)
             .UseWebRoot(webRoot)
             .ConfigureAppConfiguration(configureAppConfiguration)
             .Configure(Action<IApplicationBuilder> configureApp)
             .ConfigureServices(configureServices)
-            .UseUrls("http://0.0.0.0:5000")
+            //.UseUrls("http://0.0.0.0:5000")
             .Build()
             .Run()
 
