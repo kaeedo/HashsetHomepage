@@ -57,6 +57,35 @@ module Repository =
         let config = Execution.ExecutionConfig.Default
         Execution.execute config insertPlan
 
+    let updateArticle (articleId: int) (document: ParsedDocument) (tags: string list) =
+        let updatePlan =
+            plan {
+                let! tags =
+                    Plan.concurrentList
+                        [ for tagName in tags do
+                              getTag tagName ]
+
+                let document = { document with Tags = tags }
+
+                let! article =
+                    Queries.UpdateArticleById.Command(
+                        id = articleId,
+                        title = document.Title,
+                        source = document.Source,
+                        parsed = document.Document,
+                        tooltips = document.Tooltips
+                        )
+                        .Plan()
+
+                let tagIds = tags |> List.map (fun tag -> tag.Id)
+
+                for tagId in batch tagIds do
+                    do! Queries.InsertArticleTagsMapping.Command(articleId = articleId, tagId = tagId).Plan()
+            }
+
+        let config = Execution.ExecutionConfig.Default
+        Execution.execute config updatePlan
+
     let getArticleById id =
         let getPlan =
             plan {
@@ -68,6 +97,16 @@ module Repository =
 
         let config = Execution.ExecutionConfig.Default
         Execution.execute config getPlan
+
+    let deleteArticleById id =
+        let deletePlan =
+            plan {
+                do! Queries.DeleteArticleTagsByArticleId.Command(id = id).Plan()
+                do! Queries.DeleteArticleById.Command(id = id).Plan()
+            }
+
+        let config = Execution.ExecutionConfig.Default
+        Execution.execute config deletePlan
 
     let getLatestArticle () =
         let getPlan =

@@ -52,10 +52,15 @@ module Articles =
     let getLatestArticle = Repository.getLatestArticle
     let getArticles = Repository.getArticles
     let getArticle (articleId: int) = Repository.getArticleById articleId
+    let deleteArticleById (articleId: int) = Repository.deleteArticleById articleId
+
+    // TODO refactor these
+    let addArticle (parsedDocument: ParsedDocument) (tags: string list) = Repository.insertArticle parsedDocument tags
+    let updateArticle (articleId: int) (parsedDocument: ParsedDocument) (tags: string list) = Repository.updateArticle articleId parsedDocument tags
 
     let parse (title: string) (source: string) =
         task {
-            let tmpFileName = "/tmp/" ++ Guid.NewGuid().ToString()
+            let tmpFileName = Path.GetTempPath() ++ Guid.NewGuid().ToString()
 
             do! File.WriteAllTextAsync(tmpFileName, source)
 
@@ -74,4 +79,3 @@ module Articles =
 
             return parsedDocument
         }
-

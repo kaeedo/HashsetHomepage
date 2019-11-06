@@ -6,7 +6,8 @@ module Add =
     open Giraffe.GiraffeViewEngine
 
     let view (upsertDocument: UpsertDocument) =
-        form [ _action "/add"; _method "POST"; _class "PostContents" ] [
+        let action = if upsertDocument.Id = 0 then "/add" else "/edit"
+        form [ _action action; _method "POST"; _class "PostContents" ] [
             div [] [
                 label [ _for "Id" ] [ str "Id" ]
                 input [ _type "text"; _id "Id"; _name "Id"; _value (upsertDocument.Id.ToString()) ]
