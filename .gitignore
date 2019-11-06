@@ -14,3 +14,5 @@ https.config
 https.crt
 https.pfx
 key.pem
+devCert.pfx
+devCert.txt
