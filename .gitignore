@@ -16,3 +16,4 @@ https.pfx
 key.pem
 devCert.pfx
 devCert.txt
+devCert.crt

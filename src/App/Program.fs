@@ -109,9 +109,9 @@ module Program =
                 { EndpointConfiguration.Default with
                     Port      = Some 44340
                     Scheme    = Https
-                    FilePath  = Some @"..\..\..\..\..\devCert.pfx"
-                    Password  = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
-
+                    FilePath  = Some @"../../../../../devCert.pfx"
+                    Password  = None } ]
+//Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim())
         WebHostBuilder()
             .UseKestrel(fun o -> o.ConfigureEndpoints endpoints)
             .UseContentRoot(contentRoot)

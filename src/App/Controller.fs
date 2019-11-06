@@ -70,11 +70,10 @@ module Controller =
                                      Title = article.Title
                                      Source = article.Source
                                      Tags = article.Tags |> List.map (fun t -> t.Name) }
-                                     // TODO show the tags in the upsert view
                         }
 
                 let view =
-                    Add.view upsertDocument
+                    Upsert.view upsertDocument
                     |> Load.styledMasterView masterData
                     |> htmlView
 
