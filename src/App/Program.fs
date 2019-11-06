@@ -25,7 +25,8 @@ open HttpsConfig
 
 module Program =
     let mustBeLoggedIn: HttpHandler =
-        requiresAuthentication (challenge "GitHub")
+        fun (next : HttpFunc) (ctx : HttpContext) ->
+            requiresAuthentication (challenge "GitHub") next ctx
 
     let mustBeMe: HttpHandler =
         fun (next : HttpFunc) (ctx : HttpContext) ->
@@ -39,13 +40,16 @@ module Program =
         choose [
             GET >=> choose [
                 routeCi "/"  >=> Controller.homepage
-                routeCi "/articles" >=> mustBeLoggedIn >=> mustBeMe >=> Controller.articles
-                routeCif "/articles/upsert/%i" Controller.upsert
+                routeCi "/articles" >=> Controller.articles
+                routeCif "/articles/upsert/%i" (fun id -> mustBeLoggedIn >=> mustBeMe >=> Controller.upsert id)
                 routeCif "/article/%i" Controller.article
                 routeCi "/about" >=> Controller.about ]
-            POST >=> choose [
-                routeCi "/add" >=> Controller.add >=> Controller.homepage
-                routeCi "/edit" >=> text "jjj" //Controller.edit
+            POST >=> mustBeLoggedIn >=> mustBeMe >=> choose [
+                routeCi "/add" >=> Controller.add >=> redirectTo false "/"
+                routeCi "/edit" >=> Controller.edit
+            ]
+            DELETE >=> mustBeLoggedIn >=> mustBeMe >=> choose [
+                routeCif "/article/%i" (fun id -> Controller.deleteArticle id)
             ]
         ]
 
@@ -85,7 +89,7 @@ module Program =
                     options.AuthorizationEndpoint <- "https://github.com/login/oauth/authorize"
                     options.TokenEndpoint <- "https://github.com/login/oauth/access_token"
                     options.UserInformationEndpoint <- "https://api.github.com/user"
-                )
+                ) |> ignore
         services.AddGiraffe() |> ignore
 
     let configureLogging (builder : ILoggingBuilder) =

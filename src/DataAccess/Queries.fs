@@ -40,6 +40,15 @@ module Queries =
             TagId = @tagId
     """>
 
+    type UpdateArticleById = SQL<"""
+        update articles set
+            Title = @title,
+            Source = @source,
+            Parsed = @parsed,
+            Tooltips = @tooltips
+        where Id = @id
+    """>
+
     type GetLatestArticle = SQL<"""
         select
             a.*,
@@ -62,6 +71,16 @@ module Queries =
         join article_tags at on a.Id = at.ArticleId
         join tags t on t.id = at.TagId
         where a.Id = @id
+    """>
+
+    type DeleteArticleTagsByArticleId = SQL<"""
+        delete from article_tags
+        where ArticleId = @id
+    """>
+
+    type DeleteArticleById = SQL<"""
+        delete from articles
+        where Id = @id
     """>
 
     type GetArticles = SQL<"""

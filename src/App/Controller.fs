@@ -41,18 +41,37 @@ module Controller =
                 return! renderArticlePage article next ctx
             }
 
+    let deleteArticle articleId: HttpHandler =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                do! Articles.deleteArticleById articleId
+
+                return! next ctx
+            }
+
     let upsert articleId: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 let masterData =
                     { MasterContent.PageTitle = "Upsert"
                       ArticleDate = None }
-
-                let upsertDocument =
-                    { UpsertDocument.Id = 0
-                      Title = String.Empty
-                      Source = String.Empty
-                      Tags = [] }
+                let! upsertDocument =
+                    if articleId = 0 then
+                        task {
+                            return { UpsertDocument.Id = articleId
+                                     Title = String.Empty
+                                     Source = String.Empty
+                                     Tags = [] }
+                        }
+                    else
+                        task {
+                            let! article = Articles.getArticle articleId
+                            return { UpsertDocument.Id = articleId
+                                     Title = article.Title
+                                     Source = article.Source
+                                     Tags = article.Tags |> List.map (fun t -> t.Name) }
+                                     // TODO show the tags in the upsert view
+                        }
 
                 let view =
                     Add.view upsertDocument
@@ -68,9 +87,20 @@ module Controller =
                 let! document = ctx.BindFormAsync<UpsertDocument>()
                 let! parsedDocument = Articles.parse document.Title document.Source
 
-                do! Repository.insertArticle parsedDocument document.Tags
+                do! Articles.addArticle parsedDocument document.Tags
 
                 return! next ctx
+            }
+
+    let edit: HttpHandler =
+        fun (next : HttpFunc) (ctx : HttpContext) ->
+            task {
+                let! document = ctx.BindFormAsync<UpsertDocument>()
+                let! parsedDocument = Articles.parse document.Title document.Source
+
+                do! Articles.updateArticle document.Id parsedDocument document.Tags
+
+                return! redirectTo false (sprintf "/article/%i" document.Id) next ctx
             }
 
     let articles: HttpHandler =
