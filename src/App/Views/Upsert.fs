@@ -2,7 +2,7 @@ namespace Hashset.Views
 
 open Model
 
-module Add =
+module Upsert =
     open Giraffe.GiraffeViewEngine
 
     let view (upsertDocument: UpsertDocument) =
@@ -22,12 +22,13 @@ module Add =
             ]
             div [] [
                 label [ _id "TagLabel" ] [ str "Tags" ]
-                ul [ _id "TagList" ] [
-                    li [] [
-                        input [ _type "text"; _name "Tags"; ]
-                    ]
-
-                ]
+                ul [ _id "TagList" ]
+                    (upsertDocument.Tags
+                    |> List.map (fun t ->
+                        li [] [
+                            input [ _type "text"; _name "Tags"; _value t ]
+                        ]
+                    ))
             ]
             input [ _type "Submit" ]
 

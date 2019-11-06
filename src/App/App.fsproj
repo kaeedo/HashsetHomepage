@@ -17,14 +17,11 @@
     <Compile Include="Views/LatestArticles.fs" />
     <Compile Include="Views/About.fs" />
     <Compile Include="Views/Article.fs" />
-    <Compile Include="Views/Add.fs" />
+    <Compile Include="Views/Upsert.fs" />
     <Compile Include="Articles.fs" />
     <Compile Include="Controller.fs" />
     <Compile Include="HttpsConfig.fs" />
     <Compile Include="Program.fs" />
-    <Content Include="App.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="WebRoot/**/*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -4,13 +4,23 @@ open Rezoom
 open Rezoom.SQL
 open Rezoom.SQL.Plans
 open Rezoom.SQL.Migrations
+open Rezoom.SQL.Mapping
 open Model
 
 [<RequireQualifiedAccess>]
 module Repository =
+    let private serviceConfig = ServiceConfig()
+    serviceConfig.SetConfiguration<ConnectionProvider>(new HashsetConnectionProvider("Host=localhost;Port=5454;Database=hashset;Username=postgres")) |> ignore
+
+    let private executionConfig =
+        { Execution.ExecutionConfig.Default with
+            ServiceConfig = serviceConfig :> IServiceConfig }
+
     let migrate () =
+        // https://github.com/rspeele/Rezoom.SQL/issues/49
         let config =
             { MigrationConfig.Default with
+                //ServiceConfig = serviceConfig :> IServiceConfig
                 LogMigrationRan = fun m -> printfn "Ran migration: %s" m.MigrationName }
 
         Queries.HashsetModel.Migrate(config)
@@ -54,8 +64,7 @@ module Repository =
                     do! Queries.InsertArticleTagsMapping.Command(articleId = article.Id, tagId = tagId).Plan()
             }
 
-        let config = Execution.ExecutionConfig.Default
-        Execution.execute config insertPlan
+        Execution.execute executionConfig insertPlan
 
     let updateArticle (articleId: int) (document: ParsedDocument) (tags: string list) =
         let updatePlan =
@@ -83,8 +92,7 @@ module Repository =
                     do! Queries.InsertArticleTagsMapping.Command(articleId = articleId, tagId = tagId).Plan()
             }
 
-        let config = Execution.ExecutionConfig.Default
-        Execution.execute config updatePlan
+        Execution.execute executionConfig updatePlan
 
     let getArticleById id =
         let getPlan =
@@ -95,8 +103,7 @@ module Repository =
                 return Queries.mapArticle article
             }
 
-        let config = Execution.ExecutionConfig.Default
-        Execution.execute config getPlan
+        Execution.execute executionConfig getPlan
 
     let deleteArticleById id =
         let deletePlan =
@@ -105,8 +112,7 @@ module Repository =
                 do! Queries.DeleteArticleById.Command(id = id).Plan()
             }
 
-        let config = Execution.ExecutionConfig.Default
-        Execution.execute config deletePlan
+        Execution.execute executionConfig deletePlan
 
     let getLatestArticle () =
         let getPlan =
@@ -116,8 +122,7 @@ module Repository =
                 return Queries.mapArticle (articles.[0])
             }
 
-        let config = Execution.ExecutionConfig.Default
-        Execution.execute config getPlan
+        Execution.execute executionConfig getPlan
 
     let getArticles () =
         let getPlan =
@@ -129,5 +134,4 @@ module Repository =
                     |> Seq.map (Queries.mapArticle)
             }
 
-        let config = Execution.ExecutionConfig.Default
-        Execution.execute config getPlan
+        Execution.execute executionConfig getPlan

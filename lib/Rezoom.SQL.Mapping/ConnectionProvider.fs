@@ -34,7 +34,7 @@ module NetStandardHacks =
                 loadInstance "System.Data.SQLite" "System.Data.SQLite.SQLiteFactory"
             | "npgsql" ->
                 loadInstance "Npgsql" "Npgsql.NpgsqlFactory"
-            | "microsoft.data.sqlite" ->
+            | "microsoft.data.qqlite" ->
                 loadInstance "Microsoft.Data.Sqlite" "Microsoft.Data.Sqlite.SqliteFactory"
             | other ->
                 failwithf "Tragically unsupported provider name ``%s``" providerName
@@ -53,9 +53,7 @@ type DefaultConnectionProvider() =
             connectionString
     static member Open(name) =
         let connectionString = DefaultConnectionProvider.ResolveConnectionString(name)
-        //let provider : DbProviderFactory = DbProviderFactories.GetFactory(connectionString.ProviderName)
-        let provider = Npgsql.NpgsqlFactory.Instance
-        //let provider = Microsoft.Data.Sqlite.SqliteFactory.Instance
+        let provider : DbProviderFactory = DbProviderFactories.GetFactory(connectionString.ProviderName)
         let conn = provider.CreateConnection()
         conn.ConnectionString <- connectionString.ConnectionString
         conn.Open()
