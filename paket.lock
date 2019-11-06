@@ -1,5 +1,6 @@
 NUGET
   remote: https://api.nuget.org/v3/index.json
+    AspNet.Security.OAuth.GitHub (3.0)
     FParsec (1.0.3) - restriction: || (>= net45) (>= netstandard1.6)
       FSharp.Core (>= 4.0.0.1) - restriction: >= net40
       FSharp.Core (>= 4.2.3) - restriction: && (< net40) (>= netstandard1.6)
@@ -59,7 +60,6 @@ NUGET
       Microsoft.AspNetCore.Authentication.Abstractions (>= 2.2) - restriction: >= netstandard2.0
       Microsoft.AspNetCore.Http (>= 2.2) - restriction: >= netstandard2.0
       Microsoft.AspNetCore.Http.Extensions (>= 2.2) - restriction: >= netstandard2.0
-    Microsoft.AspNetCore.Authentication.Google (3.0)
     Microsoft.AspNetCore.Authorization (3.0) - restriction: || (>= net461) (>= netstandard2.0)
       Microsoft.AspNetCore.Metadata (>= 3.0) - restriction: >= netstandard2.0
       Microsoft.Extensions.Logging.Abstractions (>= 3.0) - restriction: >= netstandard2.0

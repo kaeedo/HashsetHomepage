@@ -1,6 +1,7 @@
 namespace Hashset
 
 open System
+open System.Security.Claims
 open System.Configuration
 open System.IO
 
@@ -23,22 +24,22 @@ open DataAccess
 open HttpsConfig
 
 module Program =
+    let mustBeLoggedIn: HttpHandler =
+        requiresAuthentication (challenge "GitHub")
 
-    let challenge (redirectUri : string) : HttpHandler =
+    let mustBeMe: HttpHandler =
         fun (next : HttpFunc) (ctx : HttpContext) ->
-            task {
-                do! ctx.ChallengeAsync("Google", AuthenticationProperties(RedirectUri = redirectUri))
-                return! next ctx
-            }
+            let conf = ctx.GetService<IConfiguration>()
+            (authorizeUser (fun u ->
+                u.HasClaim (ClaimTypes.Name, conf.["GithubWriteUsername"])
+            ) (setStatusCode 401 >=> text "Access Denied")) next ctx
 
-    let googleAuth = challenge "/articles"
 
     let webApp =
         choose [
             GET >=> choose [
                 routeCi "/"  >=> Controller.homepage
-                routeCi "/login"  >=> googleAuth
-                routeCi "/articles" >=> Controller.articles
+                routeCi "/articles" >=> mustBeLoggedIn >=> mustBeMe >=> Controller.articles
                 routeCif "/articles/upsert/%i" Controller.upsert
                 routeCif "/article/%i" Controller.article
                 routeCi "/about" >=> Controller.about ]
@@ -48,14 +49,13 @@ module Program =
             ]
         ]
 
-    let error (ex : Exception) _ =
-        clearResponse >=> setStatusCode 500 >=> text (sprintf "%s\n%s" ex.Message (ex.StackTrace.ToString()))
-
     let configureApp (app: IApplicationBuilder) =
         //let env = app.ApplicationServices.GetService<IHostingEnvironment>()
         app.UseStaticFiles()
-           .UseGiraffeErrorHandler(error)
+           //.UseGiraffeErrorHandler(error)
+           .UseDeveloperExceptionPage()
            .UseAuthentication()
+           .UseHttpsRedirection()
            .UseGiraffe(webApp)
 
     let configureAppConfiguration (context: WebHostBuilderContext) (config: IConfigurationBuilder) =
@@ -71,17 +71,23 @@ module Program =
         services.AddAuthentication(fun options ->
                     options.DefaultAuthenticateScheme <- CookieAuthenticationDefaults.AuthenticationScheme
                     options.DefaultSignInScheme <- CookieAuthenticationDefaults.AuthenticationScheme
-                    options.DefaultChallengeScheme <- "Google"
+                    options.DefaultChallengeScheme <- "GitHub"
                 )
                 .AddCookie()
-                .AddGoogle("Google", fun opt ->
-                    let googleAuthNSection: IConfigurationSection = conf.GetSection("Authentication:Google")
-                    opt.CallbackPath <- PathString("/login")
-                    opt.ClientId <- googleAuthNSection.["ClientId"]
-                    opt.ClientSecret <- googleAuthNSection.["ClientSecret"]
-                ) |> ignore
+                .AddGitHub(fun options ->
+                    options.ClientId <- conf.["GithubClientId"]
+                    options.ClientSecret <- conf.["GithubClientSecret"]
+                    options.CallbackPath <- new PathString("/signin-github")
+
+                    options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id")
+                    options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name")
+
+                    options.AuthorizationEndpoint <- "https://github.com/login/oauth/authorize"
+                    options.TokenEndpoint <- "https://github.com/login/oauth/access_token"
+                    options.UserInformationEndpoint <- "https://api.github.com/user"
+                )
         services.AddGiraffe() |> ignore
-//https://www.eelcomulder.nl/2018/06/12/secure-your-giraffe-application-with-an-oauth-provider/
+
     let configureLogging (builder : ILoggingBuilder) =
         let filter (l : LogLevel) = l.Equals LogLevel.Error
         builder.AddFilter(filter).AddConsole().AddDebug() |> ignore
@@ -99,9 +105,8 @@ module Program =
                 { EndpointConfiguration.Default with
                     Port      = Some 44340
                     Scheme    = Https
-                    //StoreName = Some "My"
-                    FilePath  = Some ""
-                    Password  = None } ]
+                    FilePath  = Some @"..\..\..\..\..\devCert.pfx"
+                    Password  = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
 
         WebHostBuilder()
             .UseKestrel(fun o -> o.ConfigureEndpoints endpoints)

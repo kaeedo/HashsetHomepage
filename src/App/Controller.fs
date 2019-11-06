@@ -73,11 +73,10 @@ module Controller =
                 return! next ctx
             }
 
-
     let articles: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-            // TODO: Server side paging
+                // TODO: Server side paging
                 let masterData =
                     { MasterContent.PageTitle = "All Articles"
                       ArticleDate = None }
