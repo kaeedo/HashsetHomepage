@@ -20,10 +20,12 @@ module Repository =
         // https://github.com/rspeele/Rezoom.SQL/issues/49
         let config =
             { MigrationConfig.Default with
-                //ServiceConfig = serviceConfig :> IServiceConfig
                 LogMigrationRan = fun m -> printfn "Ran migration: %s" m.MigrationName }
 
-        Queries.HashsetModel.Migrate(config)
+        let connection = System.Configuration.ConnectionStringSettings()
+        connection.ConnectionString <- "Host=localhost;Port=5454;Database=hashset;Username=postgres"
+        connection.ProviderName <- "Npgsql"
+        Queries.HashsetModel.MigrateWithConnection(config, connection)
 
     let private getTag (name: string) =
         plan {

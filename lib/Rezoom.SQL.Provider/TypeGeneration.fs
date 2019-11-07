@@ -1,5 +1,6 @@
 ﻿module private Rezoom.SQL.Provider.TypeGeneration
 open System
+open System.Configuration
 open System.Collections.Generic
 open System.Text.RegularExpressions
 open System.Reflection
@@ -101,7 +102,7 @@ let private addScalarInterface (ty : ProvidedTypeDefinition) (field : ProvidedFi
     ty.AddInterfaceImplementation(scalarInterface)
     ty.DefineMethodOverride(getterMethod, getScalarValue)
     ty.AddMember(getterMethod)
-    
+
 let rec private generateRowTypeFromColumns isRoot (model : UserModel) name (columnMap : CompileTimeColumnMap) =
     let ty =
         ProvidedTypeDefinition
@@ -312,11 +313,28 @@ let generateMigrationMembers
                 ProvidedParameter("connectionName", typeof<string>)
             ]
         let meth = ProvidedMethod("Migrate", pars, typeof<unit>, isStatic = true, invokeCode = function
-            | [ config; connectionName ] -> 
+            | [ config; connectionName ] ->
                 let backend =
                     <@ fun () ->
                         (%backend.MigrationBackend)
                             (DefaultConnectionProvider.ResolveConnectionString(%%connectionName))
+                    @>
+                <@@ let migrations : string MigrationTree array = %%Expr.PropertyGet(migrationProperty)
+                    migrations.Run(%%config, %%(upcast backend))
+                @@>
+            | _ -> bug "Invalid migrate argument list")
+        provided.AddMember meth
+    do
+        let pars =
+            [   ProvidedParameter("config", typeof<MigrationConfig>)
+                ProvidedParameter("connection", typeof<ConnectionStringSettings>)
+            ]
+        let meth = ProvidedMethod("MigrateWithConnection", pars, typeof<unit>, isStatic = true, invokeCode = function
+            | [ config; connection ] ->
+                let backend =
+                    <@ fun () ->
+                        (%backend.MigrationBackend)
+                            (%%connection)
                     @>
                 <@@ let migrations : string MigrationTree array = %%Expr.PropertyGet(migrationProperty)
                     migrations.Run(%%config, %%(upcast backend))
