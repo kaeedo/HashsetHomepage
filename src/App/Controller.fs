@@ -28,7 +28,8 @@ module Controller =
     let homepage: HttpHandler  =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                let! latestArticle = Articles.getLatestArticle()
+                let repository = ctx.GetService<IRepository>()
+                let! latestArticle = Articles.getLatestArticle repository
 
                 return! renderArticlePage latestArticle next ctx
             }
@@ -36,7 +37,8 @@ module Controller =
     let article articleId: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                let! article = Articles.getArticle articleId
+                let repository = ctx.GetService<IRepository>()
+                let! article = Articles.getArticle repository articleId
 
                 return! renderArticlePage article next ctx
             }
@@ -44,7 +46,8 @@ module Controller =
     let deleteArticle articleId: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                do! Articles.deleteArticleById articleId
+                let repository = ctx.GetService<IRepository>()
+                do! Articles.deleteArticleById repository articleId
 
                 return! next ctx
             }
@@ -65,7 +68,8 @@ module Controller =
                         }
                     else
                         task {
-                            let! article = Articles.getArticle articleId
+                            let repository = ctx.GetService<IRepository>()
+                            let! article = Articles.getArticle repository articleId
                             return { UpsertDocument.Id = articleId
                                      Title = article.Title
                                      Source = article.Source
@@ -83,10 +87,11 @@ module Controller =
     let add: HttpHandler =
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {
+                let repository = ctx.GetService<IRepository>()
                 let! document = ctx.BindFormAsync<UpsertDocument>()
                 let! parsedDocument = Articles.parse document.Title document.Source
 
-                do! Articles.addArticle parsedDocument document.Tags
+                do! Articles.addArticle repository parsedDocument document.Tags
 
                 return! next ctx
             }
@@ -94,10 +99,11 @@ module Controller =
     let edit: HttpHandler =
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {
+                let repository = ctx.GetService<IRepository>()
                 let! document = ctx.BindFormAsync<UpsertDocument>()
                 let! parsedDocument = Articles.parse document.Title document.Source
 
-                do! Articles.updateArticle document.Id parsedDocument document.Tags
+                do! Articles.updateArticle repository document.Id parsedDocument document.Tags
 
                 return! redirectTo false (sprintf "/article/%i" document.Id) next ctx
             }
@@ -105,6 +111,7 @@ module Controller =
     let articles: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
+                let repository = ctx.GetService<IRepository>()
                 // TODO: Server side paging
                 let masterData =
                     { MasterContent.PageTitle = "All Articles"
@@ -117,7 +124,7 @@ module Controller =
 
                     content.Substring(firstIndex, count)
 
-                let! articles = Articles.getArticles()
+                let! articles = Articles.getArticles repository
                 let articles =
                     articles
                     |> Seq.map (fun (p: ParsedDocument) ->

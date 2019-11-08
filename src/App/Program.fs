@@ -72,6 +72,11 @@ module Program =
     let configureServices (services: IServiceCollection) =
         let sp  = services.BuildServiceProvider()
         let conf = sp.GetService<IConfiguration>()
+
+        let repository = Repository(conf.["connectionString"]) :> IRepository
+        repository.Migrate()
+        services.AddTransient<IRepository>(fun _ -> repository) |> ignore
+
         services.AddAuthentication(fun options ->
                     options.DefaultAuthenticateScheme <- CookieAuthenticationDefaults.AuthenticationScheme
                     options.DefaultSignInScheme <- CookieAuthenticationDefaults.AuthenticationScheme
@@ -81,7 +86,7 @@ module Program =
                 .AddGitHub(fun options ->
                     options.ClientId <- conf.["GithubClientId"]
                     options.ClientSecret <- conf.["GithubClientSecret"]
-                    options.CallbackPath <- new PathString("/signin-github")
+                    options.CallbackPath <- PathString("/signin-github")
 
                     options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id")
                     options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name")
@@ -98,8 +103,8 @@ module Program =
 
     [<EntryPoint>]
     let main _ =
-        Repository.migrate()
-
+        //Repository.migrate()
+//"Host=localhost;Port=5454;Database=hashset;Username=postgres"
         let contentRoot = Directory.GetCurrentDirectory()
         let webRoot = Path.Combine(contentRoot, "WebRoot")
 
