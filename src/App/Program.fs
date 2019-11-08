@@ -13,9 +13,6 @@ open Microsoft.AspNetCore.Authentication.Cookies
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.Configuration
-open Microsoft.Extensions.Configuration.UserSecrets
-
-open FSharp.Control.Tasks.V2.ContextInsensitive
 
 open Giraffe
 
@@ -64,16 +61,16 @@ module Program =
 
     let configureAppConfiguration (context: WebHostBuilderContext) (config: IConfigurationBuilder) =
         config
-            //.AddJsonFile("appsettings.json",false,true)
+            .AddJsonFile("appsettings.json", false, true)
             //.AddJsonFile(sprintf "appsettings.%s.json" context.HostingEnvironment.EnvironmentName ,true)
             .AddEnvironmentVariables()
-            .AddUserSecrets(System.Reflection.Assembly.GetCallingAssembly()) |> ignore
+            .AddUserSecrets(Reflection.Assembly.GetCallingAssembly()) |> ignore
 
     let configureServices (services: IServiceCollection) =
         let sp  = services.BuildServiceProvider()
         let conf = sp.GetService<IConfiguration>()
 
-        let repository = Repository(conf.["connectionString"]) :> IRepository
+        let repository = Repository(conf.["ConnectionString"]) :> IRepository
         repository.Migrate()
         services.AddTransient<IRepository>(fun _ -> repository) |> ignore
 
@@ -103,8 +100,6 @@ module Program =
 
     [<EntryPoint>]
     let main _ =
-        //Repository.migrate()
-//"Host=localhost;Port=5454;Database=hashset;Username=postgres"
         let contentRoot = Directory.GetCurrentDirectory()
         let webRoot = Path.Combine(contentRoot, "WebRoot")
 
