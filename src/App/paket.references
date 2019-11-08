@@ -4,3 +4,4 @@ FSharp.Literate
 AspNet.Security.OAuth.GitHub
 Microsoft.Extensions.Configuration.Json
 Microsoft.Extensions.Configuration.UserSecrets
+Npgsql
