@@ -51,10 +51,8 @@ module Program =
         ]
 
     let configureApp (app: IApplicationBuilder) =
-        //let env = app.ApplicationServices.GetService<IHostingEnvironment>()
         app.UseStaticFiles()
-           //.UseGiraffeErrorHandler(error)
-           .UseDeveloperExceptionPage()
+           //.UseDeveloperExceptionPage()
            .UseAuthentication()
            .UseHttpsRedirection()
            .UseGiraffe(webApp)
@@ -62,7 +60,6 @@ module Program =
     let configureAppConfiguration (context: WebHostBuilderContext) (config: IConfigurationBuilder) =
         config
             .AddJsonFile("appsettings.json", false, true)
-            //.AddJsonFile(sprintf "appsettings.%s.json" context.HostingEnvironment.EnvironmentName ,true)
             .AddEnvironmentVariables()
             .AddUserSecrets(Reflection.Assembly.GetCallingAssembly()) |> ignore
 
@@ -95,6 +92,8 @@ module Program =
         services.AddGiraffe() |> ignore
 
     let configureLogging (builder : ILoggingBuilder) =
+        Npgsql.Logging.NpgsqlLogManager.Provider = new Npgsql.ConsoleLoggingProvider(Npgsql.Logging.NpgsqlLogLevel.Trace, true, true) |> ignore
+
         let filter (l : LogLevel) = l.Equals LogLevel.Error
         builder.AddFilter(filter).AddConsole().AddDebug() |> ignore
 
@@ -112,6 +111,7 @@ module Program =
                     FilePath  = Some @"../../../../../devCert.pfx"
                     //Password  = None } ]
                     Password = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
+
         WebHostBuilder()
             .UseKestrel(fun o -> o.ConfigureEndpoints endpoints)
             .UseContentRoot(contentRoot)
