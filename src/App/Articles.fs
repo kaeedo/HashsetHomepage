@@ -49,14 +49,14 @@ module Articles =
         else document
 
 
-    let getLatestArticle = Repository.getLatestArticle
-    let getArticles = Repository.getArticles
-    let getArticle (articleId: int) = Repository.getArticleById articleId
-    let deleteArticleById (articleId: int) = Repository.deleteArticleById articleId
+    let getLatestArticle (repository: IRepository) = repository.GetLatestArticle()
+    let getArticles (repository: IRepository) = repository.GetArticles()
+    let getArticle (repository: IRepository) (articleId: int) = repository.GetArticleById articleId
+    let deleteArticleById (repository: IRepository) (articleId: int) = repository.DeleteArticleById articleId
 
     // TODO refactor these
-    let addArticle (parsedDocument: ParsedDocument) (tags: string list) = Repository.insertArticle parsedDocument tags
-    let updateArticle (articleId: int) (parsedDocument: ParsedDocument) (tags: string list) = Repository.updateArticle articleId parsedDocument tags
+    let addArticle (repository: IRepository) (parsedDocument: ParsedDocument) (tags: string list) = repository.InsertArticle parsedDocument tags
+    let updateArticle (repository: IRepository) (articleId: int) (parsedDocument: ParsedDocument) (tags: string list) = repository.UpdateArticle articleId parsedDocument tags
 
     let parse (title: string) (source: string) =
         task {

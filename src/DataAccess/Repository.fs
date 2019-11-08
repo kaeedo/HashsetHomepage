@@ -1,33 +1,33 @@
 ﻿namespace DataAccess
 
+open System.Threading.Tasks
+
 open Rezoom
 open Rezoom.SQL
 open Rezoom.SQL.Plans
 open Rezoom.SQL.Migrations
 open Rezoom.SQL.Mapping
+
 open Model
 
-[<RequireQualifiedAccess>]
-module Repository =
-    let private serviceConfig = ServiceConfig()
-    serviceConfig.SetConfiguration<ConnectionProvider>(new HashsetConnectionProvider("Host=localhost;Port=5454;Database=hashset;Username=postgres")) |> ignore
+type IRepository =
+    abstract member Migrate: unit -> unit
+    abstract member InsertArticle: ParsedDocument -> string list -> Task<unit>
+    abstract member UpdateArticle: int -> ParsedDocument -> string list -> Task<unit>
+    abstract member GetArticleById: int -> Task<ParsedDocument>
+    abstract member DeleteArticleById: int -> Task<unit>
+    abstract member GetLatestArticle: unit -> Task<ParsedDocument>
+    abstract member GetArticles: unit -> Task<ParsedDocument seq>
 
-    let private executionConfig =
+type Repository(connectionString) =
+    let serviceConfig = ServiceConfig()
+    do serviceConfig.SetConfiguration<ConnectionProvider>(HashsetConnectionProvider(connectionString)) |> ignore
+
+    let executionConfig =
         { Execution.ExecutionConfig.Default with
             ServiceConfig = serviceConfig :> IServiceConfig }
 
-    let migrate () =
-        // https://github.com/rspeele/Rezoom.SQL/issues/49
-        let config =
-            { MigrationConfig.Default with
-                LogMigrationRan = fun m -> printfn "Ran migration: %s" m.MigrationName }
-
-        let connection = System.Configuration.ConnectionStringSettings()
-        connection.ConnectionString <- "Host=localhost;Port=5454;Database=hashset;Username=postgres"
-        connection.ProviderName <- "Npgsql"
-        Queries.HashsetModel.MigrateWithConnection(config, connection)
-
-    let private getTag (name: string) =
+    let getTag (name: string) =
         plan {
             let! persistedTag =
                 Queries.GetTag.Command(name = name).TryExactlyOne()
@@ -39,101 +39,113 @@ module Repository =
             | Some tag ->
                 return { Tag.Id = tag.Id; Name = tag.Name }
         }
+    interface IRepository with
+        member this.Migrate() =
+            let config =
+                { MigrationConfig.Default with
+                    LogMigrationRan = fun m -> printfn "Ran migration: %s" m.MigrationName }
 
-    let insertArticle (document: ParsedDocument) (tags: string list) =
-        let insertPlan =
-            plan {
-                let! tags =
-                    Plan.concurrentList
-                        [ for tagName in tags do
-                              getTag tagName ]
+            let connection = System.Configuration.ConnectionStringSettings()
+            connection.ConnectionString <- connectionString
+            connection.ProviderName <- "Npgsql"
+            Queries.HashsetModel.MigrateWithConnection(config, connection)
 
-                let document = { document with Tags = tags }
 
-                let! article =
-                    Queries.InsertArticle.Command(
-                        title = document.Title,
-                        source = document.Source,
-                        parsed = document.Document,
-                        tooltips = document.Tooltips,
-                        createdOn = document.ArticleDate
-                        )
-                        .Plan()
 
-                let tagIds = tags |> List.map (fun tag -> tag.Id)
+        member this.InsertArticle (document: ParsedDocument) (tags: string list) =
+            let insertPlan =
+                plan {
+                    let! tags =
+                        Plan.concurrentList
+                            [ for tagName in tags do
+                                  getTag tagName ]
 
-                for tagId in batch tagIds do
-                    do! Queries.InsertArticleTagsMapping.Command(articleId = article.Id, tagId = tagId).Plan()
-            }
+                    let document = { document with Tags = tags }
 
-        Execution.execute executionConfig insertPlan
+                    let! article =
+                        Queries.InsertArticle.Command(
+                            title = document.Title,
+                            source = document.Source,
+                            parsed = document.Document,
+                            tooltips = document.Tooltips,
+                            createdOn = document.ArticleDate
+                            )
+                            .Plan()
 
-    let updateArticle (articleId: int) (document: ParsedDocument) (tags: string list) =
-        let updatePlan =
-            plan {
-                let! tags =
-                    Plan.concurrentList
-                        [ for tagName in tags do
-                              getTag tagName ]
+                    let tagIds = tags |> List.map (fun tag -> tag.Id)
 
-                let document = { document with Tags = tags }
+                    for tagId in batch tagIds do
+                        do! Queries.InsertArticleTagsMapping.Command(articleId = article.Id, tagId = tagId).Plan()
+                }
 
-                let! article =
-                    Queries.UpdateArticleById.Command(
-                        id = articleId,
-                        title = document.Title,
-                        source = document.Source,
-                        parsed = document.Document,
-                        tooltips = document.Tooltips
-                        )
-                        .Plan()
+            Execution.execute executionConfig insertPlan
 
-                let tagIds = tags |> List.map (fun tag -> tag.Id)
+        member this.UpdateArticle (articleId: int) (document: ParsedDocument) (tags: string list) =
+            let updatePlan =
+                plan {
+                    let! tags =
+                        Plan.concurrentList
+                            [ for tagName in tags do
+                                  getTag tagName ]
 
-                for tagId in batch tagIds do
-                    do! Queries.InsertArticleTagsMapping.Command(articleId = articleId, tagId = tagId).Plan()
-            }
+                    let document = { document with Tags = tags }
 
-        Execution.execute executionConfig updatePlan
+                    do!
+                        Queries.UpdateArticleById.Command(
+                            id = articleId,
+                            title = document.Title,
+                            source = document.Source,
+                            parsed = document.Document,
+                            tooltips = document.Tooltips
+                            )
+                            .Plan()
 
-    let getArticleById id =
-        let getPlan =
-            plan {
-                let! article =
-                    Queries.GetArticleById.Command(id = id).ExactlyOne()
+                    let tagIds = tags |> List.map (fun tag -> tag.Id)
 
-                return Queries.mapArticle article
-            }
+                    for tagId in batch tagIds do
+                        do! Queries.InsertArticleTagsMapping.Command(articleId = articleId, tagId = tagId).Plan()
+                }
 
-        Execution.execute executionConfig getPlan
+            Execution.execute executionConfig updatePlan
 
-    let deleteArticleById id =
-        let deletePlan =
-            plan {
-                do! Queries.DeleteArticleTagsByArticleId.Command(id = id).Plan()
-                do! Queries.DeleteArticleById.Command(id = id).Plan()
-            }
+        member this.GetArticleById id =
+            let getPlan =
+                plan {
+                    let! article =
+                        Queries.GetArticleById.Command(id = id).ExactlyOne()
 
-        Execution.execute executionConfig deletePlan
+                    return Queries.mapArticle article
+                }
 
-    let getLatestArticle () =
-        let getPlan =
-            plan {
-                let! articles = Queries.GetLatestArticle.Command().Plan()
+            Execution.execute executionConfig getPlan
 
-                return Queries.mapArticle (articles.[0])
-            }
+        member this.DeleteArticleById id =
+            let deletePlan =
+                plan {
+                    do! Queries.DeleteArticleTagsByArticleId.Command(id = id).Plan()
+                    do! Queries.DeleteArticleById.Command(id = id).Plan()
+                }
 
-        Execution.execute executionConfig getPlan
+            Execution.execute executionConfig deletePlan
 
-    let getArticles () =
-        let getPlan =
-            plan {
-                let! articles = Queries.GetArticles.Command().Plan()
+        member this.GetLatestArticle () =
+            let getPlan =
+                plan {
+                    let! articles = Queries.GetLatestArticle.Command().Plan()
 
-                return
-                    articles
-                    |> Seq.map (Queries.mapArticle)
-            }
+                    return Queries.mapArticle (articles.[0])
+                }
 
-        Execution.execute executionConfig getPlan
+            Execution.execute executionConfig getPlan
+
+        member this.GetArticles () =
+            let getPlan =
+                plan {
+                    let! articles = Queries.GetArticles.Command().Plan()
+
+                    return
+                        articles
+                        |> Seq.map (Queries.mapArticle)
+                }
+
+            Execution.execute executionConfig getPlan
