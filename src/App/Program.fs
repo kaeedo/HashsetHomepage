@@ -92,7 +92,6 @@ module Program =
         services.AddGiraffe() |> ignore
 
     let configureLogging (builder : ILoggingBuilder) =
-        Npgsql.Logging.NpgsqlLogManager.Provider = new Npgsql.ConsoleLoggingProvider(Npgsql.Logging.NpgsqlLogLevel.Trace, true, true) |> ignore
 
         let filter (l : LogLevel) = l.Equals LogLevel.Error
         builder.AddFilter(filter).AddConsole().AddDebug() |> ignore
@@ -109,8 +108,8 @@ module Program =
                     Port      = Some 44340
                     Scheme    = Https
                     FilePath  = Some @"../../../../../devCert.pfx"
-                    //Password  = None } ]
-                    Password = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
+                    Password  = None } ]
+                    // Password = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
 
         WebHostBuilder()
             .UseKestrel(fun o -> o.ConfigureEndpoints endpoints)

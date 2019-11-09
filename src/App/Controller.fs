@@ -64,6 +64,7 @@ module Controller =
                             return { UpsertDocument.Id = articleId
                                      Title = String.Empty
                                      Source = String.Empty
+                                     ArticleDate = DateTime.UtcNow.Date
                                      Tags = [] }
                         }
                     else
@@ -73,6 +74,7 @@ module Controller =
                             return { UpsertDocument.Id = articleId
                                      Title = article.Title
                                      Source = article.Source
+                                     ArticleDate = article.ArticleDate
                                      Tags = article.Tags |> List.map (fun t -> t.Name) }
                         }
 
@@ -89,7 +91,7 @@ module Controller =
             task {
                 let repository = ctx.GetService<IRepository>()
                 let! document = ctx.BindFormAsync<UpsertDocument>()
-                let! parsedDocument = Articles.parse document.Title document.Source
+                let! parsedDocument = Articles.parse document.Title document.Source document.ArticleDate
 
                 do! Articles.addArticle repository parsedDocument document.Tags
 
@@ -101,7 +103,7 @@ module Controller =
             task {
                 let repository = ctx.GetService<IRepository>()
                 let! document = ctx.BindFormAsync<UpsertDocument>()
-                let! parsedDocument = Articles.parse document.Title document.Source
+                let! parsedDocument = Articles.parse document.Title document.Source document.ArticleDate
 
                 do! Articles.updateArticle repository document.Id parsedDocument document.Tags
 
@@ -129,9 +131,10 @@ module Controller =
                     articles
                     |> Seq.map (fun (p: ParsedDocument) ->
                         { ArticleStub.Id = p.Id
-                          Title = p.Title
+                          Title = p.Title.Trim()
                           Date = p.ArticleDate
-                          Description = getFirstParagraph p.Document }
+                          Description = getFirstParagraph p.Document
+                          Tags = p.Tags }
                     )
 
                 let view =

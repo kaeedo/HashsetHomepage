@@ -1,5 +1,6 @@
 ﻿namespace DataAccess
 
+open System
 open System.Threading.Tasks
 
 open Rezoom
@@ -7,6 +8,8 @@ open Rezoom.SQL
 open Rezoom.SQL.Plans
 open Rezoom.SQL.Migrations
 open Rezoom.SQL.Mapping
+open Npgsql
+open Npgsql.Logging
 
 open Model
 
@@ -20,6 +23,8 @@ type IRepository =
     abstract member GetArticles: unit -> Task<ParsedDocument seq>
 
 type Repository(connectionString) =
+    do NpgsqlLogManager.Provider <- ConsoleLoggingProvider(NpgsqlLogLevel.Trace, true, true) :> INpgsqlLoggingProvider
+
     let serviceConfig = ServiceConfig()
     do serviceConfig.SetConfiguration<ConnectionProvider>(HashsetConnectionProvider(connectionString)) |> ignore
 
@@ -45,7 +50,7 @@ type Repository(connectionString) =
                 { MigrationConfig.Default with
                     LogMigrationRan = fun m -> printfn "Ran migration: %s" m.MigrationName }
 
-            let connection = System.Configuration.ConnectionStringSettings()
+            let connection = Configuration.ConnectionStringSettings()
             connection.ConnectionString <- connectionString
             connection.ProviderName <- "Npgsql"
             Queries.HashsetModel.MigrateWithConnection(config, connection)
