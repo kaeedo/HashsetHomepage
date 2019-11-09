@@ -51,6 +51,7 @@ module Articles =
 
     let getLatestArticle (repository: IRepository) = repository.GetLatestArticle()
     let getArticles (repository: IRepository) = repository.GetArticles()
+    let getArticlesByTag (repository: IRepository) (tag: string) = repository.GetArticlesByTag tag
     let getArticle (repository: IRepository) (articleId: int) = repository.GetArticleById articleId
     let deleteArticleById (repository: IRepository) (articleId: int) = repository.DeleteArticleById articleId
 

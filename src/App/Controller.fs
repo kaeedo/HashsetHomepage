@@ -126,7 +126,11 @@ module Controller =
 
                     content.Substring(firstIndex, count)
 
-                let! articles = Articles.getArticles repository
+                let! articles =
+                    match ctx.TryGetQueryStringValue "tag" with
+                    | None -> Articles.getArticles repository
+                    | Some t -> Articles.getArticlesByTag repository t
+
                 let articles =
                     articles
                     |> Seq.map (fun (p: ParsedDocument) ->
