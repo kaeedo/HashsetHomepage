@@ -18,7 +18,9 @@ open Giraffe
 
 open Hashset.Views
 open DataAccess
+#if DEBUG
 open HttpsConfig
+#endif
 
 module Program =
     let mustBeLoggedIn: HttpHandler =
@@ -61,7 +63,10 @@ module Program =
         config
             .AddJsonFile("appsettings.json", false, true)
             .AddEnvironmentVariables()
-            .AddUserSecrets(Reflection.Assembly.GetCallingAssembly()) |> ignore
+#if DEBUG
+            .AddUserSecrets(Reflection.Assembly.GetCallingAssembly())
+#endif
+            |> ignore
 
     let configureServices (services: IServiceCollection) =
         let sp  = services.BuildServiceProvider()
@@ -101,18 +106,20 @@ module Program =
         let contentRoot = Directory.GetCurrentDirectory()
         let webRoot = Path.Combine(contentRoot, "WebRoot")
 
-        let endpoints =
-            [
-                EndpointConfiguration.Default
-                { EndpointConfiguration.Default with
-                    Port      = Some 44340
-                    Scheme    = Https
-                    FilePath  = Some @"../../../../../devCert.pfx"
-                    Password  = None } ]
-                    // Password = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
-
         WebHostBuilder()
-            .UseKestrel(fun o -> o.ConfigureEndpoints endpoints)
+            .UseKestrel(
+#if DEBUG
+                fun o ->
+                    o.ConfigureEndpoints [
+                        EndpointConfiguration.Default
+                        { EndpointConfiguration.Default with
+                            Port      = Some 44340
+                            Scheme    = Https
+                            FilePath  = Some @"../../../../../devCert.pfx"
+                            Password  = None } ]
+                            // Password = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
+#endif
+            )
             .UseContentRoot(contentRoot)
             .UseWebRoot(webRoot)
             .ConfigureAppConfiguration(configureAppConfiguration)

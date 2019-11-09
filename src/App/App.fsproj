@@ -20,7 +20,7 @@
     <Compile Include="Views/Upsert.fs" />
     <Compile Include="Articles.fs" />
     <Compile Include="Controller.fs" />
-    <Compile Include="HttpsConfig.fs" />
+    <Compile Include="HttpsConfig.fs" Condition="'$(Configuration)' == 'Debug'" />
     <Compile Include="Program.fs" />
     <Content Include="WebRoot/**/*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

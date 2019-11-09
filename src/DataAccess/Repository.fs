@@ -24,8 +24,10 @@ type IRepository =
     abstract member GetArticlesByTag: string -> Task<ParsedDocument seq>
 
 type Repository(connectionString) =
+#if DEBUG
     do NpgsqlLogManager.Provider <- ConsoleLoggingProvider(NpgsqlLogLevel.Trace, true, true) :> INpgsqlLoggingProvider
     do NpgsqlLogManager.IsParameterLoggingEnabled <- true
+#endif
 
     let serviceConfig = ServiceConfig()
     do serviceConfig.SetConfiguration<ConnectionProvider>(HashsetConnectionProvider(connectionString)) |> ignore
