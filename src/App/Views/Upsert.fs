@@ -13,6 +13,10 @@ module Upsert =
                 input [ _type "text"; _id "Id"; _name "Id"; _value (upsertDocument.Id.ToString()) ]
             ]
             div [] [
+                label [ _for "ArticleDate" ] [ str "ArticleDate" ]
+                input [ _type "text"; _id "ArticleDate"; _name "ArticleDate"; _value (upsertDocument.ArticleDate.ToString("d")) ]
+            ]
+            div [] [
                 label [ _for "Title" ] [ str "Title" ]
                 input [ _type "text"; _id "Title"; _name "Title"; _value upsertDocument.Title ]
             ]

@@ -58,7 +58,7 @@ module Articles =
     let addArticle (repository: IRepository) (parsedDocument: ParsedDocument) (tags: string list) = repository.InsertArticle parsedDocument tags
     let updateArticle (repository: IRepository) (articleId: int) (parsedDocument: ParsedDocument) (tags: string list) = repository.UpdateArticle articleId parsedDocument tags
 
-    let parse (title: string) (source: string) =
+    let parse (title: string) (source: string) (articleDate: DateTime) =
         task {
             let tmpFileName = Path.GetTempPath() ++ Guid.NewGuid().ToString()
 
@@ -71,7 +71,7 @@ module Articles =
                   Title = title.Trim()
                   Source = source
                   Document = parsed.Parameters |> getContent "document" |> transformHtml
-                  ArticleDate =  DateTime.Now
+                  ArticleDate =  articleDate
                   Tooltips = parsed.Parameters |> getContent "tooltips"
                   Tags = [] }
 

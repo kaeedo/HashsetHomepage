@@ -6,15 +6,16 @@ type MasterContent =
     { PageTitle: string
       ArticleDate: DateTime option }
 
+type Tag =
+    { Id: int
+      Name: string }
+
 type ArticleStub =
     { Id: int
       Title: string
       Date: DateTime
-      Description: string }
-
-type Tag =
-    { Id: int
-      Name: string }
+      Description: string
+      Tags: Tag list }
 
 type ParsedDocument =
     { Id: int
@@ -29,5 +30,6 @@ type ParsedDocument =
 type UpsertDocument =
     { Id: int
       Title: string
+      ArticleDate: DateTime
       Source: string
       Tags: string list }

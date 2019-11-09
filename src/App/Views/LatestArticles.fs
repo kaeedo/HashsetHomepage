@@ -18,6 +18,11 @@ module LatestArticles =
                     ]
                 ]
                 h5 [ _class "LatestPosts-entryDate" ] [ str <| c.Date.ToString("dd MMMM, yyyy") ]
+                div [ _class "LatestPosts-entryTags" ]
+                    (c.Tags
+                     |> List.map (fun t ->
+                        span [ _class "LatestPosts-entryTag" ] [ a [ _class "LatestPosts-entryTagLink"; _href <| sprintf "articles?tag=%s" t.Name ] [ str t.Name ] ]
+                     ))
                 div [ _class "LatestPosts-entryDescription" ] [ rawText c.Description ]
             ]
         )

@@ -56,6 +56,7 @@ module Queries =
         from articles a
         join article_tags at on a.Id = at.ArticleId
         join tags t on t.id = at.TagId
+        where a.CreatedOn <= now()
         order by a.CreatedOn desc
         limit (select count(*) as count
                 from articles a
@@ -90,6 +91,7 @@ module Queries =
         from articles a
         join article_tags at on a.Id = at.ArticleId
         join tags t on t.id = at.TagId
+        where a.CreatedOn <= now()
         order by a.CreatedOn desc
     """>
 
