@@ -84,6 +84,7 @@ html {
     font-size: 42pt;
     font-weight: 700;
     max-width: 80rem;
+    margin-bottom: 1rem;
   }
 
   @media screen and (max-width: 667px) {
@@ -91,6 +92,25 @@ html {
         font-size: 22pt;
       }
   }
+
+.Main-postTags {
+    margin-bottom: 1rem;
+}
+
+.Main-postTag {
+    text-decoration: none;
+    border: 1px solid #f2f2f2;
+    padding: 5px 1rem;
+    background-color: #2d2a55;
+    color: #f2f2f2;
+    border-radius: 5px;
+    margin-left: 1rem;
+}
+
+.Main-postTag:hover {
+    background-color: #f2f2f2;
+    color: #2d2a55;
+}
 
 .Main-section {
   margin: auto;

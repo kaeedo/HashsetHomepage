@@ -2,13 +2,14 @@
 
 open System
 
-type MasterContent =
-    { PageTitle: string
-      ArticleDate: DateTime option }
-
 type Tag =
     { Id: int
       Name: string }
+
+type MasterContent =
+    { PageTitle: string
+      ArticleDate: DateTime option
+      Tags: Tag list }
 
 type ArticleStub =
     { Id: int
