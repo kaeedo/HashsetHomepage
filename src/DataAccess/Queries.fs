@@ -103,7 +103,13 @@ module Queries =
         join article_tags at on a.Id = at.ArticleId
         join tags t on t.id = at.TagId
         where a.CreatedOn <= now()
-        and t.Name = @tag
+        and a.Id in (
+            select a.id
+            from articles a
+            join article_tags at on a.Id = at.ArticleId
+            join tags t on t.id = at.TagId
+            where t.Name = @tag
+        )
         order by a.CreatedOn desc
     """>
 

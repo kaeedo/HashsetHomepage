@@ -19,7 +19,8 @@ module Controller =
     let private renderArticlePage (article: ParsedDocument) =
         let masterData =
             { MasterContent.PageTitle = article.Title
-              ArticleDate = Some article.ArticleDate }
+              ArticleDate = Some article.ArticleDate
+              Tags = article.Tags }
 
         Article.view article
         |> Load.styledMasterView masterData
@@ -57,7 +58,8 @@ module Controller =
             task {
                 let masterData =
                     { MasterContent.PageTitle = "Upsert"
-                      ArticleDate = None }
+                      ArticleDate = None
+                      Tags = [] }
                 let! upsertDocument =
                     if articleId = 0 then
                         task {
@@ -117,7 +119,8 @@ module Controller =
                 // TODO: Server side paging
                 let masterData =
                     { MasterContent.PageTitle = "All Articles"
-                      ArticleDate = None }
+                      ArticleDate = None
+                      Tags = [] }
 
                 let getFirstParagraph (content: string) =
                     let firstIndex = content.IndexOf("<p>") + 3
@@ -154,7 +157,8 @@ module Controller =
             task {
                 let masterData =
                     { MasterContent.PageTitle = "About Me"
-                      ArticleDate = None }
+                      ArticleDate = None
+                      Tags = [] }
 
                 let view =
                     About.view

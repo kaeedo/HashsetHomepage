@@ -42,8 +42,14 @@ module Master =
                     div [ _class "Main-titleContainer" ] [
                         div [ _class "Main-title" ] [
                             div [ _class "Main-postTitle" ] [ str masterData.PageTitle ]
+                            if not (masterData.Tags |> List.isEmpty)
+                            then div [ _class "Main-postTags" ]
+                                    (masterData.Tags
+                                     |> List.map (fun t ->
+                                        let encoded = Web.HttpUtility.UrlEncode(t.Name, Text.Encoding.ASCII)
+                                        a [ _class "Main-postTag"; _href <| sprintf "articles?tag=%s" encoded ] [ str t.Name ]
+                                     ))
                             div [ _class "Main-postDate" ] [ str <| getDate masterData.ArticleDate ]
-                            // div [ _class "Main-postTags" ] [ str "Tags" ]
                         ]
                     ]
 
