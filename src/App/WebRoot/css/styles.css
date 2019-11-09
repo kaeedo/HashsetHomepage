@@ -247,7 +247,7 @@ pre {
 
 .LatestPosts-entryTags {
     grid-row: 2;
-    margin-left: 5rem;
+    margin-left: 4rem;
     grid-column-start: 1;
     grid-column-end: span 2;
     align-self: center;
@@ -255,16 +255,18 @@ pre {
 }
 
 .LatestPosts-entryTag {
-    margin-right: 1.5rem;
-}
-
-.LatestPosts-entryTagLink {
     text-decoration: none;
     border: 1px solid #c6c6c6;
     padding: 5px 1rem;
     background-color: #e6e6e6;
     color: black;
     border-radius: 5px;
+    margin-left: 1rem;
+}
+
+.LatestPosts-entryTag:hover {
+    color: #f2f2f2;
+    background-color: #2c2e43;
 }
 
 .LatestPosts-entryDescription {
