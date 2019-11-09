@@ -21,7 +21,8 @@ module LatestArticles =
                 div [ _class "LatestPosts-entryTags" ]
                     (c.Tags
                      |> List.map (fun t ->
-                        a [ _class "LatestPosts-entryTag"; _href <| sprintf "articles?tag=%s" t.Name ] [ str t.Name ]
+                        let encoded = Web.HttpUtility.UrlEncode(t.Name, Text.Encoding.ASCII)
+                        a [ _class "LatestPosts-entryTag"; _href <| sprintf "articles?tag=%s" encoded ] [ str t.Name ]
                      ))
                 div [ _class "LatestPosts-entryDescription" ] [ rawText c.Description ]
             ]

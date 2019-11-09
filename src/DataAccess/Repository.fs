@@ -21,9 +21,11 @@ type IRepository =
     abstract member DeleteArticleById: int -> Task<unit>
     abstract member GetLatestArticle: unit -> Task<ParsedDocument>
     abstract member GetArticles: unit -> Task<ParsedDocument seq>
+    abstract member GetArticlesByTag: string -> Task<ParsedDocument seq>
 
 type Repository(connectionString) =
     do NpgsqlLogManager.Provider <- ConsoleLoggingProvider(NpgsqlLogLevel.Trace, true, true) :> INpgsqlLoggingProvider
+    do NpgsqlLogManager.IsParameterLoggingEnabled <- true
 
     let serviceConfig = ServiceConfig()
     do serviceConfig.SetConfiguration<ConnectionProvider>(HashsetConnectionProvider(connectionString)) |> ignore
@@ -147,6 +149,18 @@ type Repository(connectionString) =
             let getPlan =
                 plan {
                     let! articles = Queries.GetArticles.Command().Plan()
+
+                    return
+                        articles
+                        |> Seq.map (Queries.mapArticle)
+                }
+
+            Execution.execute executionConfig getPlan
+
+        member this.GetArticlesByTag (tag: string) =
+            let getPlan =
+                plan {
+                    let! articles = Queries.GetArticlesByTag.Command(tag = tag).Plan()
 
                     return
                         articles

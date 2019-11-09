@@ -95,6 +95,18 @@ module Queries =
         order by a.CreatedOn desc
     """>
 
+    type GetArticlesByTag = SQL<"""
+        select
+            a.*,
+            many tags(t.*)
+        from articles a
+        join article_tags at on a.Id = at.ArticleId
+        join tags t on t.id = at.TagId
+        where a.CreatedOn <= now()
+        and t.Name = @tag
+        order by a.CreatedOn desc
+    """>
+
     let inline mapArticle row =
         { ParsedDocument.Id = (^a: (member get_Id: unit -> int)(row))
           Title = (^a: (member get_Title: unit -> string)(row))
