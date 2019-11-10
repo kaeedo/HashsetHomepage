@@ -9,3 +9,8 @@ packages
 .fake/fcswatch/port.cache
 Build
 packages-microsoft-prod.deb
+csr.pem
+devCert.crt
+devCert.pfx
+https.config
+key.pem

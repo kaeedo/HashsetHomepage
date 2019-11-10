@@ -48,7 +48,6 @@ module Articles =
         then buildDocument String.Empty document
         else document
 
-
     let getLatestArticle (repository: IRepository) = repository.GetLatestArticle()
     let getArticles (repository: IRepository) = repository.GetArticles()
     let getArticlesByTag (repository: IRepository) (tag: string) = repository.GetArticlesByTag tag
