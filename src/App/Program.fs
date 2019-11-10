@@ -9,6 +9,8 @@ open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.AspNetCore.Authentication
+open Microsoft.AspNetCore.Builder
+open Microsoft.AspNetCore.HttpOverrides
 open Microsoft.AspNetCore.Authentication.Cookies
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Logging
@@ -33,7 +35,6 @@ module Program =
             (authorizeUser (fun u ->
                 u.HasClaim (ClaimTypes.Name, conf.["GithubWriteUsername"])
             ) (setStatusCode 401 >=> text "Access Denied")) next ctx
-
 
     let webApp =
         choose [
@@ -75,6 +76,13 @@ module Program =
         let repository = Repository(conf.["ConnectionString"]) :> IRepository
         repository.Migrate()
         services.AddTransient<IRepository>(fun _ -> repository) |> ignore
+
+        services.Configure<ForwardedHeadersOptions>(fun (options: ForwardedHeadersOptions) ->
+            options.ForwardedHeaders <- ForwardedHeaders.XForwardedFor ||| ForwardedHeaders.XForwardedProto
+
+            options.KnownNetworks.Clear()
+            options.KnownProxies.Clear()
+        ) |> ignore
 
         services.AddAuthentication(fun options ->
                     options.DefaultAuthenticateScheme <- CookieAuthenticationDefaults.AuthenticationScheme
@@ -122,6 +130,7 @@ module Program =
             )
             .UseContentRoot(contentRoot)
             .UseWebRoot(webRoot)
+            .UseUrls("http://0.0.0.0:5000")
             .ConfigureAppConfiguration(configureAppConfiguration)
             .Configure(Action<IApplicationBuilder> configureApp)
             .ConfigureServices(configureServices)

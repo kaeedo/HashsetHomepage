@@ -45,7 +45,8 @@ module Queries =
             Title = @title,
             Source = @source,
             Parsed = @parsed,
-            Tooltips = @tooltips
+            Tooltips = @tooltips,
+            CreatedOn = @createdOn
         where Id = @id
     """>
 

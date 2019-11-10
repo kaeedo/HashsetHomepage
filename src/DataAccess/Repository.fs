@@ -105,7 +105,8 @@ type Repository(connectionString) =
                             title = document.Title,
                             source = document.Source,
                             parsed = document.Document,
-                            tooltips = document.Tooltips
+                            tooltips = document.Tooltips,
+                            createdOn = document.ArticleDate
                             )
                             .Plan()
 
