@@ -123,9 +123,9 @@ module Queries =
           Tooltips = (^a: (member get_Tooltips: unit -> string)(row))
           Tags =
                 (^a: (member get_tags: unit -> IReadOnlyList<_>)(row))
-                |> Seq.map (fun foo ->
-                    { Tag.Id = (^b: (member get_Id: unit -> int)(foo))
-                      Name = (^b: (member get_Name: unit -> string)(foo)) }
+                |> Seq.map (fun tagRow ->
+                    { Tag.Id = (^b: (member get_Id: unit -> int)(tagRow))
+                      Name = (^b: (member get_Name: unit -> string)(tagRow)) }
                 )
                 |> Seq.toList
         }
