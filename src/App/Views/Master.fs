@@ -47,7 +47,7 @@ module Master =
                                     (masterData.Tags
                                      |> List.map (fun t ->
                                         let encoded = Web.HttpUtility.UrlEncode(t.Name, Text.Encoding.ASCII)
-                                        a [ _class "Main-postTag"; _href <| sprintf "articles?tag=%s" encoded ] [ str t.Name ]
+                                        a [ _class "Main-postTag"; _href <| sprintf "/articles?tag=%s" encoded ] [ str t.Name ]
                                      ))
                             div [ _class "Main-postDate" ] [ str <| getDate masterData.ArticleDate ]
                         ]
