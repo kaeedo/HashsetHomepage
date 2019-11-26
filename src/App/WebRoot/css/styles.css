@@ -224,7 +224,7 @@ pre {
 
 .LatestPosts-entry {
     display: grid;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 3fr 1.1fr;
     grid-template-rows: min-content 3.5rem auto;
     margin-bottom: 5rem;
 }
@@ -252,6 +252,13 @@ pre {
     grid-column-end: span 2;
     align-self: center;
     margin-top: -0.5rem;
+}
+
+@media screen and (max-width: 667px) {
+    .LatestPosts-entryTags {
+        margin-left: 0rem;
+        margin-top: -1rem;
+  }
 }
 
 .LatestPosts-entryTag {
