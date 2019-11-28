@@ -1,17 +1,18 @@
 html {
     overflow-y: scroll;
     font-family: var(Arial, sans-serif);
-  }
+}
 
-  a {
+a {
     text-decoration: none;
-  }
-  .Main-body {
+}
+
+.Main-body {
     background: #eee;
     box-sizing: border-box;
-  }
+}
 
-  .Main-header {
+.Main-header {
     position: fixed;
     color: #f2f2f2;
 
@@ -28,26 +29,27 @@ html {
     font-size: 20pt;
     font-weight: 700;
     width: 99vw;
-  }
-  .Main-headerNav {
+}
+
+.Main-headerNav {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-column-gap: 2rem;
     font-weight: normal;
     padding-right: 8px;
-  }
+}
 
-  @media screen and (max-width: 667px) {
-      .Main-headerNav {
-          grid-column-gap: 1rem;
-        }
+@media screen and (max-width: 667px) {
+    .Main-headerNav {
+        grid-column-gap: 1rem;
     }
+}
 
-  .Main-headerLink {
+.Main-headerLink {
     color: inherit;
-  }
+}
 
-  #headerBackground {
+#headerBackground {
     position: absolute;
     top: 0;
     z-index: -54654654654;
@@ -61,38 +63,38 @@ html {
     height: 300px;
     margin-left: -8px;
     margin-right: -8px;
-  }
+}
 
-  .Main-titleContainer {
+.Main-titleContainer {
     margin-top: -8px;
     margin-left: -8px;
     margin-right: -8px;
     margin-bottom: 2rem;
     display: flex;
     padding: 7rem 0;
-  }
+}
 
-  .Main-title {
+.Main-title {
     margin: auto;
     padding: 8px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     color: #f2f2f2;
-  }
+}
 
-  .Main-postTitle {
+.Main-postTitle {
     font-size: 42pt;
     font-weight: 700;
     max-width: 80rem;
     margin-bottom: 1rem;
-  }
+}
 
-  @media screen and (max-width: 667px) {
+@media screen and (max-width: 667px) {
     .Main-postTitle {
         font-size: 22pt;
-      }
-  }
+    }
+}
 
 .Main-postTags {
     margin-bottom: 1rem;
@@ -114,13 +116,13 @@ html {
 }
 
 .Main-section {
-  margin: auto;
-  margin-bottom: 7rem;
+    margin: auto;
+    margin-bottom: 7rem;
 }
 
 .PostContents {
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  max-width: 80rem;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    max-width: 80rem;
 }

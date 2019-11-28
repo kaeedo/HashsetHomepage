@@ -1,3 +1,10 @@
-document.getElementById('getComments').addEventListener('click', function () {
-    window.commento.main();
-});
+//loadComments();
+
+function loadComments() {
+    var loadCommentLink = document.getElementById('loadComments');
+
+    loadCommentLink.addEventListener('click', function () {
+        window.commento.main();
+        loadCommentLink.parentNode.removeChild(loadCommentLink);
+    });
+}

@@ -1,111 +1,125 @@
 span.s {
-  color: #e0e268;
+    color: #e0e268;
 }
+
 span.pf {
-  color: #e0c57f;
+    color: #e0c57f;
 }
+
 span.e {
-  color: #ea8675;
+    color: #ea8675;
 }
 
 span.i {
-  color: #d1d1d1;
+    color: #d1d1d1;
 }
+
 span.t {
-  color: #43aec6;
+    color: #43aec6;
 }
+
 span.f {
-  color: #e1e1e1;
+    color: #e1e1e1;
 }
+
 span.p {
-  color: #4ec9b0;
+    color: #4ec9b0;
 }
 
 span.k {
-  color: #fab11d;
+    color: #fab11d;
 }
+
 span.c {
-  color: #808080;
+    color: #808080;
 }
+
 span.o {
-  color: #af75c1;
+    color: #af75c1;
 }
+
 span.n {
-  color: #96c71d;
+    color: #96c71d;
 }
+
 span.l {
-  color: #80b0b0;
+    color: #80b0b0;
 }
+
 span.v {
-  color: #d1d1d1;
-  font-weight: bold;
+    color: #d1d1d1;
+    font-weight: bold;
 }
+
 span.inactive {
-  color: #808080;
+    color: #808080;
 }
+
 span.prep {
-  color: #af75c1;
+    color: #af75c1;
 }
+
 span.fsi {
-  color: #808080;
+    color: #808080;
 }
 
 span.omitted {
-  background: #3c4e52;
-  border-radius: 5px;
-  color: #808080;
-  padding: 0px 0px 1px 0px;
+    background: #3c4e52;
+    border-radius: 5px;
+    color: #808080;
+    padding: 0px 0px 1px 0px;
 }
 
 div.tip {
-  background: #475b5f;
-  border-radius: 4px;
-  font-family: "Droid Sans", arial, sans-serif;
-  padding: 6px 8px 6px 8px;
-  display: none;
-  color: #d1d1d1;
-  z-index: 1;
-  pointer-events: none;
+    background: #475b5f;
+    border-radius: 4px;
+    font-family: "Droid Sans", arial, sans-serif;
+    padding: 6px 8px 6px 8px;
+    display: none;
+    color: #d1d1d1;
+    z-index: 1;
+    pointer-events: none;
 }
 
 table.pre {
-  width: 80rem;
+    width: 80rem;
 }
 
 table.pre pre {
-  padding: 0px;
-  margin: 0px;
-  border: none;
+    padding: 0px;
+    margin: 0px;
+    border: none;
 }
 
-tbody > tr {
+tbody>tr {
     line-height: 16pt;
     font-size: 12pt;
 }
 
 @media screen and (max-width: 667px) {
-    tbody > tr {
+    tbody>tr {
         line-height: 12pt;
         font-size: 8pt;
     }
-  }
+}
 
 table.pre,
 pre.fssnip,
 pre {
-  border: 1px solid #d8d8d8;
-  border-collapse: separate;
-  white-space: pre;
-  font-family: "Lucida Console", monaco, monospace;
-  width: 90%;
-  margin: 10px 20px 20px 20px;
-  background-color: #212d30;
-  padding: 10px;
-  border-radius: 5px;
-  color: #d1d1d1;
+    border: 1px solid #d8d8d8;
+    border-collapse: separate;
+    white-space: pre;
+    font-family: "Lucida Console", monaco, monospace;
+    width: 90%;
+    margin: 10px 20px 20px 20px;
+    background-color: #212d30;
+    padding: 10px;
+    border-radius: 5px;
+    color: #d1d1d1;
 }
 
 @media screen and (max-width: 667px) {
+
     table.pre,
     pre.fssnip,
     pre {
@@ -114,112 +128,115 @@ pre {
 }
 
 pre.fssnip code {
-  font-family: "Lucida Console", monaco, monospace;
+    font-family: "Lucida Console", monaco, monospace;
 }
 
 table.pre pre {
-  padding: 0px;
-  margin: 0px;
-  border-radius: 0px;
+    padding: 0px;
+    margin: 0px;
+    border-radius: 0px;
 }
 
 table.pre td {
-  padding: 0px;
-  white-space: normal;
-  margin: 0px;
+    padding: 0px;
+    white-space: normal;
+    margin: 0px;
 }
 
 table.pre td.lines {
-  width: 30px;
+    width: 30px;
 }
 
 pre {
-  word-wrap: inherit;
+    word-wrap: inherit;
 }
 
 /*///////////////////////////////////////////////////////////////////////////////*/
-
 
 .CodeBlock {
     overflow-x: scroll;
 }
 
 .Main-header.is-fixed {
-  position: fixed;
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #333;
+    position: fixed;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
 }
 
-.PostContents > h1 > a {
-  font-size: 24pt;
+.PostContents {
+    margin-bottom: 3rem;
 }
 
-.PostContents > p {
-  font-size: 18pt;
-  line-height: 26pt;
-  font-family: var(Bookman, serif);
+.PostContents>h1>a {
+    font-size: 24pt;
+}
+
+.PostContents>p {
+    font-size: 18pt;
+    line-height: 26pt;
+    font-family: var(Bookman, serif);
 }
 
 @media screen and (max-width: 667px) {
-    .PostContents > p {
+    .PostContents>p {
         font-size: 14pt;
         line-height: 22pt;
-  }
+    }
 }
 
-.PostContents > p > img {
+.PostContents>p>img {
     display: block;
     margin: auto;
     width: 100%;
 }
 
-.PostContents > h1 > a:link {
-  color: inherit;
-  cursor: auto;
+.PostContents>h1>a:link {
+    color: inherit;
+    cursor: auto;
 }
 
-.PostContents > h1 > a:visited {
-  color: inherit;
-  cursor: auto;
+.PostContents>h1>a:visited {
+    color: inherit;
+    cursor: auto;
 }
 
-.PostContents > h3 > a:link {
-  color: inherit;
-  cursor: auto;
+.PostContents>h3>a:link {
+    color: inherit;
+    cursor: auto;
 }
 
-.PostContents > h3 > a:visited {
-  color: inherit;
-  cursor: auto;
+.PostContents>h3>a:visited {
+    color: inherit;
+    cursor: auto;
 }
 
 .About-socialList {
-  list-style: none;
-  padding: 0;
+    list-style: none;
+    padding: 0;
 }
 
 .About-socialAnchor:link {
-  color: inherit;
-  cursor: pointer;
+    color: inherit;
+    cursor: pointer;
 }
 
 .About-socialAnchor:visited {
-  color: inherit;
+    color: inherit;
 }
 
 .About-socialLink {
-  display: flex;
-  line-height: 26pt;
-  font-size: 16pt;
-  margin-bottom: 0.5rem;
+    display: flex;
+    line-height: 26pt;
+    font-size: 16pt;
+    margin-bottom: 0.5rem;
 }
 
 .About-socialIcon {
-  margin-right: 1rem;
+    margin-right: 1rem;
 }
 
 .About-socialText {
-  position: absolute;
+    position: absolute;
 }
 
 .LatestPosts-entry {
@@ -258,7 +275,7 @@ pre {
     .LatestPosts-entryTags {
         margin-left: 0rem;
         margin-top: -1rem;
-  }
+    }
 }
 
 .LatestPosts-entryTag {
@@ -316,4 +333,28 @@ pre {
 .Main-footerCodeLink {
     color: #f2f2f2;
     text-decoration: underline;
+}
+
+.ArticleEnd {
+    margin-left: -8px;
+    margin-right: -8px;
+    margin-bottom: 1rem;
+    border-top: none;
+    border-color: #c6c6c6;
+}
+
+.ArticleComments {
+    margin: auto;
+    max-width: 80rem;
+}
+
+.ArticleComments-container {
+    text-align: center;
+}
+
+#loadComments {
+    display: inline-block;
+    color: #6c6c6c;
+    text-decoration: underline;
+    cursor: pointer;
 }

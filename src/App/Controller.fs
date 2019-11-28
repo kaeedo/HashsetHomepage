@@ -16,13 +16,13 @@ module private Load =
 
 [<RequireQualifiedAccess>]
 module Controller =
-    let private renderArticlePage (article: ParsedDocument) =
+    let private renderArticlePage (shouldLoadComments: bool) (article: ParsedDocument) =
         let masterData =
             { MasterContent.PageTitle = article.Title
               ArticleDate = Some article.ArticleDate
               Tags = article.Tags }
 
-        Article.view article
+        Article.view shouldLoadComments article
         |> Load.styledMasterView masterData
         |> htmlView
 
@@ -32,16 +32,21 @@ module Controller =
                 let repository = ctx.GetService<IRepository>()
                 let! latestArticle = Articles.getLatestArticle repository
 
-                return! renderArticlePage latestArticle next ctx
+                return! renderArticlePage false latestArticle next ctx
             }
 
     let article articleId: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
+                let shouldLoadComments =
+                    match ctx.TryGetQueryStringValue "loadComments" with
+                    | None -> false
+                    | Some _ -> true
+
                 let repository = ctx.GetService<IRepository>()
                 let! article = Articles.getArticle repository articleId
 
-                return! renderArticlePage article next ctx
+                return! renderArticlePage shouldLoadComments article next ctx
             }
 
     let deleteArticle articleId: HttpHandler =
