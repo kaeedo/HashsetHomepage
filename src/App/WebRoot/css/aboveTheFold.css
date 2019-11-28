@@ -27,6 +27,7 @@ html {
     padding: 8px;
     font-size: 20pt;
     font-weight: 700;
+    width: 99vw;
   }
   .Main-headerNav {
     display: grid;

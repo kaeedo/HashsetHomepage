@@ -2,7 +2,6 @@ function init() {
     affixTopBar();
     particleBackground();
     resizeTitleCanvas();
-    resizeHeaderNav();
     zoomableImages();
 
     window.addEventListener('resize', resizeTitleCanvas);
@@ -31,13 +30,6 @@ function toggleZoom(image) {
         img.setAttribute('data-original', true)
     }
 }
-
-function resizeHeaderNav() {
-    var headerBar = document.querySelector('.Main-header');
-
-    var viewWidth = document.documentElement.clientWidth - 8;
-    headerBar.style.width = viewWidth + 'px';
-};
 
 function resizeTitleCanvas() {
     var headerTitle = document.querySelector('.Main-titleContainer');
