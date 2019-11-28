@@ -1,0 +1,10 @@
+
+.commento-root .commento-login-box-container .commento-login-box button,
+.commento-root .commento-login-box-container .commento-login-box input,
+.commento-root .commento-login-box-container .commento-login-box textarea {
+    font-family: 'Droid Sans', sans-serif
+}
+
+.commento-root-font * {
+    font-family: 'Droid Sans', sans-serif
+}

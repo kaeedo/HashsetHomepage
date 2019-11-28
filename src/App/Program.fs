@@ -77,12 +77,14 @@ module Program =
         repository.Migrate()
         services.AddTransient<IRepository>(fun _ -> repository) |> ignore
 
+#if DEBUG
         services.Configure<ForwardedHeadersOptions>(fun (options: ForwardedHeadersOptions) ->
             options.ForwardedHeaders <- ForwardedHeaders.XForwardedFor ||| ForwardedHeaders.XForwardedProto
 
             options.KnownNetworks.Clear()
             options.KnownProxies.Clear()
         ) |> ignore
+#endif
 
         services.AddAuthentication(fun options ->
                     options.DefaultAuthenticateScheme <- CookieAuthenticationDefaults.AuthenticationScheme
@@ -124,8 +126,8 @@ module Program =
                             Port      = Some 44340
                             Scheme    = Https
                             FilePath  = Some @"../../../../../devCert.pfx"
-                            Password  = None } ]
-                            // Password = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
+                            //Password  = None } ]
+                            Password = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
 #endif
             )
             .UseContentRoot(contentRoot)
