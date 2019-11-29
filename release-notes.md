@@ -1,3 +1,7 @@
+### 1.1.1
+* Rename CSS file
+* Add version and status endpoints
+
 ### 1.1.0
 * Add commenting system
 
