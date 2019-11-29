@@ -17,7 +17,6 @@ open Yahoo.Yui.Compressor
 let buildDir = "./build/"
 let solutionFile = "./Hashset.sln"
 
-// Targets
 Target.create "Clean" (fun _ ->
     Shell.cleanDir buildDir
 )
@@ -33,18 +32,15 @@ Target.create "Build" (fun _ ->
 Target.create "Minify" (fun _ ->
     let cssCompressor = CssCompressor()
 
-    let cssFileName = buildDir @@ "WebRoot" @@ "css" @@ "styles.css"
-    let cssFileContents = File.readAsString(cssFileName)
-
-    cssCompressor.Compress(cssFileContents)
-    |> File.replaceContent cssFileName
-
+    !!(buildDir @@ "WebRoot" @@ "**" @@ "*.css")
+    |> Seq.iter (fun file ->
+        cssCompressor.Compress(File.readAsString(file))
+        |> File.replaceContent file
+    )
 
     let jsCompressor = JavaScriptCompressor()
-    let jsFiles =
-        !!(buildDir @@ "WebRoot" @@ "**" @@ "*.js")
 
-    jsFiles
+    !!(buildDir @@ "WebRoot" @@ "**" @@ "*.js")
     |> Seq.iter (fun file ->
         jsCompressor.Compress(File.readAsString(file))
         |> File.replaceContent file

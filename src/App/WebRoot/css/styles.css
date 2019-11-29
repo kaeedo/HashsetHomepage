@@ -174,7 +174,7 @@ pre {
 .PostContents>p {
     font-size: 18pt;
     line-height: 26pt;
-    font-family: var(Bookman, serif);
+    font-family: Bookman, serif;
 }
 
 @media screen and (max-width: 667px) {
@@ -338,7 +338,7 @@ pre {
 .ArticleEnd {
     margin-left: -8px;
     margin-right: -8px;
-    margin-bottom: 1rem;
+    margin-bottom: 3rem;
     border-top: none;
     border-color: #c6c6c6;
 }
@@ -352,9 +352,11 @@ pre {
     text-align: center;
 }
 
-#loadComments {
+.ArticleComments-loadComments {
     display: inline-block;
     color: #6c6c6c;
     text-decoration: underline;
     cursor: pointer;
+    font-size: 16pt;
+    font-weight: 700;
 }
