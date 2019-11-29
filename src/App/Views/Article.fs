@@ -27,7 +27,7 @@ module Article =
                     _defer
                     _async
                     _data "no-fonts" "true"
-                    _data "css-override" "/css/commentoOverride.css"
+                    _data "css-override" "/css/comments.css"
                     _src "https://commento.hashset.dev/js/commento.js"
                 ] []
         ]

@@ -36,9 +36,13 @@ module Program =
                 u.HasClaim (ClaimTypes.Name, conf.["GithubWriteUsername"])
             ) (setStatusCode 401 >=> text "Access Denied")) next ctx
 
+    let version = Reflection.Assembly.GetEntryAssembly().GetName().Version
+
     let webApp =
         choose [
             GET >=> choose [
+                routeCi "/version" >=> text (version.ToString())
+                routeCi "/status" >=> text "ok"
                 routeCi "/"  >=> Controller.homepage
                 routeCi "/articles" >=> Controller.articles
                 routeCif "/articles/upsert/%i" (fun id -> mustBeLoggedIn >=> mustBeMe >=> Controller.upsert id)
