@@ -10,7 +10,7 @@ COPY . .
 
 RUN dotnet tool restore
 
-RUN dotnet fake build
+RUN dotnet fake build -t Minify
 
 #################################
 

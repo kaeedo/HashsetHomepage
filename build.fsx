@@ -2,9 +2,11 @@
 nuget YUICompressor.NET
 nuget Fake.IO.FileSystem
 nuget Fake.DotNet.Cli
+nuget Fake.Core.ReleaseNotes
 nuget Fake.Core.Target //"
 #load "./.fake/build.fsx/intellisense.fsx"
 
+open FSharp.Core
 open Fake.Core
 open Fake.DotNet
 open Fake.IO
@@ -16,12 +18,17 @@ open Yahoo.Yui.Compressor
 // Properties
 let buildDir = "./build/"
 let solutionFile = "./Hashset.sln"
+let entryProject = "./src/App/App.fsproj"
+
+let version =
+    let latestRelease = ReleaseNotes.load("./release-notes.md")
+    latestRelease.SemVer
 
 Target.create "Clean" (fun _ ->
     Shell.cleanDir buildDir
 )
 
-Target.create "Build" (fun _ ->
+Target.create "BuildApplication" (fun _ ->
     DotNet.build (fun buildOptions ->
         { buildOptions with
             Configuration = DotNet.BuildConfiguration.Release
@@ -47,9 +54,28 @@ Target.create "Minify" (fun _ ->
     )
 )
 
+Target.create "SetVersion" (fun _ ->
+    let releaseVersion = version.ToString()
+    Xml.pokeInnerText entryProject "/Project/PropertyGroup[1]/Version[1]" releaseVersion
+    Xml.saveDoc entryProject (Xml.loadDoc entryProject)
+)
+
+Target.create "BuildContainer" (fun _ ->
+    let tag = sprintf "kaeedo/hashset:%O" version
+
+    ["build"; "."; "-t"; tag]
+    |> CreateProcess.fromRawCommand "docker"
+    |> Proc.run
+    |> ignore
+
+    Trace.logfn "Built docker container with tag: %s" tag
+)
+
 "Clean"
-    ==> "Build"
+    ==> "BuildApplication"
     ==> "Minify"
 
-// start build
-Target.runOrDefault "Minify"
+"SetVersion"
+    ==> "BuildContainer"
+
+Target.runOrDefault "BuildContainer"
