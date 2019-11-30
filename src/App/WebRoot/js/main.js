@@ -60,7 +60,7 @@ function affixTopBar() {
 
 function particleBackground() {
     if (window.particlesJS) {
-        window.particlesJS.load('headerBackground', '/assets/particles.json');
+        window.particlesJS('headerBackground');
         resizeTitleCanvas();
     } else {
         setTimeout(particleBackground);
