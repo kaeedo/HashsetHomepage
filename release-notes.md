@@ -1,3 +1,7 @@
+### 1.2.0
+* Reduce particles.js to a much smaller size.
+* Write a better about me page
+
 ### 1.1.2
 * Add Commento override CSS to main stylesheet
 
