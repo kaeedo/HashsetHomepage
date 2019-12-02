@@ -15,4 +15,6 @@ jobs:
     - name: Restore local tools
       run: dotnet tool restore
     - name: Run fakbe build
-      run: echo 'gerp'
+      run: |
+        docker --version
+        dotnet --version
