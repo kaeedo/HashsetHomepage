@@ -131,8 +131,8 @@ module Program =
                             Port      = Some 44340
                             Scheme    = Https
                             FilePath  = Some @"../../../../../devCert.pfx"
-                            //Password  = None } ]
-                            Password = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
+                            Password  = None } ]
+                            //Password = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
 #endif
             )
             .UseContentRoot(contentRoot)
