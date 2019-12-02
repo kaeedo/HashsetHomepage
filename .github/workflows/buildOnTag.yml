@@ -13,8 +13,5 @@ jobs:
         dotnet-version: '3.0.100'
     - name: Restore local tools
       run: dotnet tool restore
-    - name: Run fakbe build
-      run: |
-        dotnet --version
-        docker --version
-        dotnet fake --version
+    - name: Run fake build
+      run: dotnet fake build

@@ -26,6 +26,13 @@ module Controller =
         |> Load.styledMasterView masterData
         |> htmlView
 
+    let private getFirstParagraph (content: string) =
+        let firstIndex = content.IndexOf("<p>") + 3
+        let lastIndex = content.IndexOf("</p>")
+        let count = lastIndex - firstIndex
+
+        content.Substring(firstIndex, count)
+
     let homepage: HttpHandler  =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
@@ -127,13 +134,6 @@ module Controller =
                       ArticleDate = None
                       Tags = [] }
 
-                let getFirstParagraph (content: string) =
-                    let firstIndex = content.IndexOf("<p>") + 3
-                    let lastIndex = content.IndexOf("</p>")
-                    let count = lastIndex - firstIndex
-
-                    content.Substring(firstIndex, count)
-
                 let! articles =
                     match ctx.TryGetQueryStringValue "tag" with
                     | None -> Articles.getArticles repository
@@ -171,4 +171,28 @@ module Controller =
                     |> htmlView
 
                 return! view next ctx
+            }
+
+    let rss: HttpHandler =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                let repository = ctx.GetService<IRepository>()
+
+                let! articles =
+                    match ctx.TryGetQueryStringValue "tag" with
+                    | None -> Articles.getArticles repository
+                    | Some t -> Articles.getArticlesByTag repository t
+
+                let articles =
+                    articles
+                    |> Seq.map (fun (p: ParsedDocument) ->
+                        { ArticleStub.Id = p.Id
+                          Title = p.Title.Trim()
+                          Date = p.ArticleDate
+                          Description = getFirstParagraph p.Document
+                          Tags = p.Tags }
+                    )
+                    |> Seq.toList
+
+                return! ctx.WriteStringAsync <| (Syndication.channelFeed articles).ToString()
             }
