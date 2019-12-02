@@ -1,0 +1,18 @@
+name: BuildOnTag
+
+on: [create]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: docker
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.0.100'
+    - name: Restore local tools
+      run: dotnet tool restore
+    - name: Run fakbe build
+      run: echo 'gerp'
