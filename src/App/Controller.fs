@@ -194,5 +194,7 @@ module Controller =
                     )
                     |> Seq.toList
 
-                return! ctx.WriteStringAsync <| (Syndication.channelFeed articles).ToString()
+                let host = ctx.Request.Host
+
+                return! ctx.WriteStringAsync <| (Syndication.channelFeed (host.Value) articles).ToString()
             }
