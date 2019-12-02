@@ -16,4 +16,5 @@ jobs:
     - name: Run fakbe build
       run: |
         dotnet --version
-        fake --version
+        docker --version
+        dotnet fake --version
