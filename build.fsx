@@ -106,4 +106,4 @@ Target.create "PushContainer" (fun _ ->
     ==> "BuildContainer"
     ==> "PushContainer"
 
-Target.runOrDefault "Clean"
+Target.runOrDefault "PushContainer"
