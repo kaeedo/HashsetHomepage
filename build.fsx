@@ -66,7 +66,7 @@ Target.create "SetVersion" (fun _ ->
 
 Target.create "BuildContainer" (fun _ ->
     let result =
-        ["build"; "."; "-t"; tag]
+    ["build"; "."; "-t"; tag]
         |> CreateProcess.fromRawCommand "docker"
         |> CreateProcess.redirectOutput
         |> Proc.run
@@ -77,15 +77,15 @@ Target.create "BuildContainer" (fun _ ->
 )
 
 Target.create "PushContainer" (fun _ ->
-    let result =
-        [ "-n"; "'$DOCKER_PASSWORD'"; "|"; "docker"; "login"; "--username"; Environment.environVar "username"; "--password-stdin" ]
-        |> CreateProcess.fromRawCommand "echo"
-        |> CreateProcess.redirectOutput
-        |> Proc.run
+    // let result =
+    //     [ "login"; "--username"; Environment.environVar "username"; "--password"; Environment.environVar "username" ]
+    //     |> CreateProcess.fromRawCommand "docker"
+    //     |> CreateProcess.redirectOutput
+    //     |> Proc.run
 
-    if result.ExitCode <> 0 then
-        printfn "%s" result.Result.Output
-        failwithf "FAKE Process exited with %d: %s" result.ExitCode result.Result.Error
+    // if result.ExitCode <> 0 then
+    //     printfn "%s" result.Result.Output
+    //     failwithf "FAKE Process exited with %d: %s" result.ExitCode result.Result.Error
 
     let result =
         ["push"; tag]
