@@ -48,7 +48,8 @@ module Program =
                 routeCif "/articles/upsert/%i" (fun id -> mustBeLoggedIn >=> mustBeMe >=> Controller.upsert id)
                 routeCif "/article/%i" Controller.article
                 routeCi "/about" >=> Controller.about
-                routeCi "/rss" >=> setHttpHeader "Content-Type" "application/rss+xml" >=> Controller.rss ]
+                routeCi "/rss" >=> setHttpHeader "Content-Type" "application/rss+xml" >=> Controller.rss
+                routeCi "/atom" >=> setHttpHeader "Content-Type" "application/atom+xml" >=> Controller.atom ]
             POST >=> mustBeLoggedIn >=> mustBeMe >=> choose [
                 routeCi "/add" >=> Controller.add >=> redirectTo false "/"
                 routeCi "/edit" >=> Controller.edit
@@ -131,8 +132,8 @@ module Program =
                             Port      = Some 44340
                             Scheme    = Https
                             FilePath  = Some @"../../../../../devCert.pfx"
-                            Password  = None } ]
-                            //Password = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
+                            //Password  = None } ]
+                            Password = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
 #endif
             )
             .UseContentRoot(contentRoot)

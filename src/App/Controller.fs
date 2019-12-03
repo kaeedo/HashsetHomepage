@@ -26,13 +26,6 @@ module Controller =
         |> Load.styledMasterView masterData
         |> htmlView
 
-    let private getFirstParagraph (content: string) =
-        let firstIndex = content.IndexOf("<p>") + 3
-        let lastIndex = content.IndexOf("</p>")
-        let count = lastIndex - firstIndex
-
-        content.Substring(firstIndex, count)
-
     let homepage: HttpHandler  =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
@@ -141,13 +134,7 @@ module Controller =
 
                 let articles =
                     articles
-                    |> Seq.map (fun (p: ParsedDocument) ->
-                        { ArticleStub.Id = p.Id
-                          Title = p.Title.Trim()
-                          Date = p.ArticleDate
-                          Description = getFirstParagraph p.Document
-                          Tags = p.Tags }
-                    )
+                    |> Seq.map Articles.getArticleStub
 
                 let view =
                     LatestArticles.view articles
@@ -185,16 +172,30 @@ module Controller =
 
                 let articles =
                     articles
-                    |> Seq.map (fun (p: ParsedDocument) ->
-                        { ArticleStub.Id = p.Id
-                          Title = p.Title.Trim()
-                          Date = p.ArticleDate
-                          Description = getFirstParagraph p.Document
-                          Tags = p.Tags }
-                    )
-                    |> Seq.toList
+                    |> Seq.map Articles.getArticleStub
+                    |> List.ofSeq
 
                 let host = ctx.Request.Host
 
                 return! ctx.WriteStringAsync <| (Syndication.channelFeed (host.Value) articles).ToString()
+            }
+
+    let atom: HttpHandler =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                let repository = ctx.GetService<IRepository>()
+
+                let! articles =
+                    match ctx.TryGetQueryStringValue "tag" with
+                    | None -> Articles.getArticles repository
+                    | Some t -> Articles.getArticlesByTag repository t
+
+                let articles =
+                    articles
+                    |> Seq.map Articles.getArticleStub
+                    |> List.ofSeq
+
+                let host = ctx.Request.Host
+
+                return! ctx.WriteStringAsync <| (Syndication.syndicationFeed (host.Value) articles).ToString()
             }
