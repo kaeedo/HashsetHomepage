@@ -2,7 +2,6 @@
 nuget YUICompressor.NET
 nuget Fake.IO.FileSystem
 nuget Fake.DotNet.Cli
-nuget Fake.Runtime
 nuget Fake.Core.ReleaseNotes
 nuget Fake.Core.Target //"
 #load "./.fake/build.fsx/intellisense.fsx"
@@ -10,7 +9,6 @@ nuget Fake.Core.Target //"
 open FSharp.Core
 open Fake.Core
 open Fake.DotNet
-open Fake.Runtime
 open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
