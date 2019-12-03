@@ -13,8 +13,9 @@ jobs:
         dotnet-version: '3.0.100'
     - name: Restore local tools
       run: dotnet tool restore
-    - name: Run fake build
+    - name: Docker login
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ github.actor }} --password-stdin
+    - name: Run FAKE build
       env:
         username: ${{ github.actor }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: dotnet fake build
