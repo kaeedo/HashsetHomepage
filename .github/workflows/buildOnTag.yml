@@ -14,7 +14,9 @@ jobs:
     - name: Restore local tools
       run: dotnet tool restore
     - name: Docker login
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ github.actor }} --password-stdin
+      env:
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: echo "$DOCKER_PASSWORD" | docker login --username ${{ github.actor }} --password-stdin
     - name: Run FAKE build
       env:
         username: ${{ github.actor }}

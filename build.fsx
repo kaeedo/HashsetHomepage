@@ -66,10 +66,10 @@ Target.create "SetVersion" (fun _ ->
 
 Target.create "BuildContainer" (fun _ ->
     let result =
-    ["build"; "."; "-t"; tag]
-        |> CreateProcess.fromRawCommand "docker"
-        |> CreateProcess.redirectOutput
-        |> Proc.run
+        ["build"; "."; "-t"; tag]
+            |> CreateProcess.fromRawCommand "docker"
+            |> CreateProcess.redirectOutput
+            |> Proc.run
 
     if result.ExitCode <> 0 then
         printfn "%s" result.Result.Output
