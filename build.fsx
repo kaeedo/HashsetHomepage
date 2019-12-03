@@ -24,6 +24,9 @@ let version =
     let latestRelease = ReleaseNotes.load("./release-notes.md")
     latestRelease.SemVer
 
+let tag = sprintf "docker.pkg.github.com/kaeedo/hashsethomepage/hashset:%O" version
+
+
 Target.create "Clean" (fun _ ->
     Shell.cleanDir buildDir
 )
@@ -61,8 +64,6 @@ Target.create "SetVersion" (fun _ ->
 )
 
 Target.create "BuildContainer" (fun _ ->
-    let tag = sprintf "kaeedo/hashset:%O" version
-
     ["build"; "."; "-t"; tag]
     |> CreateProcess.fromRawCommand "docker"
     |> Proc.run
@@ -71,11 +72,24 @@ Target.create "BuildContainer" (fun _ ->
     Trace.logfn "Built docker container with tag: %s" tag
 )
 
+Target.create "PushContainer" (fun _ ->
+    ["login"; "docker.pkg.github.com"; "--username"; "kaeedo"]
+    |> CreateProcess.fromRawCommand "docker"
+    |> Proc.run
+    |> ignore
+
+    ["push"; tag]
+    |> CreateProcess.fromRawCommand "docker"
+    |> Proc.run
+    |> ignore
+)
+
 "Clean"
     ==> "BuildApplication"
     ==> "Minify"
 
 "SetVersion"
     ==> "BuildContainer"
+    ==> "PushContainer"
 
-Target.runOrDefault "BuildContainer"
+Target.runOrDefault "PushContainer"
