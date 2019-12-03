@@ -2,6 +2,7 @@
 nuget YUICompressor.NET
 nuget Fake.IO.FileSystem
 nuget Fake.DotNet.Cli
+nuget Fake.Runtime
 nuget Fake.Core.ReleaseNotes
 nuget Fake.Core.Target //"
 #load "./.fake/build.fsx/intellisense.fsx"
@@ -9,6 +10,7 @@ nuget Fake.Core.Target //"
 open FSharp.Core
 open Fake.Core
 open Fake.DotNet
+open Fake.Runtime
 open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
@@ -24,8 +26,7 @@ let version =
     let latestRelease = ReleaseNotes.load("./release-notes.md")
     latestRelease.SemVer
 
-let tag = sprintf "docker.pkg.github.com/kaeedo/hashsethomepage/hashset:%O" version
-
+let tag = sprintf "kaeedo/hashset:%O" version
 
 Target.create "Clean" (fun _ ->
     Shell.cleanDir buildDir
@@ -73,7 +74,7 @@ Target.create "BuildContainer" (fun _ ->
 )
 
 Target.create "PushContainer" (fun _ ->
-    ["login"; "docker.pkg.github.com"; "--username"; "kaeedo"]
+    ["login"]
     |> CreateProcess.fromRawCommand "docker"
     |> Proc.run
     |> ignore
