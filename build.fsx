@@ -74,8 +74,8 @@ Target.create "BuildContainer" (fun _ ->
 )
 
 Target.create "PushContainer" (fun _ ->
-    [ "$DOCKER_PASSWORD"; "|"; "docker"; "login"; "--username"; Environment.environVar "username"; "--password-stdin" ]
-    |> CreateProcess.fromRawCommand "echo"
+    [ "login"; "--username"; Environment.environVar "username"; "--password"; Environment.environVar "DOCKER_PASSWORD" ]
+    |> CreateProcess.fromRawCommand "docker"
     |> Proc.run
     |> ignore
 
