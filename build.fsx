@@ -65,18 +65,21 @@ Target.create "SetVersion" (fun _ ->
 )
 
 Target.create "BuildContainer" (fun _ ->
-    ["build"; "."; "-t"; tag]
-    |> CreateProcess.fromRawCommand "docker"
-    |> Proc.run
-    |> ignore
+    let result =
+        ["build"; "."; "-t"; tag]
+        |> CreateProcess.fromRawCommand "docker"
+        |> CreateProcess.redirectOutput
+        |> Proc.run
 
-    Trace.logfn "Built docker container with tag: %s" tag
+    if result.ExitCode <> 0 then
+        printfn "%s" result.Result.Output
+        failwithf "FAKE Process exited with %d: %s" result.ExitCode result.Result.Error
 )
 
 Target.create "PushContainer" (fun _ ->
     let result =
-        [ "'%s'"; "$DOCKER_PASSWORD"; "|"; "docker"; "login"; "--username"; Environment.environVar "username"; "--password-stdin" ]
-        |> CreateProcess.fromRawCommand "printf"
+        [ "login"; "--username"; Environment.environVar "username"; "--password";  Environment.environVar "DOCKER_PASSWORD"]
+        |> CreateProcess.fromRawCommand "docker"
         |> CreateProcess.redirectOutput
         |> Proc.run
 
@@ -84,15 +87,25 @@ Target.create "PushContainer" (fun _ ->
         printfn "%s" result.Result.Output
         failwithf "FAKE Process exited with %d: %s" result.ExitCode result.Result.Error
 
-    ["push"; tag]
-    |> CreateProcess.fromRawCommand "docker"
-    |> Proc.run
-    |> ignore
+    let result =
+        ["push"; tag]
+        |> CreateProcess.fromRawCommand "docker"
+        |> CreateProcess.redirectOutput
+        |> Proc.run
 
-    ["logout"]
-    |> CreateProcess.fromRawCommand "docker"
-    |> Proc.run
-    |> ignore
+    if result.ExitCode <> 0 then
+        printfn "%s" result.Result.Output
+        failwithf "FAKE Process exited with %d: %s" result.ExitCode result.Result.Error
+
+    let result =
+        ["logout"]
+        |> CreateProcess.fromRawCommand "docker"
+        |> CreateProcess.redirectOutput
+        |> Proc.run
+
+    if result.ExitCode <> 0 then
+        printfn "%s" result.Result.Output
+        failwithf "FAKE Process exited with %d: %s" result.ExitCode result.Result.Error
 )
 
 "Clean"
