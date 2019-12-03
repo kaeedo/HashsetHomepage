@@ -12,7 +12,7 @@ jobs:
       with:
         dotnet-version: '3.0.100'
     - name: Test
-      run: cat $HOME/runner/.docker/config.json
+      run: cat $HOME/.docker/config.json
     - name: Restore local tools
       run: dotnet tool restore
     - name: Docker login
