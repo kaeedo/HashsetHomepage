@@ -95,12 +95,6 @@ Target.create "PushContainer" (fun _ ->
     |> ignore
 )
 
-Target.create "Testing" (fun _ ->
-    CreateProcess.fromRawCommandLine "echo" "$username | grep ka"
-    |> Proc.run
-    |> ignore
-)
-
 "Clean"
     ==> "BuildApplication"
     ==> "Minify"
@@ -109,4 +103,4 @@ Target.create "Testing" (fun _ ->
     ==> "BuildContainer"
     ==> "PushContainer"
 
-Target.runOrDefault "Testing"
+Target.runOrDefault "PushContainer"
