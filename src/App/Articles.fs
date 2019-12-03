@@ -79,3 +79,17 @@ module Articles =
 
             return parsedDocument
         }
+
+    let getArticleStub (parsedDocument: ParsedDocument) =
+        let getFirstParagraph (content: string) =
+            let firstIndex = content.IndexOf("<p>") + 3
+            let lastIndex = content.IndexOf("</p>")
+            let count = lastIndex - firstIndex
+
+            content.Substring(firstIndex, count)
+
+        { ArticleStub.Id = parsedDocument.Id
+          Title = parsedDocument.Title.Trim()
+          Date = parsedDocument.ArticleDate
+          Description = getFirstParagraph parsedDocument.Document
+          Tags = parsedDocument.Tags }
