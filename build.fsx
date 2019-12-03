@@ -74,10 +74,15 @@ Target.create "BuildContainer" (fun _ ->
 )
 
 Target.create "PushContainer" (fun _ ->
-    [ "login"; "--username"; Environment.environVar "username"; "--password"; Environment.environVar "DOCKER_PASSWORD" ]
-    |> CreateProcess.fromRawCommand "docker"
-    |> Proc.run
-    |> ignore
+    let result =
+        [ "-n"; "$DOCKER_PASSWORD"; "|"; "docker"; "login"; "--username"; Environment.environVar "username"; "--password-stdin" ]
+        |> CreateProcess.fromRawCommand "echo"
+        |> CreateProcess.redirectOutput
+        |> Proc.run
+
+    if result.ExitCode <> 0 then
+        printfn "%s" result.Result.Output
+        failwithf "FAKE Process exited with %d: %s" result.ExitCode result.Result.Error
 
     ["push"; tag]
     |> CreateProcess.fromRawCommand "docker"
@@ -90,6 +95,12 @@ Target.create "PushContainer" (fun _ ->
     |> ignore
 )
 
+Target.create "Testing" (fun _ ->
+    CreateProcess.fromRawCommandLine "echo" "$username | grep ka"
+    |> Proc.run
+    |> ignore
+)
+
 "Clean"
     ==> "BuildApplication"
     ==> "Minify"
@@ -98,4 +109,4 @@ Target.create "PushContainer" (fun _ ->
     ==> "BuildContainer"
     ==> "PushContainer"
 
-Target.runOrDefault "PushContainer"
+Target.runOrDefault "Testing"
