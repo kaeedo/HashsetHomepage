@@ -317,7 +317,11 @@ pre {
     flex-direction: column;
     text-align: center;
     justify-content: space-between;
-    height: 6rem;
+    height: 8rem;
+}
+
+.Main-footerSyndicateSeparator {
+    margin: 0 0.5rem;
 }
 
 .Main-footerSocialLink {
