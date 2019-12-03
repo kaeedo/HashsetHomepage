@@ -75,7 +75,7 @@ Target.create "BuildContainer" (fun _ ->
 
 Target.create "PushContainer" (fun _ ->
     let result =
-        [ "'%s'"; @"""$DOCKER_PASSWORD"""; "|"; "docker"; "login"; "--username"; Environment.environVar "username"; "--password-stdin" ]
+        [ "'%s'"; "$DOCKER_PASSWORD"; "|"; "docker"; "login"; "--username"; Environment.environVar "username"; "--password-stdin" ]
         |> CreateProcess.fromRawCommand "printf"
         |> CreateProcess.redirectOutput
         |> Proc.run
