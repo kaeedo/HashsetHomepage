@@ -114,7 +114,7 @@ module Controller =
 
                 do! Articles.updateArticle repository document.Id parsedDocument document.Tags
 
-                return! redirectTo false (sprintf "/article/%i" document.Id) next ctx
+                return! redirectTo false (sprintf "/article/%i_%s" document.Id parsedDocument.UrlTitle) next ctx
             }
 
     let articles: HttpHandler =

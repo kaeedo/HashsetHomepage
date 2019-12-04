@@ -13,7 +13,7 @@ module LatestArticles =
         |> Seq.map (fun c ->
             div [ _class "LatestPosts-entry" ] [
                 h3 [ _class "LatestPosts-entryTitle" ] [
-                    a [ _href <| sprintf "article/%i" c.Id ] [
+                    a [ _href <| sprintf "article/%i_%s" c.Id c.urlTitle ] [
                         str c.Title
                     ]
                 ]

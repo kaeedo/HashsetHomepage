@@ -65,10 +65,12 @@ module Articles =
             do! File.WriteAllTextAsync(tmpFileName, source)
 
             let parsed = Literate.ProcessMarkdown(tmpFileName, generateAnchors = true)
+            let title = title.Trim()
 
             let parsedDocument =
                 { ParsedDocument.Id = Unchecked.defaultof<int>
-                  Title = title.Trim()
+                  Title = title
+                  UrlTitle = Web.HttpUtility.UrlEncode(title, Text.Encoding.ASCII)
                   Source = source
                   Document = parsed.Parameters |> getContent "document" |> transformHtml
                   ArticleDate =  articleDate
@@ -91,5 +93,6 @@ module Articles =
         { ArticleStub.Id = parsedDocument.Id
           Title = parsedDocument.Title.Trim()
           Date = parsedDocument.ArticleDate
+          UrlTitle = parsedDocument.UrlTitle
           Description = getFirstParagraph parsedDocument.Document
           Tags = parsedDocument.Tags }
