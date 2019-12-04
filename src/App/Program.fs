@@ -61,7 +61,6 @@ module Program =
 
     let configureApp (app: IApplicationBuilder) =
         app.UseStaticFiles()
-           //.UseDeveloperExceptionPage()
            .UseAuthentication()
            .UseHttpsRedirection()
            .UseGiraffe(webApp)

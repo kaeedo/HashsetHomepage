@@ -17,7 +17,6 @@ open Fake.IO.Globbing.Operators
 open Fake.Core.TargetOperators
 open Yahoo.Yui.Compressor
 
-// Properties
 let buildDir = "./build/"
 let solutionFile = "./Hashset.sln"
 let entryProject = "./src/App/App.fsproj"
@@ -26,7 +25,7 @@ let version =
     let latestRelease = ReleaseNotes.load("./release-notes.md")
     latestRelease.SemVer
 
-let tag = sprintf "%s/hashset:%O" (Environment.environVar "username") version
+let tag = sprintf "%s/hashset:%O" (Environment.environVar "USERNAME") version
 
 Target.create "Clean" (fun _ ->
     Shell.cleanDir buildDir
@@ -67,9 +66,9 @@ Target.create "SetVersion" (fun _ ->
 Target.create "BuildContainer" (fun _ ->
     let result =
         ["build"; "."; "-t"; tag]
-            |> CreateProcess.fromRawCommand "docker"
-            |> CreateProcess.redirectOutput
-            |> Proc.run
+        |> CreateProcess.fromRawCommand "docker"
+        |> CreateProcess.redirectOutput
+        |> Proc.run
 
     if result.ExitCode <> 0 then
         printfn "%s" result.Result.Output
@@ -79,16 +78,6 @@ Target.create "BuildContainer" (fun _ ->
 Target.create "PushContainer" (fun _ ->
     let result =
         ["push"; tag]
-        |> CreateProcess.fromRawCommand "docker"
-        |> CreateProcess.redirectOutput
-        |> Proc.run
-
-    if result.ExitCode <> 0 then
-        printfn "%s" result.Result.Output
-        failwithf "FAKE Process exited with %d: %s" result.ExitCode result.Result.Error
-
-    let result =
-        ["logout"]
         |> CreateProcess.fromRawCommand "docker"
         |> CreateProcess.redirectOutput
         |> Proc.run
@@ -106,4 +95,4 @@ Target.create "PushContainer" (fun _ ->
     ==> "BuildContainer"
     ==> "PushContainer"
 
-Target.runOrDefault "PushContainer"
+Target.runOrDefault "BuildContainer"

@@ -10,12 +10,14 @@ Secondly, when you first run the server, it will throw empty list exceptions, be
 
 When adding or updating a post, you can add any number of Tags. To do this, you can simply click the `Tag` label on the upsert page, and a new input field will appear.
 
-This site supports a commenting system powered by [Commento](https://www.commento.io/), and if you want to run your own site, make sure to replace the URL of where commento is hosted in `src\App\Views\Article.fs`.
+This site supports a commenting system powered by [Commento](https://www.commento.io/), and if you want to run your own site, make sure to replace the URL of where commento is hosted in `src/App/Views/Article.fs`.
 
 ### Running locally
 Dependencies
 * postgres
 * .Net Core 3.x
+
+You will need to generate a self signed certificate for local development. Example guide here: https://blogs.msdn.microsoft.com/webdev/2017/11/29/configuring-https-in-asp-net-core-across-different-platforms/
 
 You will also need to set several configuration options, either in the `appsettings.json`, your environment variables, or using `dotnet user-secrets` as [detailed here](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.0&tabs=windows).
 They are:
@@ -27,4 +29,4 @@ They are:
 Ideally, you should be able to simply run `dotnet build`, and `dotnet run`. It installs `paket` and `fake-cli` as local tools and they should be good to go out of the box.
 
 ### Building a docker container
-This is where the `fake` build script comes into play. `fake build` will read the latest version from `release-notes.md` and build a docker container with that version as the tag. Make sure to change your docker username in build.fsx if you want to host your own containers.
+This is where the `fake` build script comes into play. `fake build` will read the latest version from `release-notes.md` and build a docker container with that version as the tag. The build script requires your docker username as the environment variable `USERNAME`, with which it will tag the docker image
