@@ -14,6 +14,7 @@ type MasterContent =
 type ArticleStub =
     { Id: int
       Title: string
+      UrlTitle: string
       Date: DateTime
       Description: string
       Tags: Tag list }
@@ -22,6 +23,7 @@ type ParsedDocument =
     { Id: int
       Title: string
       ArticleDate: DateTime
+      UrlTitle: string
       Source: string
       Document: string
       Tooltips: string

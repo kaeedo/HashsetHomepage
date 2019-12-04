@@ -47,6 +47,7 @@ module Program =
                 routeCi "/articles" >=> Controller.articles
                 routeCif "/articles/upsert/%i" (fun id -> mustBeLoggedIn >=> mustBeMe >=> Controller.upsert id)
                 routeCif "/article/%i" Controller.article
+                routeCif "/article/%i_%s" (fun (id, _) -> Controller.article id)
                 routeCi "/about" >=> Controller.about
                 routeCi "/rss" >=> setHttpHeader "Content-Type" "application/rss+xml" >=> Controller.rss
                 routeCi "/atom" >=> setHttpHeader "Content-Type" "application/atom+xml" >=> Controller.atom ]
