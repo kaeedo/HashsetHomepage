@@ -121,7 +121,6 @@ module Controller =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 let repository = ctx.GetService<IRepository>()
-                // TODO: Server side paging
                 let masterData =
                     { MasterContent.PageTitle = "All Articles"
                       ArticleDate = None

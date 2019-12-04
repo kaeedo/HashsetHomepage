@@ -19,5 +19,7 @@ jobs:
       run: echo "$DOCKER_PASSWORD" | docker login --username ${{ github.actor }} --password-stdin
     - name: Run FAKE build
       env:
-        username: ${{ github.actor }}
-      run: dotnet fake build
+        USERNAME: ${{ github.actor }}
+      run: dotnet fake build -t PushContainer
+    - name: Docker logout
+      run: docker logout

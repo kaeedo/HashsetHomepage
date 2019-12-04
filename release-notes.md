@@ -1,5 +1,5 @@
-### 1.3.1-beta2
-* Buildfsx
+### 1.3.1
+* Add healthcheck
 
 ### 1.3.0
 * Add RSS and Atom feeds
