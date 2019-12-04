@@ -26,6 +26,4 @@ COPY --from=builder /app/build .
 
 EXPOSE 5000
 
-HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost:5000/status || exit 1
-
 ENTRYPOINT ["dotnet", "App.dll"]
