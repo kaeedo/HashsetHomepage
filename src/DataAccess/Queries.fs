@@ -1,5 +1,6 @@
 namespace DataAccess
 
+open System
 open System.Collections
 open System.Collections.Generic
 open Rezoom
@@ -117,7 +118,10 @@ module Queries =
     let inline mapArticle row =
         { ParsedDocument.Id = (^a: (member get_Id: unit -> int)(row))
           Title = (^a: (member get_Title: unit -> string)(row))
-          ArticleDate = (^a: (member get_CreatedOn: unit -> System.DateTime)(row))
+          UrlTitle =
+                (^a: (member get_Title: unit -> string)(row))
+                |> fun row -> Web.HttpUtility.UrlEncode(row, Text.Encoding.ASCII)
+          ArticleDate = (^a: (member get_CreatedOn: unit -> DateTime)(row))
           Source = (^a: (member get_Source: unit -> string)(row))
           Document = (^a: (member get_Parsed: unit -> string)(row))
           Tooltips = (^a: (member get_Tooltips: unit -> string)(row))
