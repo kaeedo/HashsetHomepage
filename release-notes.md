@@ -1,3 +1,8 @@
+### 1.4.0
+* Change url scheme to include title in url
+* Fix editing of tags to remove old ones
+* Upgrade to .NET Core 3.1
+
 ### 1.3.1
 * Add healthcheck
 

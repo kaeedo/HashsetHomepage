@@ -92,6 +92,8 @@ type Repository(connectionString) =
         member this.UpdateArticle (articleId: int) (document: ParsedDocument) (tags: string list) =
             let updatePlan =
                 plan {
+                    do! Queries.DeleteArticleTagsByArticleId.Command(id = articleId).Plan()
+
                     let! tags =
                         Plan.concurrentList
                             [ for tagName in tags do
