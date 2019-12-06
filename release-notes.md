@@ -1,3 +1,6 @@
+### 1.4.1
+* Revert .NET Core 3.1 update until paket stabilizes
+
 ### 1.4.0
 * Change url scheme to include title in url
 * Fix editing of tags to remove old ones
