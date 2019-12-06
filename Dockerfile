@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-alpine3.9 AS builder
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1.100-alpine3.9 AS builder
 
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 
@@ -14,7 +14,7 @@ RUN dotnet fake build -t Minify
 
 #################################
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-alpine3.9
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.0-alpine3.9
 
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 
