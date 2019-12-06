@@ -17,7 +17,7 @@ module Article =
             div [ _class "ArticleComments" ] [
                 if not shouldLoadComments then
                     div [ _class "ArticleComments-container" ] [
-                        a [ _class "ArticleComments-loadComments"; _href <| sprintf "/article/%i?loadComments=true#commento" parsedDocument.Id ] [ str "Load comments" ]
+                        a [ _class "ArticleComments-loadComments"; _href <| sprintf "/article/%i_%s?loadComments=true#commento" parsedDocument.Id parsedDocument.UrlTitle ] [ str "Load comments" ]
                     ]
                 div [ _id "commento" ] []
             ]
