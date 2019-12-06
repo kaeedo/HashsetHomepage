@@ -35,6 +35,15 @@ module Controller =
                 return! renderArticlePage false latestArticle next ctx
             }
 
+    let articleRedirect articleId: HttpHandler =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                let repository = ctx.GetService<IRepository>()
+                let! article = Articles.getArticle repository articleId
+
+                return! redirectTo true (sprintf "/article/%i_%s" article.Id article.UrlTitle) next ctx
+            }
+
     let article articleId: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {

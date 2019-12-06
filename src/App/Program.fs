@@ -46,8 +46,8 @@ module Program =
                 routeCi "/"  >=> Controller.homepage
                 routeCi "/articles" >=> Controller.articles
                 routeCif "/articles/upsert/%i" (fun id -> mustBeLoggedIn >=> mustBeMe >=> Controller.upsert id)
-                routeCif "/article/%i" Controller.article
                 routeCif "/article/%i_%s" (fun (id, _) -> Controller.article id)
+                routeCif "/article/%i" Controller.articleRedirect
                 routeCi "/about" >=> Controller.about
                 routeCi "/rss" >=> setHttpHeader "Content-Type" "application/rss+xml" >=> Controller.rss
                 routeCi "/atom" >=> setHttpHeader "Content-Type" "application/atom+xml" >=> Controller.atom ]
@@ -83,14 +83,12 @@ module Program =
         repository.Migrate()
         services.AddTransient<IRepository>(fun _ -> repository) |> ignore
 
-#if DEBUG
         services.Configure<ForwardedHeadersOptions>(fun (options: ForwardedHeadersOptions) ->
             options.ForwardedHeaders <- ForwardedHeaders.XForwardedFor ||| ForwardedHeaders.XForwardedProto
 
             options.KnownNetworks.Clear()
             options.KnownProxies.Clear()
         ) |> ignore
-#endif
 
         services.AddAuthentication(fun options ->
                     options.DefaultAuthenticateScheme <- CookieAuthenticationDefaults.AuthenticationScheme
@@ -113,7 +111,6 @@ module Program =
         services.AddGiraffe() |> ignore
 
     let configureLogging (builder : ILoggingBuilder) =
-
         let filter (l : LogLevel) = l.Equals LogLevel.Error
         builder.AddFilter(filter).AddConsole().AddDebug() |> ignore
 
