@@ -2,6 +2,7 @@ namespace Hashset
 
 open FSharp.Control.Tasks.V2.ContextInsensitive
 open FSharp.Literate
+open FSlugify.SlugGenerator
 open System.IO
 open System
 open System.Reflection
@@ -70,7 +71,7 @@ module Articles =
             let parsedDocument =
                 { ParsedDocument.Id = Unchecked.defaultof<int>
                   Title = title
-                  UrlTitle = Web.HttpUtility.UrlEncode(title, Text.Encoding.ASCII)
+                  UrlTitle = slugify DefaultSlugGeneratorOptions title
                   Source = source
                   Document = parsed.Parameters |> getContent "document" |> transformHtml
                   ArticleDate =  articleDate

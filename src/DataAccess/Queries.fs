@@ -6,6 +6,7 @@ open System.Collections.Generic
 open Rezoom
 open Rezoom.SQL
 open Model
+open FSlugify.SlugGenerator
 
 [<RequireQualifiedAccess>]
 module Queries =
@@ -120,7 +121,7 @@ module Queries =
           Title = (^a: (member get_Title: unit -> string)(row))
           UrlTitle =
                 (^a: (member get_Title: unit -> string)(row))
-                |> fun row -> Web.HttpUtility.UrlEncode(row, Text.Encoding.ASCII)
+                |> fun row -> slugify DefaultSlugGeneratorOptions row //Web.HttpUtility.UrlEncode(row, Text.Encoding.ASCII)
           ArticleDate = (^a: (member get_CreatedOn: unit -> DateTime)(row))
           Source = (^a: (member get_Source: unit -> string)(row))
           Document = (^a: (member get_Parsed: unit -> string)(row))
