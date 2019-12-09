@@ -14,3 +14,4 @@ nuget System.Reflection.Emit 4.3.0
 nuget FParsec-Pipes 1.1.0
 nuget System.Data.SqlClient 4.5.1
 nuget Npgsql
+nuget FSlugify

@@ -25,6 +25,8 @@ NUGET
     FSharp.Literate (3.1)
       FSharp.Compiler.Service (>= 27.0.1 < 28.0)
       System.ValueTuple (>= 4.5 < 5.0)
+    FSlugify (1.0)
+      FSharp.Core (>= 4.7) - restriction: >= netstandard2.1
     Giraffe (4.0)
       FSharp.Core (>= 4.7) - restriction: || (>= net461) (>= netstandard2.0)
       Microsoft.AspNetCore.Authentication (>= 2.2) - restriction: || (>= net461) (>= netstandard2.0)

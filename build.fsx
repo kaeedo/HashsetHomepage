@@ -25,7 +25,7 @@ let version =
     let latestRelease = ReleaseNotes.load("./release-notes.md")
     latestRelease.SemVer
 
-let tag = sprintf "%s/hashset:%O" (Environment.environVar "USERNAME") version
+let tag = sprintf "docker.pkg.github.com/%s/hashsethomepage/hashset:%O" (Environment.environVar "USERNAME") version
 
 Target.create "Clean" (fun _ ->
     Shell.cleanDir buildDir

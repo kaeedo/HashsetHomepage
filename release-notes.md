@@ -1,3 +1,6 @@
+### 1.5.0
+* Generate URL Slugs using FSlugify
+
 ### 1.4.1
 * Revert .NET Core 3.1 update until paket stabilizes
 
