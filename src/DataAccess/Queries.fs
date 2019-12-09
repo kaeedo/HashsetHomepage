@@ -121,7 +121,7 @@ module Queries =
           Title = (^a: (member get_Title: unit -> string)(row))
           UrlTitle =
                 (^a: (member get_Title: unit -> string)(row))
-                |> fun row -> slugify DefaultSlugGeneratorOptions row //Web.HttpUtility.UrlEncode(row, Text.Encoding.ASCII)
+                |> fun row -> slugify DefaultSlugGeneratorOptions row
           ArticleDate = (^a: (member get_CreatedOn: unit -> DateTime)(row))
           Source = (^a: (member get_Source: unit -> string)(row))
           Document = (^a: (member get_Parsed: unit -> string)(row))
