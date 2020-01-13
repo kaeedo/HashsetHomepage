@@ -1,3 +1,6 @@
+### 1.6.0
+* Add meta tags to let other sites grab relevant content
+
 ### 1.5.0
 * Generate URL Slugs using FSlugify
 

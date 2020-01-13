@@ -19,6 +19,7 @@ module Master =
                 title [] [ str <| sprintf "%s - Hashset.dev" masterData.PageTitle ]
                 style [] [ str aboveTheFold ]
                 link [ _rel "stylesheet"; _type "text/css"; _href "/css/styles.css"; _async ]
+
                 meta [ _charset "utf-8" ]
                 meta [ _name "viewport"; _content "width=device-width, initial-scale=1.0" ]
             ]

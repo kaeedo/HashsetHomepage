@@ -1,6 +1,7 @@
 ﻿namespace Model
 
 open System
+open FSlugify.SlugGenerator
 
 type Tag =
     { Id: int
@@ -14,7 +15,6 @@ type MasterContent =
 type ArticleStub =
     { Id: int
       Title: string
-      UrlTitle: string
       Date: DateTime
       Description: string
       Tags: Tag list }
@@ -23,11 +23,20 @@ type ParsedDocument =
     { Id: int
       Title: string
       ArticleDate: DateTime
-      UrlTitle: string
       Source: string
       Document: string
       Tooltips: string
       Tags: Tag list }
+    with
+        member this.GetFirstParagraph =
+            let content = this.Document
+            let firstIndex = content.IndexOf("<p>") + 3
+            let lastIndex = content.IndexOf("</p>")
+            let count = lastIndex - firstIndex
+
+            content.Substring(firstIndex, count)
+        member this.GetUrlTitle =
+            slugify DefaultSlugGeneratorOptions this.Title
 
 [<CLIMutable>]
 type UpsertDocument =

@@ -16,13 +16,13 @@ module private Load =
 
 [<RequireQualifiedAccess>]
 module Controller =
-    let private renderArticlePage (shouldLoadComments: bool) (article: ParsedDocument) =
+    let private renderArticlePage (shouldLoadComments: bool) (article: ParsedDocument) currentUrl =
         let masterData =
             { MasterContent.PageTitle = article.Title
               ArticleDate = Some article.ArticleDate
               Tags = article.Tags }
 
-        Article.view shouldLoadComments article
+        Article.view shouldLoadComments article currentUrl
         |> Load.styledMasterView masterData
         |> htmlView
 
@@ -32,7 +32,9 @@ module Controller =
                 let repository = ctx.GetService<IRepository>()
                 let! latestArticle = Articles.getLatestArticle repository
 
-                return! renderArticlePage false latestArticle next ctx
+                let host = ctx.Request.Host.Value
+
+                return! renderArticlePage false latestArticle host next ctx
             }
 
     let articleRedirect articleId: HttpHandler =
@@ -41,7 +43,7 @@ module Controller =
                 let repository = ctx.GetService<IRepository>()
                 let! article = Articles.getArticle repository articleId
 
-                return! redirectTo true (sprintf "/article/%i_%s" article.Id article.UrlTitle) next ctx
+                return! redirectTo true (sprintf "/article/%s" (Utils.getUrl article.Id article.Title)) next ctx
             }
 
     let article articleId: HttpHandler =
@@ -55,7 +57,9 @@ module Controller =
                 let repository = ctx.GetService<IRepository>()
                 let! article = Articles.getArticle repository articleId
 
-                return! renderArticlePage shouldLoadComments article next ctx
+                let host = ctx.Request.Host.Value
+
+                return! renderArticlePage shouldLoadComments article host next ctx
             }
 
     let deleteArticle articleId: HttpHandler =
@@ -123,7 +127,7 @@ module Controller =
 
                 do! Articles.updateArticle repository document.Id parsedDocument document.Tags
 
-                return! redirectTo false (sprintf "/article/%i_%s" document.Id parsedDocument.UrlTitle) next ctx
+                return! redirectTo false (sprintf "/article/%s" (Utils.getUrl parsedDocument.Id parsedDocument.Title)) next ctx
             }
 
     let articles: HttpHandler =
@@ -183,9 +187,9 @@ module Controller =
                     |> Seq.map Articles.getArticleStub
                     |> List.ofSeq
 
-                let host = ctx.Request.Host
+                let host = ctx.Request.Host.Value
 
-                return! ctx.WriteStringAsync <| (Syndication.channelFeed (host.Value) articles).ToString()
+                return! ctx.WriteStringAsync <| (Syndication.channelFeed host articles).ToString()
             }
 
     let atom: HttpHandler =
@@ -203,7 +207,7 @@ module Controller =
                     |> Seq.map Articles.getArticleStub
                     |> List.ofSeq
 
-                let host = ctx.Request.Host
+                let host = ctx.Request.Host.Value
 
-                return! ctx.WriteStringAsync <| (Syndication.syndicationFeed (host.Value) articles).ToString()
+                return! ctx.WriteStringAsync <| (Syndication.syndicationFeed host articles).ToString()
             }

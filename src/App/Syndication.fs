@@ -19,7 +19,7 @@ module Syndication =
             |> List.map(fun i ->
                 XElement(xn "item",
                     elem "title" (WebUtility.HtmlEncode i.Title),
-                    elem "link" <| sprintf "https://%s/article/%i_%s" host i.Id i.UrlTitle,
+                    elem "link" <| sprintf "https://%s/article/%s" host (Utils.getUrl i.Id i.Title),
                     elem "guid" <| sprintf "%O" (Guid.NewGuid()),
                     elem "pubDate" (i.Date.ToString("r")),
                     elem "description" (WebUtility.HtmlEncode i.Description)
@@ -42,7 +42,7 @@ module Syndication =
                 XElement(xn "entry",
                     elem "title" i.Title,
 
-                    elemAttr "link" "href" (sprintf "https://%s/article/%i_%s" host i.Id i.UrlTitle),
+                    elemAttr "link" "href" (sprintf "https://%s/article/%s" host (Utils.getUrl i.Id i.Title)),
                     elem "guid" <| sprintf "urn:uuid:%O" (Guid.NewGuid()),
 
                     elem "updated" (i.Date.ToString("yyyy-MM-dd'T'HH:mm:ss.fffK")),
