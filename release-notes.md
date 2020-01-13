@@ -1,3 +1,8 @@
+### 1.6.1
+* Upgrade to .NET Core 3.1
+* Add description meta tag
+* Hardcode avatar URL
+
 ### 1.6.0
 * Add meta tags to let other sites grab relevant content
 

@@ -24,7 +24,7 @@ module LatestArticles =
                         let encoded = Web.HttpUtility.UrlEncode(t.Name, Text.Encoding.ASCII)
                         a [ _class "LatestPosts-entryTag"; _href <| sprintf "articles?tag=%s" encoded ] [ str t.Name ]
                      ))
-                div [ _class "LatestPosts-entryDescription" ] [ rawText c.Description ]
+                div [ _class "LatestPosts-entryExcerpt" ] [ rawText c.Excerpt ]
             ]
         )
 
