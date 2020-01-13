@@ -21,6 +21,10 @@ module Upsert =
                 input [ _type "text"; _id "Title"; _name "Title"; _value upsertDocument.Title ]
             ]
             div [] [
+                label [ _for "Description" ] [ str "Description" ]
+                input [ _type "text"; _id "Description"; _name "Description"; _value upsertDocument.Description ]
+            ]
+            div [] [
                 label [ _for "Source" ] [ str "Source" ]
                 textarea [ _rows "40"; _cols "160"; _id "Source"; _name "Source" ] [ str upsertDocument.Source ]
             ]

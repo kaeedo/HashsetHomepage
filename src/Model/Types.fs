@@ -17,11 +17,13 @@ type ArticleStub =
       Title: string
       Date: DateTime
       Description: string
+      Excerpt: string
       Tags: Tag list }
 
 type ParsedDocument =
     { Id: int
       Title: string
+      Description: string
       ArticleDate: DateTime
       Source: string
       Document: string
@@ -42,6 +44,7 @@ type ParsedDocument =
 type UpsertDocument =
     { Id: int
       Title: string
+      Description: string
       ArticleDate: DateTime
       Source: string
       Tags: string list }

@@ -10,6 +10,7 @@
     <Content Include="rzsql.json" />
     <None Include="paket.references" />
     <None Include="v1.articles.sql" />
+    <None Include="v2.articleDescription.sql" />
     <Compile Include="Queries.fs" />
     <Compile Include="HashsetConnectionProvider.fs" />
     <Compile Include="Repository.fs" />

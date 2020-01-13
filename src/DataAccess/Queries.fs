@@ -29,6 +29,7 @@ module Queries =
         row
             Title = @title,
             Source = @source,
+            Description = @description,
             Parsed = @parsed,
             Tooltips = @tooltips,
             CreatedOn = @createdOn;
@@ -46,6 +47,7 @@ module Queries =
         update articles set
             Title = @title,
             Source = @source,
+            Description = @description,
             Parsed = @parsed,
             Tooltips = @tooltips,
             CreatedOn = @createdOn
@@ -120,6 +122,7 @@ module Queries =
         { ParsedDocument.Id = (^a: (member get_Id: unit -> int)(row))
           Title = (^a: (member get_Title: unit -> string)(row))
           ArticleDate = (^a: (member get_CreatedOn: unit -> DateTime)(row))
+          Description = (^a: (member get_Description: unit -> string)(row))
           Source = (^a: (member get_Source: unit -> string)(row))
           Document = (^a: (member get_Parsed: unit -> string)(row))
           Tooltips = (^a: (member get_Tooltips: unit -> string)(row))

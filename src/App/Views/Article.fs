@@ -12,9 +12,9 @@ module Article =
         div [] [
             meta [ _property "og:title";  _content parsedDocument.Title ]
             meta [ _property "og:type";  _content "article" ]
-            meta [ _property "og:description";  _content parsedDocument.GetFirstParagraph ]
+            meta [ _property "og:description";  _content parsedDocument.Description ]
             meta [ _property "og:url";  _content permaLink ]
-            meta [ _name "description";  _content parsedDocument.GetFirstParagraph ]
+            meta [ _name "description";  _content parsedDocument.Description ]
             link [ _rel "canonical"; _href <| permaLink ]
 
             article [ _class "PostContents" ] [

@@ -78,12 +78,14 @@ module Controller =
                     { MasterContent.PageTitle = "Upsert"
                       ArticleDate = None
                       Tags = [] }
+
                 let! upsertDocument =
                     if articleId = 0 then
                         task {
                             return { UpsertDocument.Id = articleId
                                      Title = String.Empty
                                      Source = String.Empty
+                                     Description = String.Empty
                                      ArticleDate = DateTime.UtcNow.Date
                                      Tags = [] }
                         }
@@ -94,6 +96,7 @@ module Controller =
                             return { UpsertDocument.Id = articleId
                                      Title = article.Title
                                      Source = article.Source
+                                     Description = article.Description
                                      ArticleDate = article.ArticleDate
                                      Tags = article.Tags |> List.map (fun t -> t.Name) }
                         }
@@ -111,7 +114,7 @@ module Controller =
             task {
                 let repository = ctx.GetService<IRepository>()
                 let! document = ctx.BindFormAsync<UpsertDocument>()
-                let! parsedDocument = Articles.parse document.Title document.Source document.ArticleDate
+                let! parsedDocument = Articles.parse document
 
                 do! Articles.addArticle repository parsedDocument document.Tags
 
@@ -123,11 +126,11 @@ module Controller =
             task {
                 let repository = ctx.GetService<IRepository>()
                 let! document = ctx.BindFormAsync<UpsertDocument>()
-                let! parsedDocument = Articles.parse document.Title document.Source document.ArticleDate
+                let! parsedDocument = Articles.parse document
 
                 do! Articles.updateArticle repository document.Id parsedDocument document.Tags
 
-                return! redirectTo false (sprintf "/article/%s" (Utils.getUrl parsedDocument.Id parsedDocument.Title)) next ctx
+                return! redirectTo false (sprintf "/article/%s" (Utils.getUrl document.Id parsedDocument.Title)) next ctx
             }
 
     let articles: HttpHandler =

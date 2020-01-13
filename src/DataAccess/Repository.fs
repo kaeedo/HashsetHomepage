@@ -59,8 +59,6 @@ type Repository(connectionString) =
             connection.ProviderName <- "Npgsql"
             Queries.HashsetModel.MigrateWithConnection(config, connection)
 
-
-
         member this.InsertArticle (document: ParsedDocument) (tags: string list) =
             let insertPlan =
                 plan {
@@ -75,6 +73,7 @@ type Repository(connectionString) =
                         Queries.InsertArticle.Command(
                             title = document.Title,
                             source = document.Source,
+                            description = document.Description,
                             parsed = document.Document,
                             tooltips = document.Tooltips,
                             createdOn = document.ArticleDate
@@ -105,6 +104,7 @@ type Repository(connectionString) =
                         Queries.UpdateArticleById.Command(
                             id = articleId,
                             title = document.Title,
+                            description = document.Description,
                             source = document.Source,
                             parsed = document.Document,
                             tooltips = document.Tooltips,
