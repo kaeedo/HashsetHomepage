@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D69BD1F8-E776-4415-B50E-0428C028E886}"
 EndProject
@@ -17,7 +17,17 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Rezoom.SQL.Provider", "lib\
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Rezoom.SQL.Mapping", "lib\Rezoom.SQL.Mapping\Rezoom.SQL.Mapping.fsproj", "{BF16285F-B59E-421B-A9B3-B2985C29A30A}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Model", "src\Model\Model.fsproj", "{9EF23935-ECB6-4FA4-BDD3-A258C2A002C1}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Model", "src\Model\Model.fsproj", "{9EF23935-ECB6-4FA4-BDD3-A258C2A002C1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4293EDD7-22AD-4860-A61C-25E9EA46693D}"
+	ProjectSection(SolutionItems) = preProject
+		build.fsx = build.fsx
+		Dockerfile = Dockerfile
+		LICENSE.md = LICENSE.md
+		paket.dependencies = paket.dependencies
+		readme.md = readme.md
+		release-notes.md = release-notes.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,10 +118,10 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3AE90AE1-C913-45AC-AFC9-C1CA05935AC2} = {D69BD1F8-E776-4415-B50E-0428C028E886}
 		{BDC4A0F1-0E4B-41F5-9BFD-DF3D186B8AD6} = {D69BD1F8-E776-4415-B50E-0428C028E886}
-		{9EF23935-ECB6-4FA4-BDD3-A258C2A002C1} = {D69BD1F8-E776-4415-B50E-0428C028E886}
 		{2648162E-FE61-431C-872D-F5B2CA21FEF2} = {783962A9-0269-4303-8B66-49273A290622}
 		{924887A7-3725-47D7-9782-6355540A8A6B} = {783962A9-0269-4303-8B66-49273A290622}
 		{BF16285F-B59E-421B-A9B3-B2985C29A30A} = {783962A9-0269-4303-8B66-49273A290622}
+		{9EF23935-ECB6-4FA4-BDD3-A258C2A002C1} = {D69BD1F8-E776-4415-B50E-0428C028E886}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F461CC8B-9AC8-4F8D-A467-883724E5AF38}

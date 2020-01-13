@@ -119,9 +119,6 @@ module Queries =
     let inline mapArticle row =
         { ParsedDocument.Id = (^a: (member get_Id: unit -> int)(row))
           Title = (^a: (member get_Title: unit -> string)(row))
-          UrlTitle =
-                (^a: (member get_Title: unit -> string)(row))
-                |> fun row -> slugify DefaultSlugGeneratorOptions row
           ArticleDate = (^a: (member get_CreatedOn: unit -> DateTime)(row))
           Source = (^a: (member get_Source: unit -> string)(row))
           Document = (^a: (member get_Parsed: unit -> string)(row))

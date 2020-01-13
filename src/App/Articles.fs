@@ -2,7 +2,6 @@ namespace Hashset
 
 open FSharp.Control.Tasks.V2.ContextInsensitive
 open FSharp.Literate
-open FSlugify.SlugGenerator
 open System.IO
 open System
 open System.Reflection
@@ -12,9 +11,6 @@ open DataAccess
 [<RequireQualifiedAccess>]
 module Articles =
     let (++) a b = Path.Combine(a, b)
-    let private personalDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)
-    let private srcDir = personalDir ++ "posts" ++ "source"
-    let private parsedDir = personalDir ++ "posts" ++ "parsed"
 
     let private getContent key parsed =
         parsed
@@ -28,8 +24,6 @@ module Articles =
     let private transformHtml (document: string) =
         let tableStartTag = "<table class=\"pre\">"
         let tableEndTag = "</table>"
-        let divStartTag = "<div class=\"CodeBlock\">"
-        let divEndTag = "</div>"
 
         let rec buildDocument (accumulator: string) (markupToParse: string) =
             let startTableIndex = markupToParse.IndexOf(tableStartTag)
@@ -71,7 +65,6 @@ module Articles =
             let parsedDocument =
                 { ParsedDocument.Id = Unchecked.defaultof<int>
                   Title = title
-                  UrlTitle = slugify DefaultSlugGeneratorOptions title
                   Source = source
                   Document = parsed.Parameters |> getContent "document" |> transformHtml
                   ArticleDate =  articleDate
@@ -84,16 +77,8 @@ module Articles =
         }
 
     let getArticleStub (parsedDocument: ParsedDocument) =
-        let getFirstParagraph (content: string) =
-            let firstIndex = content.IndexOf("<p>") + 3
-            let lastIndex = content.IndexOf("</p>")
-            let count = lastIndex - firstIndex
-
-            content.Substring(firstIndex, count)
-
         { ArticleStub.Id = parsedDocument.Id
           Title = parsedDocument.Title.Trim()
           Date = parsedDocument.ArticleDate
-          UrlTitle = parsedDocument.UrlTitle
-          Description = getFirstParagraph parsedDocument.Document
+          Description = parsedDocument.GetFirstParagraph
           Tags = parsedDocument.Tags }
