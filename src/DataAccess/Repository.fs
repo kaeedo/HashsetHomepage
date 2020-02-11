@@ -4,11 +4,9 @@ open System
 open System.Threading.Tasks
 
 open Rezoom
-open Rezoom.SQL
 open Rezoom.SQL.Plans
 open Rezoom.SQL.Migrations
 open Rezoom.SQL.Mapping
-open Npgsql
 open Npgsql.Logging
 
 open Model
@@ -57,7 +55,7 @@ type Repository(connectionString) =
             let connection = Configuration.ConnectionStringSettings()
             connection.ConnectionString <- connectionString
             connection.ProviderName <- "Npgsql"
-            Queries.HashsetModel.MigrateWithConnection(config, connection)
+            Queries.HashsetModel.Migrate(config, connection)
 
         member this.InsertArticle (document: ParsedDocument) (tags: string list) =
             let insertPlan =

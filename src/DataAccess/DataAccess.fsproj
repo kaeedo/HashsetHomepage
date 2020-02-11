@@ -3,7 +3,6 @@
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../lib/Rezoom.SQL.Provider/Rezoom.SQL.Provider.fsproj" />
     <ProjectReference Include="../Model/Model.fsproj" />
   </ItemGroup>
   <ItemGroup>

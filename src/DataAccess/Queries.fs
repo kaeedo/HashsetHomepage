@@ -1,12 +1,9 @@
 namespace DataAccess
 
 open System
-open System.Collections
 open System.Collections.Generic
-open Rezoom
 open Rezoom.SQL
 open Model
-open FSlugify.SlugGenerator
 
 [<RequireQualifiedAccess>]
 module Queries =

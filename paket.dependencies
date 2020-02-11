@@ -7,11 +7,9 @@ nuget AspNet.Security.OAuth.GitHub
 nuget Microsoft.Extensions.Configuration.Json
 nuget Microsoft.Extensions.Configuration.UserSecrets
 # nuget FSharp.SystemTextJson  #  remember this
-nuget LicenseToCIL 1.0.0
-nuget Rezoom 1.0.0
-nuget System.Configuration.ConfigurationManager 4.5.0
-nuget System.Reflection.Emit 4.3.0
-nuget FParsec-Pipes 1.1.0
-nuget System.Data.SqlClient 4.5.1
 nuget Npgsql
 nuget FSlugify
+
+
+source https://www.myget.org/F/secret-feed-lamp/api/v3/index.json
+nuget Rezoom.SQL.Provider 1.0.3
