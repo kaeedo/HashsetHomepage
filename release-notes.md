@@ -1,3 +1,6 @@
+### 1.7.1
+* Fix commento data-page-id
+
 ### 1.7.0
 * Upgrade commento
 * Always show comments
