@@ -16,13 +16,13 @@ module private Load =
 
 [<RequireQualifiedAccess>]
 module Controller =
-    let private renderArticlePage (shouldLoadComments: bool) (article: ParsedDocument) currentUrl =
+    let private renderArticlePage (article: ParsedDocument) currentUrl =
         let masterData =
             { MasterContent.PageTitle = article.Title
               ArticleDate = Some article.ArticleDate
               Tags = article.Tags }
 
-        Article.view shouldLoadComments article currentUrl
+        Article.view article currentUrl
         |> Load.styledMasterView masterData
         |> htmlView
 
@@ -34,7 +34,7 @@ module Controller =
 
                 let host = ctx.Request.Host.Value
 
-                return! renderArticlePage false latestArticle host next ctx
+                return! renderArticlePage latestArticle host next ctx
             }
 
     let articleRedirect articleId: HttpHandler =
@@ -49,17 +49,12 @@ module Controller =
     let article articleId: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                let shouldLoadComments =
-                    match ctx.TryGetQueryStringValue "loadComments" with
-                    | None -> false
-                    | Some _ -> true
-
                 let repository = ctx.GetService<IRepository>()
                 let! article = Articles.getArticle repository articleId
 
                 let host = ctx.Request.Host.Value
 
-                return! renderArticlePage shouldLoadComments article host next ctx
+                return! renderArticlePage article host next ctx
             }
 
     let deleteArticle articleId: HttpHandler =

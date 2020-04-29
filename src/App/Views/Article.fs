@@ -7,7 +7,7 @@ module Article =
 
     let private _property = attr "property"
 
-    let view (shouldLoadComments: bool) (parsedDocument: ParsedDocument) currentUrl =
+    let view (parsedDocument: ParsedDocument) currentUrl =
         let permaLink = sprintf "https://%s/article/%s" currentUrl (Utils.getUrl parsedDocument.Id parsedDocument.Title)
         div [] [
             meta [ _property "og:title";  _content parsedDocument.Title ]
@@ -25,18 +25,13 @@ module Article =
             hr [ _class "ArticleEnd" ]
 
             div [ _class "ArticleComments" ] [
-                if not shouldLoadComments then
-                    div [ _class "ArticleComments-container" ] [
-                        a [ _class "ArticleComments-loadComments"; _href <| sprintf "/article/%s?loadComments=true#commento" (Utils.getUrl parsedDocument.Id parsedDocument.Title) ] [ str "Load comments" ]
-                    ]
-                div [ _id "commento" ] []
+                div [ _id "commento"; _data "page-id" (parsedDocument.Id.ToString()) ] []
             ]
 
-            if shouldLoadComments then
-                script [
-                    _defer
-                    _async
-                    _data "no-fonts" "true"
-                    _src "https://commento.hashset.dev/js/commento.js"
-                ] []
+            script [
+                _defer
+                _async
+                _data "no-fonts" "true"
+                _src "https://commento.hashset.dev/js/commento.js"
+            ] []
         ]

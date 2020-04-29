@@ -128,9 +128,9 @@ module Program =
                         { EndpointConfiguration.Default with
                             Port      = Some 44340
                             Scheme    = Https
-                            FilePath  = Some @"../../../../../devCert.pfx"
+                            FilePath  = Some @"../../devCert.pfx"
                             //Password  = None } ]
-                            Password = Some (File.ReadAllText(@"..\..\..\..\..\devCert.txt").Trim()) } ]
+                            Password = Some (File.ReadAllText(@"..\..\devCert.txt").Trim()) } ]
 #endif
             )
             .UseContentRoot(contentRoot)

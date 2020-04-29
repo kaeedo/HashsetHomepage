@@ -39,8 +39,5 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors>FS0025</WarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup>
-    <RestoreSources>https://api.nuget.org/v3/index.json</RestoreSources>
-  </PropertyGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
