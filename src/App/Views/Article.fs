@@ -25,13 +25,14 @@ module Article =
             hr [ _class "ArticleEnd" ]
 
             div [ _class "ArticleComments" ] [
-                div [ _id "commento"; _data "page-id" (parsedDocument.Id.ToString()) ] []
+                div [ _id "commento" ] []
             ]
 
             script [
                 _defer
                 _async
                 _data "no-fonts" "true"
+                _data "page-id" (parsedDocument.Id.ToString())
                 _src "https://commento.hashset.dev/js/commento.js"
             ] []
         ]
