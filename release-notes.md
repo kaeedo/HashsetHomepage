@@ -1,3 +1,7 @@
+### 1.7.0
+* Upgrade commento
+* Always show comments
+
 ### 1.6.1
 * Upgrade to .NET Core 3.1
 * Add description meta tag
