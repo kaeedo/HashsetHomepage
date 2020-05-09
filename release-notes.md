@@ -1,3 +1,6 @@
+### 1.7.2
+* Remove image from open graph meta tags
+
 ### 1.7.1
 * Fix commento data-page-id
 

@@ -22,8 +22,6 @@ module Master =
                 style [] [ str aboveTheFold ]
                 link [ _rel "stylesheet"; _type "text/css"; _href "/css/styles.css"; _async ]
 
-                // TODO get this from github write username
-                meta [ _property "og:image"; _content "https://avatars0.githubusercontent.com/u/3847895?v=4" ]
                 meta [ _charset "utf-8" ]
                 meta [ _name "viewport"; _content "width=device-width, initial-scale=1.0" ]
             ]

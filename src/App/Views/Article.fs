@@ -10,6 +10,7 @@ module Article =
     let view (parsedDocument: ParsedDocument) currentUrl =
         let permaLink = sprintf "https://%s/article/%s" currentUrl (Utils.getUrl parsedDocument.Id parsedDocument.Title)
         div [] [
+            meta [ _property "og:site_name";  _content "Hashset - Kai Ito" ]
             meta [ _property "og:title";  _content parsedDocument.Title ]
             meta [ _property "og:type";  _content "article" ]
             meta [ _property "og:description";  _content parsedDocument.Description ]
