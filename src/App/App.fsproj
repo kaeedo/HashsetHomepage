@@ -23,7 +23,6 @@
     <Compile Include="Articles.fs" />
     <Compile Include="Syndication.fs" />
     <Compile Include="Controller.fs" />
-    <Compile Include="HttpsConfig.fs" Condition="'$(Configuration)' == 'Debug'" />
     <Compile Include="Program.fs" />
     <Content Include="WebRoot/**/*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -2,14 +2,12 @@ namespace Hashset
 
 open System
 open System.Security.Claims
-open System.Configuration
 open System.IO
 
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.AspNetCore.Authentication
-open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.HttpOverrides
 open Microsoft.AspNetCore.Authentication.Cookies
 open Microsoft.Extensions.DependencyInjection
@@ -20,9 +18,6 @@ open Giraffe
 
 open Hashset.Views
 open DataAccess
-#if DEBUG
-open HttpsConfig
-#endif
 
 module Program =
     let mustBeLoggedIn: HttpHandler =
@@ -120,22 +115,9 @@ module Program =
         let webRoot = Path.Combine(contentRoot, "WebRoot")
 
         WebHostBuilder()
-            .UseKestrel(
-#if DEBUG
-                fun o ->
-                    o.ConfigureEndpoints [
-                        EndpointConfiguration.Default
-                        { EndpointConfiguration.Default with
-                            Port      = Some 44340
-                            Scheme    = Https
-                            FilePath  = Some @"../../devCert.pfx"
-                            //Password  = None } ]
-                            Password = Some (File.ReadAllText(@"..\..\devCert.txt").Trim()) } ]
-#endif
-            )
+            .UseKestrel()
             .UseContentRoot(contentRoot)
             .UseWebRoot(webRoot)
-            .UseUrls("http://0.0.0.0:5000")
             .ConfigureAppConfiguration(configureAppConfiguration)
             .Configure(Action<IApplicationBuilder> configureApp)
             .ConfigureServices(configureServices)
