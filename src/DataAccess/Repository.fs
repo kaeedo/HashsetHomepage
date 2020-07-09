@@ -17,7 +17,7 @@ type IRepository =
     abstract member UpdateArticle: int -> ParsedDocument -> string list -> Task<unit>
     abstract member GetArticleById: int -> Task<ParsedDocument>
     abstract member DeleteArticleById: int -> Task<unit>
-    abstract member GetLatestArticle: unit -> Task<ParsedDocument>
+    abstract member GetLatestArticle: unit -> Task<ParsedDocument option>
     abstract member GetArticles: unit -> Task<ParsedDocument seq>
     abstract member GetArticlesByTag: string -> Task<ParsedDocument seq>
 
@@ -143,7 +143,10 @@ type Repository(connectionString) =
                 plan {
                     let! articles = Queries.GetLatestArticle.Command().Plan()
 
-                    return Queries.mapArticle (articles.[0])
+                    return
+                        articles
+                        |> Seq.tryHead
+                        |> Option.map (Queries.mapArticle)
                 }
 
             Execution.execute executionConfig getPlan

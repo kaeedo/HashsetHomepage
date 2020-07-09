@@ -14,7 +14,7 @@ module Upsert =
             ]
             div [] [
                 label [ _for "ArticleDate" ] [ str "ArticleDate" ]
-                input [ _type "text"; _id "ArticleDate"; _name "ArticleDate"; _value (upsertDocument.ArticleDate.ToString("d")) ]
+                input [ _type "date"; _id "ArticleDate"; _name "ArticleDate"; _value (upsertDocument.ArticleDate.ToString("d")) ]
             ]
             div [] [
                 label [ _for "Title" ] [ str "Title" ]

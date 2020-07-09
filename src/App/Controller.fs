@@ -32,9 +32,13 @@ module Controller =
                 let repository = ctx.GetService<IRepository>()
                 let! latestArticle = Articles.getLatestArticle repository
 
-                let host = ctx.Request.Host.Value
+                return!
+                    match latestArticle with
+                    | None -> redirectTo false ("/articles/upsert/0") next ctx
+                    | Some la ->
+                        let host = ctx.Request.Host.Value
 
-                return! renderArticlePage latestArticle host next ctx
+                        renderArticlePage la host next ctx
             }
 
     let articleRedirect articleId: HttpHandler =
@@ -108,7 +112,7 @@ module Controller =
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {
                 let repository = ctx.GetService<IRepository>()
-                let! document = ctx.BindFormAsync<UpsertDocument>()
+                let! document = ctx.BindFormAsync<UpsertDocument>(Globalization.CultureInfo.InvariantCulture)
                 let! parsedDocument = Articles.parse document
 
                 do! Articles.addArticle repository parsedDocument document.Tags
