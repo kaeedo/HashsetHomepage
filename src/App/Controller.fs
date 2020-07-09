@@ -70,7 +70,7 @@ module Controller =
                 return! next ctx
             }
 
-    let upsert articleId: HttpHandler =
+    let upsertPage: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 let masterData =
@@ -78,27 +78,23 @@ module Controller =
                       ArticleDate = None
                       Tags = [] }
 
-                let! upsertDocument =
-                    if articleId = 0 then
-                        task {
-                            return { UpsertDocument.Id = articleId
-                                     Title = String.Empty
-                                     Source = String.Empty
-                                     Description = String.Empty
-                                     ArticleDate = DateTime.UtcNow.Date
-                                     Tags = [] }
-                        }
-                    else
-                        task {
-                            let repository = ctx.GetService<IRepository>()
-                            let! article = Articles.getArticle repository articleId
-                            return { UpsertDocument.Id = articleId
-                                     Title = article.Title
-                                     Source = article.Source
-                                     Description = article.Description
-                                     ArticleDate = article.ArticleDate
-                                     Tags = article.Tags |> List.map (fun t -> t.Name) }
-                        }
+                let repository = ctx.GetService<IRepository>()
+                let! articles = repository.GetArticles()
+                let articleIds =
+                    articles
+                    |> Seq.map (fun (pd: ParsedDocument) ->
+                        let id = pd.Id
+                        let title = pd.Title
+                        id, title
+                    )
+
+                let upsertDocument =
+                    { UpsertDocument.ExistingIds = articleIds
+                      Title = String.Empty
+                      Source = String.Empty
+                      Description = String.Empty
+                      ArticleDate = DateTime.UtcNow.Date
+                      Tags = [] }
 
                 let view =
                     Upsert.view upsertDocument
@@ -108,28 +104,24 @@ module Controller =
                 return! view next ctx
             }
 
-    let add: HttpHandler =
+    let upsert: HttpHandler =
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {
                 let repository = ctx.GetService<IRepository>()
                 let! document = ctx.BindFormAsync<UpsertDocument>(Globalization.CultureInfo.InvariantCulture)
                 let! parsedDocument = Articles.parse document
 
-                do! Articles.addArticle repository parsedDocument document.Tags
+                let id = int <| ctx.Request.Form.["Id"].Item 0
 
-                return! next ctx
-            }
+                if id = 0
+                then
+                    do! Articles.addArticle repository parsedDocument document.Tags
 
-    let edit: HttpHandler =
-        fun (next : HttpFunc) (ctx : HttpContext) ->
-            task {
-                let repository = ctx.GetService<IRepository>()
-                let! document = ctx.BindFormAsync<UpsertDocument>()
-                let! parsedDocument = Articles.parse document
+                    return! redirectTo false ("/") next ctx
+                else
+                    do! Articles.updateArticle repository id parsedDocument document.Tags
 
-                do! Articles.updateArticle repository document.Id parsedDocument document.Tags
-
-                return! redirectTo false (sprintf "/article/%s" (Utils.getUrl document.Id parsedDocument.Title)) next ctx
+                    return! redirectTo false (sprintf "/article/%s" (Utils.getUrl id parsedDocument.Title)) next ctx
             }
 
     let articles: HttpHandler =

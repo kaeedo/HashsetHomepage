@@ -16,7 +16,6 @@ open Microsoft.Extensions.Configuration
 
 open Giraffe
 
-open Hashset.Views
 open DataAccess
 
 module Program =
@@ -40,18 +39,17 @@ module Program =
                 routeCi "/status" >=> text "ok"
                 routeCi "/"  >=> Controller.homepage
                 routeCi "/articles" >=> Controller.articles
-                routeCif "/articles/upsert/%i" (fun id -> mustBeLoggedIn >=> mustBeMe >=> Controller.upsert id)
+                routeCi "/articles/upsert" >=> mustBeLoggedIn >=> mustBeMe >=> Controller.upsertPage
                 routeCif "/article/%i_%s" (fun (id, _) -> Controller.article id)
                 routeCif "/article/%i" Controller.articleRedirect
                 routeCi "/about" >=> Controller.about
                 routeCi "/rss" >=> setHttpHeader "Content-Type" "application/rss+xml" >=> Controller.rss
                 routeCi "/atom" >=> setHttpHeader "Content-Type" "application/atom+xml" >=> Controller.atom ]
             POST >=> mustBeLoggedIn >=> mustBeMe >=> choose [
-                routeCi "/add" >=> Controller.add >=> redirectTo false "/"
-                routeCi "/edit" >=> Controller.edit
+                routeCi "/upsert" >=> Controller.upsert
             ]
             DELETE >=> mustBeLoggedIn >=> mustBeMe >=> choose [
-                routeCif "/article/%i" (fun id -> Controller.deleteArticle id)
+                routeCif "/article/%i" Controller.deleteArticle
             ]
         ]
 

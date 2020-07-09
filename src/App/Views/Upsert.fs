@@ -6,13 +6,24 @@ module Upsert =
     open Giraffe.GiraffeViewEngine
 
     let view (upsertDocument: UpsertDocument) =
-        let action = if upsertDocument.Id = 0 then "/add" else "/edit"
+        //let action = if upsertDocument.Id = 0 then "/add" else "/edit"
+
+        let idDropdown =
+            option [ _value "0" ] [ str "0" ] ::
+            (upsertDocument.ExistingIds
+            |> Seq.sortByDescending (fun (id, _) -> id)
+            |> Seq.map (fun (id, title) ->
+                option [ _value (id.ToString()) ] [ str title ]
+            )
+            |> Seq.toList)
+
+
         div [] [
             link [ _rel "stylesheet"; _type "text/css"; _href "/css/upsert.css"; _async ]
-            form [ _action action; _method "POST"; _class "PostContents" ] [
+            form [ _action "/upsert"; _method "POST"; _class "PostContents" ] [
                 div [ _class "Upsert-inputRow" ] [
                     label [ _class "Upsert-inputLabel"; _for "Id" ] [ str "Id" ]
-                    input [ _class "Upsert-inputValue"; _type "text"; _id "Id"; _name "Id"; _value (upsertDocument.Id.ToString()) ]
+                    select [ _class "Upsert-inputValue"; _id "Id"; _name "Id"; ] idDropdown
                 ]
                 div [ _class "Upsert-inputRow" ] [
                     label [ _class "Upsert-inputLabel"; _for "ArticleDate" ] [ str "ArticleDate" ]

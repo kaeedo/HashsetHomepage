@@ -42,7 +42,7 @@ type ParsedDocument =
 
 [<CLIMutable>]
 type UpsertDocument =
-    { Id: int
+    { ExistingIds: (int * string) seq
       Title: string
       Description: string
       ArticleDate: DateTime
