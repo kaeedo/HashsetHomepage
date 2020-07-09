@@ -88,13 +88,30 @@ module Controller =
                         id, title
                     )
 
-                let upsertDocument =
-                    { UpsertDocument.ExistingIds = articleIds
-                      Title = String.Empty
-                      Source = String.Empty
-                      Description = String.Empty
-                      ArticleDate = DateTime.UtcNow.Date
-                      Tags = [] }
+                let! upsertDocument =
+                    match ctx.TryGetQueryStringValue "id" with
+                    | None ->
+                        task {
+                            return
+                                { UpsertDocument.ExistingIds = articleIds
+                                  Title = String.Empty
+                                  Source = String.Empty
+                                  Description = String.Empty
+                                  ArticleDate = DateTime.UtcNow.Date
+                                  Tags = [] }
+                        }
+                    | Some id ->
+                        task {
+                            let! article = repository.GetArticleById <| int id
+
+                            return
+                                { UpsertDocument.ExistingIds = articleIds
+                                  Title = article.Title
+                                  Source = article.Source
+                                  Description = article.Description
+                                  ArticleDate = article.ArticleDate
+                                  Tags = article.Tags |> List.map (fun t -> t.Name) }
+                        }
 
                 let view =
                     Upsert.view upsertDocument
