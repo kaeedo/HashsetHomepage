@@ -28,19 +28,25 @@ module Upsert =
                 ]
                 div [] [
                     label [ _class "Upsert-inputSourceLabel"; _for "Source" ] [ str "Source" ]
-                    textarea [ _class "Upsert-inputSourceValue"; _rows "40"; _id "Source"; _name "Source" ] [ str upsertDocument.Source ]
+                    textarea [ _class "Upsert-inputSourceValue"; _rows "10"; _id "Source"; _name "Source" ] [ str upsertDocument.Source ]
                 ]
                 div [] [
-                    label [ _id "TagLabel" ] [ str "Tags" ]
-                    ul [ _id "TagList" ]
+                    div [ _class "Upsert-tagContainer" ] [
+                        label [ _class "Upsert-tagLabel" ] [ str "Tags" ]
+                        button [ _id "Upsert-addTagButton" ] [ str "+" ]
+                    ]
+                    ul [ _id "Upsert-tagList" ]
                         (upsertDocument.Tags
                         |> List.map (fun t ->
-                            li [] [
-                                input [ _type "text"; _name "Tags"; _value t ]
+                            li [ _class "Upsert-tagListItem" ] [
+                                div [ _class "Upsert-tagValue" ] [
+                                    input [ _type "text"; _name "Tags"; _class "Upsert-tagName"; _value t ]
+                                    input [ _type "button"; _class "Upsert-removeTagButton"; _value "-" ]
+                                ]
                             ]
                         ))
                 ]
-                input [ _type "Submit" ]
+                input [ _id "Upsert-submit"; _type "Submit" ]
 
                 script [ _async; _defer; _src "/js/upsert.js"; _type "text/javascript"; ] []
             ]

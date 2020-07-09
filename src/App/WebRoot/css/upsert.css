@@ -2,7 +2,6 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    width: 100%;
     margin-bottom: 2rem;
 }
 
@@ -33,4 +32,32 @@
     border-style: hidden;
     font-size: 14pt;
     margin-bottom: 2rem;
+}
+
+.Upsert-tagLabel {
+    font-size: 15pt;
+    margin-right: 2rem;
+}
+
+.Upsert-tagContainer {
+    display: flex;
+    justify-content: space-between;
+    width: min-content;
+}
+
+.Upsert-tagValue {
+    display: flex;
+    justify-content: space-between;
+    width: min-content;
+}
+
+.Upsert-tagName {
+    margin-right: 2rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border-style: hidden;
+}
+
+.Upsert-tagListItem {
+    margin-bottom: 1rem;
 }
