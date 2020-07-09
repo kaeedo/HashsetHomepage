@@ -3,6 +3,19 @@
     var removeTagButtons = document.getElementsByClassName('Upsert-removeTagButton');
     var ul = document.getElementById('Upsert-tagList');
     var submitButton = document.getElementById('Upsert-submit');
+    var select = document.getElementById('Id');
+
+    select.addEventListener('change', function (e, d) {
+        e.preventDefault();
+        var href = window.location.href.split('?')[0];
+
+        if (e.target.value === '0') {
+            window.location.href = href;
+            return;
+        }
+
+        window.location.href = href + '?id=' + e.target.value;
+    })
 
     submitButton.addEventListener('click', function (e) {
         e.preventDefault();
