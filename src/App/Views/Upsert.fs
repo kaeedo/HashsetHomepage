@@ -29,7 +29,7 @@ module Upsert =
                 ]
                 div [ _class "Upsert-inputRow" ] [
                     label [ _class "Upsert-inputLabel"; _for "ArticleDate" ] [ str "ArticleDate" ]
-                    input [ _class "Upsert-inputValue"; _type "date"; _id "ArticleDate"; _name "ArticleDate"; _value (upsertDocument.ArticleDate.ToString("d")) ]
+                    input [ _class "Upsert-inputValue"; _type "date"; _id "ArticleDate"; _name "ArticleDate"; _value (upsertDocument.ArticleDate.ToString("yyyy-MM-dd")) ]
                 ]
                 div [ _class "Upsert-inputRow" ] [
                     label [ _class "Upsert-inputLabel"; _for "Title" ] [ str "Title" ]
