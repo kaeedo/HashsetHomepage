@@ -8,6 +8,7 @@ open System.IO
 open Giraffe
 open Model
 open DataAccess
+open System.Threading
 
 module private Load =
     let styledMasterView =
@@ -79,6 +80,7 @@ module Controller =
                       Tags = [] }
 
                 let repository = ctx.GetService<IRepository>()
+                let fileStorage = ctx.GetService<IFileStorage>()
                 let! articles = repository.GetArticles()
                 let articleIds =
                     articles
@@ -114,7 +116,7 @@ module Controller =
                         }
 
                 let view =
-                    Upsert.view upsertDocument
+                    Upsert.view upsertDocument (fileStorage.GetImages() |> Seq.toList)
                     |> Load.styledMasterView masterData
                     |> htmlView
 
@@ -125,8 +127,15 @@ module Controller =
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {
                 let repository = ctx.GetService<IRepository>()
+                let fileStorage = ctx.GetService<IFileStorage>()
                 let! document = ctx.BindFormAsync<UpsertDocument>(Globalization.CultureInfo.InvariantCulture)
                 let! parsedDocument = Articles.parse document
+
+                ctx.Request.Form.Files
+                |> Seq.filter (fun f -> f.Length > 0L)
+                |> Seq.iter (fun f ->
+                    fileStorage.SaveFile f.FileName f.CopyToAsync
+                )
 
                 let id = int <| ctx.Request.Form.["Id"].Item 0
 

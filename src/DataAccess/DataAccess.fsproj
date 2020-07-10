@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
   <ItemGroup>
     <ProjectReference Include="../Model/Model.fsproj" />
   </ItemGroup>
@@ -13,10 +14,7 @@
     <Compile Include="Queries.fs" />
     <Compile Include="HashsetConnectionProvider.fs" />
     <Compile Include="Repository.fs" />
+    <Compile Include="FileStorage.fs" />
   </ItemGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors>FS0025</WarningsAsErrors>
-  </PropertyGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

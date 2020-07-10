@@ -1,3 +1,13 @@
+.Upsert-form {
+    margin: 0;
+    width: 50%;
+}
+
+.Upsert-page {
+    display: flex;
+    justify-content: space-evenly;
+}
+
 .Upsert-inputRow {
     display: flex;
     justify-content: space-between;
@@ -6,7 +16,7 @@
 }
 
 .Upsert-inputLabel {
-    width: 10%;
+    width: 15%;
     font-size: 15pt;
 }
 
@@ -16,6 +26,10 @@
     border-radius: 4px;
     border-style: hidden;
     font-size: 14pt;
+}
+
+.Upsert-inputImages {
+    padding-left: 0;
 }
 
 .Upsert-inputSourceLabel {
@@ -59,4 +73,19 @@
 
 .Upsert-tagListItem {
     margin-bottom: 1rem;
+}
+
+.Upsert-availableImageContainer {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5rem;;
+}
+
+.Upsert-availableImageLabel {
+    font-size: 14pt;
+    margin-bottom: 0.5rem;;
+}
+
+.Upsert-availableImage {
+    width: 40rem;
 }

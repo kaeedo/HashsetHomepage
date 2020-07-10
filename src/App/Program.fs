@@ -75,6 +75,7 @@ module Program =
         let repository = Repository(conf.["ConnectionString"]) :> IRepository
         repository.Migrate()
         services.AddTransient<IRepository>(fun _ -> repository) |> ignore
+        services.AddTransient<IFileStorage, FileStorage>() |> ignore
 
         services.Configure<ForwardedHeadersOptions>(fun (options: ForwardedHeadersOptions) ->
             options.ForwardedHeaders <- ForwardedHeaders.XForwardedFor ||| ForwardedHeaders.XForwardedProto
