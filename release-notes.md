@@ -1,3 +1,8 @@
+### 1.8.0
+* Style Upsert page
+* Refactor how to edit existing articles
+* Add Image upload and image view to upsert
+
 ### 1.7.2
 * Remove image from open graph meta tags
 
