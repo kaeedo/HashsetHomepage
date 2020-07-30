@@ -1,3 +1,7 @@
+### 1.8.1
+* Fix launch URL
+* Adjust upsert page style
+
 ### 1.8.0
 * Style Upsert page
 * Refactor how to edit existing articles
