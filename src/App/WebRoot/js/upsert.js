@@ -79,8 +79,8 @@
         li.remove();
     }
 
-    for (var button of removeTagButtons) {
-        button.addEventListener('click', removeTag);
+    for (var i = 0; i < removeTagButtons.length; i++) {
+        removeTagButtons[i].addEventListener('click', removeTag);
     }
 })();
 

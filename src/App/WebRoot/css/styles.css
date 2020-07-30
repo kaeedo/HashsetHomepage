@@ -163,6 +163,12 @@ pre {
     color: #333;
 }
 
+.LatestArticles {
+    margin: auto;
+    margin-top: 4rem;
+    max-width: 80rem;
+}
+
 .PostContents {
     margin-bottom: 3rem;
 }

@@ -27,8 +27,7 @@ module LatestArticles =
                 div [ _class "LatestPosts-entryExcerpt" ] [ rawText c.Excerpt ]
             ]
         )
+        |> Seq.toList
 
     let view (content: ArticleStub seq) =
-        div [ _class "PostContents" ] [
-            yield! articles content
-        ]
+        div [ _class "LatestArticles" ] (articles content)
