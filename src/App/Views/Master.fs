@@ -43,6 +43,7 @@ module Master =
                     ]
 
                     div [ _class "Main-titleContainer" ] [
+                        div [ _id "headerBackground" ] []
                         div [ _class "Main-title" ] [
                             div [ _class "Main-postTitle" ] [ str masterData.PageTitle ]
                             if not (masterData.Tags |> List.isEmpty)
@@ -55,8 +56,6 @@ module Master =
                             div [ _class "Main-postDate" ] [ str <| getDate masterData.ArticleDate ]
                         ]
                     ]
-
-                    div [ _id "headerBackground" ] []
                 ]
 
                 section [ _class "Main-section" ] [
