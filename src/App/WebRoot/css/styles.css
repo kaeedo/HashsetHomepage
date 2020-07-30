@@ -172,15 +172,19 @@ pre {
 }
 
 .PostContents>p {
-    font-size: 18pt;
+    font-size: 16pt;
     line-height: 26pt;
-    font-family: Bookman, serif;
 }
 
 @media screen and (max-width: 667px) {
+    .PostContents>h1:first-child {
+        display: none;
+    }
+
     .PostContents>p {
-        font-size: 14pt;
-        line-height: 22pt;
+        font-size: 15pt;
+        line-height: 24pt;
+        padding: 0 0.5rem;
     }
 }
 
