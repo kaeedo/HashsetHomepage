@@ -3,7 +3,7 @@ namespace Hashset.Views
 open Model
 
 module Upsert =
-    open Giraffe.GiraffeViewEngine
+    open Giraffe.ViewEngine
 
     let view (upsertDocument: UpsertDocument) availableImages =
 

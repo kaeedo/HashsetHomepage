@@ -1,7 +1,7 @@
 namespace Hashset.Views
 
 module About =
-    open Giraffe.GiraffeViewEngine
+    open Giraffe.ViewEngine
 
     let view =
         div [ _class "PostContents" ] [

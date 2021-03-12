@@ -3,12 +3,16 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <Version>1.8.0</Version>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <LangVersion>preview</LangVersion>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
     <UserSecretsId>043bee96-2eb5-415c-b811-3bcedcd3be86</UserSecretsId>
+      
   </PropertyGroup>
+<PropertyGroup>
+          <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+      </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../DataAccess/DataAccess.fsproj" />
     <ProjectReference Include="../Model/Model.fsproj" />
@@ -25,9 +29,6 @@
     <Compile Include="Controller.fs" />
     <Compile Include="Program.fs" />
     <Content Include="WebRoot/**/*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="posts/**/*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="appsettings.json">

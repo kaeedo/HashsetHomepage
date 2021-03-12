@@ -12,9 +12,11 @@ open Microsoft.AspNetCore.HttpOverrides
 open Microsoft.AspNetCore.Authentication.Cookies
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Logging
+open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Configuration
 
 open Giraffe
+open Saturn
 
 open DataAccess
 
@@ -32,12 +34,12 @@ module Program =
 
     let version = Reflection.Assembly.GetEntryAssembly().GetName().Version
 
-    let webApp =
+    (*let webApp =
         choose [
             GET >=> choose [
                 routeCi "/version" >=> text (version.ToString())
                 routeCi "/status" >=> text "ok"
-                routeCi "/"  >=> Controller.homepage
+                routeCi "/" >=> Controller.homepage
                 routeCi "/articles" >=> Controller.articles
                 routeCi "/articles/upsert" >=> mustBeLoggedIn >=> mustBeMe >=> Controller.upsertPage
                 routeCif "/article/%i_%s" (fun (id, _) -> Controller.article id)
@@ -51,15 +53,27 @@ module Program =
             DELETE >=> mustBeLoggedIn >=> mustBeMe >=> choose [
                 routeCif "/article/%i" Controller.deleteArticle
             ]
-        ]
+        ]*)
+        
+    let topRouter = router {
+        get "/" Controller.homepage
+        get "/version" (text (version.ToString()))
+        get "/status" (text "ok")
+    }
 
     let configureApp (app: IApplicationBuilder) =
-        app.UseStaticFiles()
-           .UseAuthentication()
-           .UseHttpsRedirection()
-           .UseGiraffe(webApp)
+        let app =
+            app.UseStaticFiles()
+               .UseAuthentication()
+               .UseHttpsRedirection()
+        let env = Environment.getWebHostEnvironment app
+        if (env.IsDevelopment()) then
+            app.UseDeveloperExceptionPage()
+        else
+            app
+        
 
-    let configureAppConfiguration (context: WebHostBuilderContext) (config: IConfigurationBuilder) =
+    let configureAppConfiguration (config: IConfigurationBuilder) =
         config
             .AddJsonFile("appsettings.json", false, true)
             .AddEnvironmentVariables()
@@ -102,7 +116,8 @@ module Program =
                     options.TokenEndpoint <- "https://github.com/login/oauth/access_token"
                     options.UserInformationEndpoint <- "https://api.github.com/user"
                 ) |> ignore
-        services.AddGiraffe() |> ignore
+        services
+        //services.AddGiraffe() |> ignore
 
     let configureLogging (builder : ILoggingBuilder) =
         let filter (l : LogLevel) = l.Equals LogLevel.Error
@@ -110,19 +125,32 @@ module Program =
 
     [<EntryPoint>]
     let main _ =
-        let contentRoot = Directory.GetCurrentDirectory()
+        let app = application {
+            //pipe_through endpointPipe
+
+            use_router topRouter
+            url "https://0.0.0.0:5000/"
+            use_static "WebRoot"
+            use_gzip
+
+            app_config configureApp
+            
+            service_config configureServices
+        }
+        (*let contentRoot = Directory.GetCurrentDirectory()
         let webRoot = Path.Combine(contentRoot, "WebRoot")
 
         WebHostBuilder()
             .UseKestrel()
             .UseContentRoot(contentRoot)
             .UseWebRoot(webRoot)
-            .UseUrls("http://0.0.0.0:5000")
-            .ConfigureAppConfiguration(configureAppConfiguration)
+            .UseUrls("https://0.0.0.0:5000")
+            
             .Configure(Action<IApplicationBuilder> configureApp)
             .ConfigureServices(configureServices)
             .ConfigureLogging(configureLogging)
             .Build()
-            .Run()
-
+            .Run()*)
+            
+        run (app.ConfigureAppConfiguration(fun c -> configureAppConfiguration c))
         0

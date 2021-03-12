@@ -4,7 +4,7 @@ This is Blog website for personal usage. Currently, frontend styling is written 
 If you want to run this project yourself, feel free, just keep the following in mind.
 
 You need to register an OAuth application in Github to be able to authenticate to allow upserting blog posts.
-The actual upsert page is under `/articles/upsert/0`. Use 0 to add a new post, or any ID to update a post.
+The actual upsert page is under `/articles/upsert`.
 
 When adding or updating a post, you can add any number of Tags. To do this, you can simply click the `Tag` label on the upsert page, and a new input field will appear.
 
@@ -26,7 +26,7 @@ They are:
 
 Ideally, you should be able to simply run: `dotnet tool restore`, `dotnet build`, and `dotnet run`. It installs `paket` and `fake-cli` as local tools and they should be good to go out of the box.
 
-Postgres quickstart command in docker: `docker run -e POSTGRES_PASSWORD=password -dp 5432:5432 --name postgres postgres:12-alpine`
+Postgres quickstart command in docker: `docker run -e POSTGRES_PASSWORD=password -dp 5432:5432 --name postgres postgres:13-alpine`
 
 ### Building a docker container
 This is where the `fake` build script comes into play. `fake build` will read the latest version from `release-notes.md` and build a docker container with that version as the tag. The build script requires your docker username as the environment variable `USERNAME`, with which it will tag the docker image

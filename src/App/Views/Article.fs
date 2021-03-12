@@ -3,7 +3,7 @@ namespace Hashset.Views
 open Model
 
 module Article =
-    open Giraffe.GiraffeViewEngine
+    open Giraffe.ViewEngine
 
     let private _property = attr "property"
 
