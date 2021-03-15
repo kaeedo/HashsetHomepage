@@ -4,6 +4,7 @@ nuget FSharp.Core 5.0.1
 nuget FSharp.Literate
 # nuget Giraffe 4.1.0
 nuget Saturn 0.15.0-preview03
+nuget Saturn.Extensions.Authorization 0.15.0-preview03
 nuget AspNet.Security.OAuth.GitHub
 nuget Microsoft.Extensions.Configuration.Json
 nuget Microsoft.Extensions.Configuration.UserSecrets

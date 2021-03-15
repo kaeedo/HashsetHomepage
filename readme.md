@@ -22,7 +22,7 @@ They are:
 * `ConnectionString`: The postgres connection string
 * `GithubClientId`: The client ID from your github OAuth application
 * `GithubClientSecret`: The client secret from your github OAuth application
-* `GithubWriteUsername`: The github username that is authorized to write blog posts (I know, shouldn't use OAuth for authorization. This also only allows a single account to write posts...)
+* `GithubWriteId`: The github account ID that is authorized to write blog posts (I know, shouldn't use OAuth for authorization. This also only allows a single account to write posts...)
 
 Ideally, you should be able to simply run: `dotnet tool restore`, `dotnet build`, and `dotnet run`. It installs `paket` and `fake-cli` as local tools and they should be good to go out of the box.
 

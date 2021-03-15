@@ -22,7 +22,7 @@ module Upsert =
 
         div [ _class "Upsert-page" ] [
             link [ _rel "stylesheet"; _type "text/css"; _href "/css/upsert.css"; _async ]
-            form [ _action "/upsert"; _method "POST"; _class "PostContents Upsert-form"; _enctype "multipart/form-data" ] [
+            form [ _action "/articles/upsert"; _method "POST"; _class "PostContents Upsert-form"; _enctype "multipart/form-data" ] [
                 div [ _class "Upsert-inputRow" ] [
                     label [ _class "Upsert-inputLabel"; _for "Id" ] [ str "Id" ]
                     select [ _class "Upsert-inputValue"; _id "Id"; _name "Id"; ] idDropdown

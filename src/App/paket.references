@@ -1,5 +1,6 @@
 FSharp.Core
 Saturn
+Saturn.Extensions.Authorization
 FSharp.Literate
 AspNet.Security.OAuth.GitHub
 Microsoft.Extensions.Configuration.Json
