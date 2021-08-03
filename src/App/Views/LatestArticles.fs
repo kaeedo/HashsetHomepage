@@ -6,7 +6,7 @@ open System.Net
 open Model
 
 module LatestArticles =
-    open Giraffe.GiraffeViewEngine
+    open Giraffe.ViewEngine
 
     let private articles (content: ArticleStub seq) =
         content

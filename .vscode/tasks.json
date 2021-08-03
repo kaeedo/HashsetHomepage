@@ -12,17 +12,6 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "emitCompilerTmp",
-            "command": "curl",
-            "args": [
-                "--config",
-                ".fake/fcswatch/port.cache"
-            ],
-            "presentation": {
-                "reveal": "silent"
-            }
         }
     ]
 }
