@@ -13,7 +13,7 @@ This site supports a commenting system powered by [Commento](https://www.comment
 ### Running locally
 Dependencies
 * postgres
-* .Net Core 3.x
+* .Net 5
 
 You will need to generate a self signed certificate for local development using `dotnet dev-certs https --trust`. More info here: https://www.hanselman.com/blog/DevelopingLocallyWithASPNETCoreUnderHTTPSSSLAndSelfSignedCerts.aspx
 
@@ -26,7 +26,7 @@ They are:
 
 Ideally, you should be able to simply run: `dotnet tool restore`, `dotnet build`, and `dotnet run`. It installs `paket` and `fake-cli` as local tools and they should be good to go out of the box.
 
-Postgres quickstart command in docker: `docker run -e POSTGRES_PASSWORD=password -dp 5432:5432 --name postgres postgres:12-alpine`
+Postgres quickstart command in docker: `docker run -e POSTGRES_PASSWORD=password -dp 5432:5432 --name postgres postgres:13-alpine`
 
 ### Building a docker container
 This is where the `fake` build script comes into play. `fake build` will read the latest version from `release-notes.md` and build a docker container with that version as the tag. The build script requires your docker username as the environment variable `USERNAME`, with which it will tag the docker image

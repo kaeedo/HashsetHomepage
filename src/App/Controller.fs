@@ -35,7 +35,7 @@ module Controller =
 
                 return!
                     match latestArticle with
-                    | None -> redirectTo false ("/articles/upsert/0") next ctx
+                    | None -> redirectTo false ("/articles/upsert") next ctx
                     | Some la ->
                         let host = ctx.Request.Host.Value
 
