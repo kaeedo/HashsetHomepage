@@ -3,12 +3,12 @@ namespace Hashset.Views
 open Model
 
 module Article =
-    open Giraffe.GiraffeViewEngine
+    open Giraffe.ViewEngine
 
     let private _property = attr "property"
 
     let view (parsedDocument: ParsedDocument) currentUrl =
-        let permaLink = sprintf "https://%s/article/%s" currentUrl (Utils.getUrl parsedDocument.Id parsedDocument.Title)
+        let permaLink = $"https://%s{currentUrl}/article/%s{Utils.getUrl parsedDocument.Id parsedDocument.Title}"
         div [] [
             meta [ _property "og:site_name";  _content "Hashset - Kai Ito" ]
             meta [ _property "og:title";  _content parsedDocument.Title ]

@@ -5,7 +5,7 @@ open System
 open Model
 
 module Master =
-    open Giraffe.GiraffeViewEngine
+    open Giraffe.ViewEngine
 
     let private getDate (date: DateTime option) =
         match date with
