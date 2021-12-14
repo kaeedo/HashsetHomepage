@@ -86,7 +86,7 @@ module Queries =
         where Id = @id
     """>
 
-    type GetArticles = SQL<"""
+    type GetPublishedArticles = SQL<"""
         select
             a.*,
             many tags(t.*)
@@ -94,6 +94,16 @@ module Queries =
         join article_tags at on a.Id = at.ArticleId
         join tags t on t.id = at.TagId
         where a.CreatedOn <= now()
+        order by a.CreatedOn desc
+    """>
+
+    type GetAllArticles = SQL<"""
+        select
+            a.*,
+            many tags(t.*)
+        from articles a
+        join article_tags at on a.Id = at.ArticleId
+        join tags t on t.id = at.TagId
         order by a.CreatedOn desc
     """>
 
