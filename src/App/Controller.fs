@@ -81,7 +81,7 @@ module Controller =
 
                 let repository = ctx.GetService<IRepository>()
                 let fileStorage = ctx.GetService<IFileStorage>()
-                let! articles = repository.GetArticles()
+                let! articles = repository.GetAllArticles()
                 let articleIds =
                     articles
                     |> Seq.map (fun (pd: ParsedDocument) ->

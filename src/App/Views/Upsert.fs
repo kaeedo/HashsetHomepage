@@ -64,7 +64,10 @@ module Upsert =
                         ))
                 ]
 
-                input [ _id "Upsert-submit"; _type "Submit" ]
+                div [ _class "Upsert-actions" ] [
+                    input [ _id "Upsert-submit"; _type "Submit" ]
+                    input [ _id "Upsert-delete"; _type "button"; _value "Delete" ]
+                ]
 
                 script [ _async; _defer; _src "/js/upsert.js"; _type "text/javascript"; ] []
             ]

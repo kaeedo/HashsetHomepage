@@ -19,6 +19,7 @@ type IRepository =
     abstract member DeleteArticleById: int -> Task<unit>
     abstract member GetLatestArticle: unit -> Task<ParsedDocument option>
     abstract member GetArticles: unit -> Task<ParsedDocument seq>
+    abstract member GetAllArticles: unit -> Task<ParsedDocument seq>
     abstract member GetArticlesByTag: string -> Task<ParsedDocument seq>
 
 type Repository(connectionString) =
@@ -154,7 +155,19 @@ type Repository(connectionString) =
         member this.GetArticles () =
             let getPlan =
                 plan {
-                    let! articles = Queries.GetArticles.Command().Plan()
+                    let! articles = Queries.GetPublishedArticles.Command().Plan()
+
+                    return
+                        articles
+                        |> Seq.map (Queries.mapArticle)
+                }
+
+            Execution.execute executionConfig getPlan
+
+        member this.GetAllArticles () =
+            let getPlan =
+                plan {
+                    let! articles = Queries.GetAllArticles.Command().Plan()
 
                     return
                         articles
