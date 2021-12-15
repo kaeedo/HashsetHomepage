@@ -1,3 +1,7 @@
+### 1.9.1
+
+- Minify resources during runtime
+
 ### 1.9.0
 
 - Load all articles for edit
