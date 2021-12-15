@@ -1,3 +1,7 @@
+### 1.9.2
+
+- Remove HTTPS
+
 ### 1.9.1
 
 - Minify resources during runtime
