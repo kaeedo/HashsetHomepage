@@ -54,7 +54,11 @@ module Program =
         ]
 
     let configureApp (app: IApplicationBuilder) =
-        app.UseStaticFiles()
+        app
+#if RELEASE
+           .UseWebOptimizer()
+#endif
+           .UseStaticFiles()
            .UseAuthentication()
            .UseHttpsRedirection()
            .UseGiraffe(webApp)
@@ -102,6 +106,9 @@ module Program =
                     options.TokenEndpoint <- "https://github.com/login/oauth/access_token"
                     options.UserInformationEndpoint <- "https://api.github.com/user"
                 ) |> ignore
+#if RELEASE
+        services.AddWebOptimizer() |> ignore
+#endif
         services.AddGiraffe() |> ignore
 
     let configureLogging (builder : ILoggingBuilder) =

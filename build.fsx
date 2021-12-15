@@ -1,5 +1,4 @@
 #r "paket:
-nuget YUICompressor.NET
 nuget Fake.IO.FileSystem
 nuget Fake.DotNet.Cli
 nuget Fake.Runtime
@@ -15,7 +14,6 @@ open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.Core.TargetOperators
-open Yahoo.Yui.Compressor
 
 let buildDir = "./build/"
 let solutionFile = "./Hashset.sln"
@@ -37,24 +35,6 @@ Target.create "BuildApplication" (fun _ ->
             Configuration = DotNet.BuildConfiguration.Release
             OutputPath = Some buildDir }
     ) solutionFile
-)
-
-Target.create "Minify" (fun _ ->
-    let cssCompressor = CssCompressor()
-
-    !!(buildDir @@ "WebRoot" @@ "**" @@ "*.css")
-    |> Seq.iter (fun file ->
-        cssCompressor.Compress(File.readAsString(file))
-        |> File.replaceContent file
-    )
-
-    let jsCompressor = JavaScriptCompressor()
-
-    !!(buildDir @@ "WebRoot" @@ "**" @@ "*.js")
-    |> Seq.iter (fun file ->
-        jsCompressor.Compress(File.readAsString(file))
-        |> File.replaceContent file
-    )
 )
 
 Target.create "SetVersion" (fun _ ->
@@ -89,7 +69,6 @@ Target.create "PushContainer" (fun _ ->
 
 "Clean"
     ==> "BuildApplication"
-    ==> "Minify"
 
 "SetVersion"
     ==> "BuildContainer"
