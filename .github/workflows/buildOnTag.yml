@@ -4,13 +4,13 @@ on: [create]
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.1.100'
+        dotnet-version: '5.0.403'
     - name: Restore local tools
       run: dotnet tool restore
     - name: Docker login
