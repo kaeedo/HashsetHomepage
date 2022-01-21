@@ -9,19 +9,22 @@ open Model
 module Queries =
     type HashsetModel = SQLModel<".">
 
-    type InsertTag = SQL<"""
+    type InsertTag =
+        SQL<"""
         insert into tags
         row
             Name = @name;
         select lastval() as Id;
     """>
 
-    type GetTag = SQL<"""
+    type GetTag =
+        SQL<"""
         select * from tags
         where Name = @name
     """>
 
-    type InsertArticle = SQL<"""
+    type InsertArticle =
+        SQL<"""
         insert into articles
         row
             Title = @title,
@@ -33,14 +36,16 @@ module Queries =
         select lastval() as Id;
     """>
 
-    type InsertArticleTagsMapping = SQL<"""
+    type InsertArticleTagsMapping =
+        SQL<"""
         insert into article_tags
         row
             ArticleId = @articleId,
             TagId = @tagId
     """>
 
-    type UpdateArticleById = SQL<"""
+    type UpdateArticleById =
+        SQL<"""
         update articles set
             Title = @title,
             Source = @source,
@@ -51,7 +56,8 @@ module Queries =
         where Id = @id
     """>
 
-    type GetLatestArticle = SQL<"""
+    type GetLatestArticle =
+        SQL<"""
         select
             a.*,
             many tags(t.*)
@@ -66,7 +72,8 @@ module Queries =
                 join tags t on t.id = at.TagId)
     """>
 
-    type GetArticleById = SQL<"""
+    type GetArticleById =
+        SQL<"""
         select
             a.*,
             many tags(t.*)
@@ -76,17 +83,20 @@ module Queries =
         where a.Id = @id
     """>
 
-    type DeleteArticleTagsByArticleId = SQL<"""
+    type DeleteArticleTagsByArticleId =
+        SQL<"""
         delete from article_tags
         where ArticleId = @id
     """>
 
-    type DeleteArticleById = SQL<"""
+    type DeleteArticleById =
+        SQL<"""
         delete from articles
         where Id = @id
     """>
 
-    type GetPublishedArticles = SQL<"""
+    type GetPublishedArticles =
+        SQL<"""
         select
             a.*,
             many tags(t.*)
@@ -97,7 +107,8 @@ module Queries =
         order by a.CreatedOn desc
     """>
 
-    type GetAllArticles = SQL<"""
+    type GetAllArticles =
+        SQL<"""
         select
             a.*,
             many tags(t.*)
@@ -107,7 +118,8 @@ module Queries =
         order by a.CreatedOn desc
     """>
 
-    type GetArticlesByTag = SQL<"""
+    type GetArticlesByTag =
+        SQL<"""
         select
             a.*,
             many tags(t.*)
@@ -126,18 +138,16 @@ module Queries =
     """>
 
     let inline mapArticle row =
-        { ParsedDocument.Id = (^a: (member get_Id: unit -> int)(row))
-          Title = (^a: (member get_Title: unit -> string)(row))
-          ArticleDate = (^a: (member get_CreatedOn: unit -> DateTime)(row))
-          Description = (^a: (member get_Description: unit -> string)(row))
-          Source = (^a: (member get_Source: unit -> string)(row))
-          Document = (^a: (member get_Parsed: unit -> string)(row))
-          Tooltips = (^a: (member get_Tooltips: unit -> string)(row))
+        { ParsedDocument.Id = (^a: (member get_Id : unit -> int) (row))
+          Title = (^a: (member get_Title : unit -> string) (row))
+          ArticleDate = (^a: (member get_CreatedOn : unit -> DateTime) (row))
+          Description = (^a: (member get_Description : unit -> string) (row))
+          Source = (^a: (member get_Source : unit -> string) (row))
+          Document = (^a: (member get_Parsed : unit -> string) (row))
+          Tooltips = (^a: (member get_Tooltips : unit -> string) (row))
           Tags =
-                (^a: (member get_tags: unit -> IReadOnlyList<_>)(row))
-                |> Seq.map (fun tagRow ->
-                    { Tag.Id = (^b: (member get_Id: unit -> int)(tagRow))
-                      Name = (^b: (member get_Name: unit -> string)(tagRow)) }
-                )
-                |> Seq.toList
-        }
+            (^a: (member get_tags : unit -> IReadOnlyList<_>) (row))
+            |> Seq.map (fun tagRow ->
+                { Tag.Id = (^b: (member get_Id : unit -> int) (tagRow))
+                  Name = (^b: (member get_Name : unit -> string) (tagRow)) })
+            |> Seq.toList }

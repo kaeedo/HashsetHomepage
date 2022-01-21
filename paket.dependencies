@@ -1,10 +1,9 @@
 source https://api.nuget.org/v3/index.json
 
-nuget FSharp.Core 5.0.1
+nuget FSharp.Core 6.0.1
 nuget FSharp.Literate
-nuget Giraffe 5.0.0
+nuget Giraffe 6.0.0-alpha-2
 nuget LigerShark.WebOptimizer.Core
-nuget AspNet.Security.OAuth.GitHub
 nuget Microsoft.Extensions.Configuration.Json
 nuget Microsoft.Extensions.Configuration.UserSecrets
 # nuget FSharp.SystemTextJson  #  remember this

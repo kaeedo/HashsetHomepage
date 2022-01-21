@@ -1,3 +1,9 @@
+### 2.0.0
+
+- Add Basic Auth
+- Remove GitHub OAuth
+- Remove Commento
+
 ### 1.9.2
 
 - Remove HTTPS

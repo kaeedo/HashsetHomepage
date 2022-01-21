@@ -12,7 +12,9 @@ open System.Threading
 
 module private Load =
     let styledMasterView =
-        let aboveTheFoldCss = File.ReadAllText("WebRoot/css/aboveTheFold.css")
+        let aboveTheFoldCss =
+            File.ReadAllText("WebRoot/css/aboveTheFold.css")
+
         Master.view aboveTheFoldCss
 
 [<RequireQualifiedAccess>]
@@ -27,7 +29,7 @@ module Controller =
         |> Load.styledMasterView masterData
         |> htmlView
 
-    let homepage: HttpHandler  =
+    let homepage: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 let repository = ctx.GetService<IRepository>()
@@ -42,7 +44,7 @@ module Controller =
                         renderArticlePage la host next ctx
             }
 
-    let articleRedirect articleId: HttpHandler =
+    let articleRedirect articleId : HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 let repository = ctx.GetService<IRepository>()
@@ -51,7 +53,7 @@ module Controller =
                 return! redirectTo true (sprintf "/article/%s" (Utils.getUrl article.Id article.Title)) next ctx
             }
 
-    let article articleId: HttpHandler =
+    let article articleId : HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 let repository = ctx.GetService<IRepository>()
@@ -62,7 +64,7 @@ module Controller =
                 return! renderArticlePage article host next ctx
             }
 
-    let deleteArticle articleId: HttpHandler =
+    let deleteArticle articleId : HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 let repository = ctx.GetService<IRepository>()
@@ -82,13 +84,13 @@ module Controller =
                 let repository = ctx.GetService<IRepository>()
                 let fileStorage = ctx.GetService<IFileStorage>()
                 let! articles = repository.GetAllArticles()
+
                 let articleIds =
                     articles
                     |> Seq.map (fun (pd: ParsedDocument) ->
                         let id = pd.Id
                         let title = pd.Title
-                        id, title
-                    )
+                        id, title)
 
                 let! upsertDocument =
                     match ctx.TryGetQueryStringValue "id" with
@@ -124,7 +126,7 @@ module Controller =
             }
 
     let upsert: HttpHandler =
-        fun (next : HttpFunc) (ctx : HttpContext) ->
+        fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 let repository = ctx.GetService<IRepository>()
                 let fileStorage = ctx.GetService<IFileStorage>()
@@ -133,14 +135,11 @@ module Controller =
 
                 ctx.Request.Form.Files
                 |> Seq.filter (fun f -> f.Length > 0L)
-                |> Seq.iter (fun f ->
-                    fileStorage.SaveFile f.FileName f.CopyToAsync
-                )
+                |> Seq.iter (fun f -> fileStorage.SaveFile f.FileName f.CopyToAsync)
 
                 let id = int <| ctx.Request.Form.["Id"].Item 0
 
-                if id = 0
-                then
+                if id = 0 then
                     do! Articles.addArticle repository parsedDocument document.Tags
 
                     return! redirectTo false ("/") next ctx
@@ -154,6 +153,7 @@ module Controller =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 let repository = ctx.GetService<IRepository>()
+
                 let masterData =
                     { MasterContent.PageTitle = "All Articles"
                       ArticleDate = None
@@ -165,8 +165,7 @@ module Controller =
                     | Some t -> Articles.getArticlesByTag repository t
 
                 let articles =
-                    articles
-                    |> Seq.map Articles.getArticleStub
+                    articles |> Seq.map Articles.getArticleStub
 
                 let view =
                     LatestArticles.view articles
@@ -209,7 +208,9 @@ module Controller =
 
                 let host = ctx.Request.Host.Value
 
-                return! ctx.WriteStringAsync <| (Syndication.channelFeed host articles).ToString()
+                return!
+                    ctx.WriteStringAsync
+                    <| (Syndication.channelFeed host articles).ToString()
             }
 
     let atom: HttpHandler =
@@ -229,5 +230,8 @@ module Controller =
 
                 let host = ctx.Request.Host.Value
 
-                return! ctx.WriteStringAsync <| (Syndication.syndicationFeed host articles).ToString()
+                return!
+                    ctx.WriteStringAsync
+                    <| (Syndication.syndicationFeed host articles)
+                        .ToString()
             }

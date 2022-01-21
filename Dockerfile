@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0.300-alpine3.13 AS builder
+FROM mcr.microsoft.com/dotnet/sdk:6.0.101-alpine3.14 AS builder
 
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 
@@ -16,7 +16,7 @@ RUN dotnet fake build -t BuildApplication
 
 #################################
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine3.13
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.1-alpine3.14
 
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 
