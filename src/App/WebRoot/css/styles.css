@@ -1,393 +1,349 @@
 span.s {
-    color: #e0e268;
+  color: #e0e268;
 }
 
 span.pf {
-    color: #e0c57f;
+  color: #e0c57f;
 }
 
 span.e {
-    color: #ea8675;
+  color: #ea8675;
 }
 
 span.i {
-    color: #d1d1d1;
+  color: #d1d1d1;
 }
 
 span.t {
-    color: #43aec6;
+  color: #43aec6;
 }
 
 span.f {
-    color: #e1e1e1;
+  color: #e1e1e1;
 }
 
 span.p {
-    color: #4ec9b0;
+  color: #4ec9b0;
 }
 
 span.k {
-    color: #fab11d;
+  color: #fab11d;
 }
 
 span.c {
-    color: #808080;
+  color: #808080;
 }
 
 span.o {
-    color: #af75c1;
+  color: #af75c1;
 }
 
 span.n {
-    color: #96c71d;
+  color: #96c71d;
 }
 
 span.l {
-    color: #80b0b0;
+  color: #80b0b0;
 }
 
 span.v {
-    color: #d1d1d1;
-    font-weight: bold;
+  color: #d1d1d1;
+  font-weight: bold;
 }
 
 span.inactive {
-    color: #808080;
+  color: #808080;
 }
 
 span.prep {
-    color: #af75c1;
+  color: #af75c1;
 }
 
 span.fsi {
-    color: #808080;
+  color: #808080;
 }
 
 span.omitted {
-    background: #3c4e52;
-    border-radius: 5px;
-    color: #808080;
-    padding: 0px 0px 1px 0px;
+  background: #3c4e52;
+  border-radius: 5px;
+  color: #808080;
+  padding: 0px 0px 1px 0px;
 }
 
 div.tip {
-    background: #475b5f;
-    border-radius: 4px;
-    font-family: "Droid Sans", arial, sans-serif;
-    padding: 6px 8px 6px 8px;
-    display: none;
-    color: #d1d1d1;
-    z-index: 1;
-    pointer-events: none;
+  background: #475b5f;
+  border-radius: 4px;
+  font-family: "Droid Sans", arial, sans-serif;
+  padding: 6px 8px 6px 8px;
+  display: none;
+  color: #d1d1d1;
+  z-index: 1;
+  pointer-events: none;
 }
 
 table.pre {
-    width: 80rem;
+  width: 80rem;
 }
 
 table.pre pre {
-    padding: 0px;
-    margin: 0px;
-    border: none;
+  padding: 0px;
+  margin: 0px;
+  border: none;
 }
 
-tbody>tr {
-    line-height: 16pt;
-    font-size: 12pt;
+tbody > tr {
+  line-height: 16pt;
+  font-size: 12pt;
 }
 
 @media screen and (max-width: 667px) {
-    tbody>tr {
-        line-height: 12pt;
-        font-size: 8pt;
-    }
+  tbody > tr {
+    line-height: 12pt;
+    font-size: 8pt;
+  }
 }
 
 table.pre,
 pre.fssnip,
 pre {
-    border: 1px solid #d8d8d8;
-    border-collapse: separate;
-    white-space: pre;
-    font-family: "Lucida Console", monaco, monospace;
-    width: 90%;
-    margin: 10px 20px 20px 20px;
-    background-color: #212d30;
-    padding: 10px;
-    border-radius: 5px;
-    color: #d1d1d1;
+  border: 1px solid #d8d8d8;
+  border-collapse: separate;
+  white-space: pre;
+  font-family: "Lucida Console", monaco, monospace;
+  width: 90%;
+  margin: 10px 20px 20px 20px;
+  background-color: #212d30;
+  padding: 10px;
+  border-radius: 5px;
+  color: #d1d1d1;
 }
 
 @media screen and (max-width: 667px) {
-
-    table.pre,
-    pre.fssnip,
-    pre {
-        width: 75%;
-    }
+  table.pre,
+  pre.fssnip,
+  pre {
+    width: 75%;
+  }
 }
 
 pre.fssnip code {
-    font-family: "Lucida Console", monaco, monospace;
+  font-family: "Lucida Console", monaco, monospace;
 }
 
 table.pre pre {
-    padding: 0px;
-    margin: 0px;
-    border-radius: 0px;
+  padding: 0px;
+  margin: 0px;
+  border-radius: 0px;
 }
 
 table.pre td {
-    padding: 0px;
-    white-space: normal;
-    margin: 0px;
+  padding: 0px;
+  white-space: normal;
+  margin: 0px;
 }
 
 table.pre td.lines {
-    width: 30px;
+  width: 30px;
 }
 
 pre {
-    word-wrap: inherit;
+  word-wrap: inherit;
 }
 
 /*///////////////////////////////////////////////////////////////////////////////*/
 
 .CodeBlock {
-    overflow-x: scroll;
+  overflow-x: scroll;
 }
 
 .Main-header.is-fixed {
-    position: fixed;
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #333;
+  position: fixed;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
 }
 
 .LatestArticles {
-    margin: auto;
-    margin-top: 4rem;
-    max-width: 80rem;
+  margin: auto;
+  margin-top: 4rem;
+  max-width: 80rem;
 }
 
 .PostContents {
-    margin-bottom: 3rem;
+  margin-bottom: 3rem;
 }
 
-.PostContents>h1>a {
-    font-size: 24pt;
+.PostContents > h1 > a {
+  font-size: 24pt;
 }
 
-.PostContents>p {
-    font-size: 16pt;
-    line-height: 26pt;
+.PostContents > p {
+  font-size: 16pt;
+  line-height: 26pt;
 }
 
 @media screen and (max-width: 667px) {
-    .PostContents>h1:first-child {
-        display: none;
-    }
+  .PostContents > h1:first-child {
+    display: none;
+  }
 
-    .PostContents>p {
-        font-size: 15pt;
-        line-height: 24pt;
-        padding: 0 0.5rem;
-    }
+  .PostContents > p {
+    font-size: 15pt;
+    line-height: 24pt;
+    padding: 0 0.5rem;
+  }
 }
 
-.PostContents>p>img {
-    display: block;
-    margin: auto;
-    width: 100%;
+.PostContents > p > img {
+  display: block;
+  margin: auto;
+  width: 100%;
 }
 
-.PostContents>h1>a:link {
-    color: inherit;
-    cursor: auto;
+.PostContents > h1 > a:link {
+  color: inherit;
+  cursor: auto;
 }
 
-.PostContents>h1>a:visited {
-    color: inherit;
-    cursor: auto;
+.PostContents > h1 > a:visited {
+  color: inherit;
+  cursor: auto;
 }
 
-.PostContents>h3>a:link {
-    color: inherit;
-    cursor: auto;
+.PostContents > h3 > a:link {
+  color: inherit;
+  cursor: auto;
 }
 
-.PostContents>h3>a:visited {
-    color: inherit;
-    cursor: auto;
+.PostContents > h3 > a:visited {
+  color: inherit;
+  cursor: auto;
 }
 
 .About-socialList {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
 .About-socialAnchor:link {
-    color: inherit;
-    cursor: pointer;
+  color: inherit;
+  cursor: pointer;
 }
 
 .About-socialAnchor:visited {
-    color: inherit;
+  color: inherit;
 }
 
 .About-socialLink {
-    display: flex;
-    line-height: 26pt;
-    font-size: 16pt;
-    margin-bottom: 0.5rem;
+  display: flex;
+  line-height: 26pt;
+  font-size: 16pt;
+  margin-bottom: 0.5rem;
 }
 
 .About-socialIcon {
-    margin-right: 1rem;
+  margin-right: 1rem;
 }
 
 .About-socialText {
-    position: absolute;
+  position: absolute;
 }
 
 .LatestPosts-entry {
-    display: grid;
-    grid-template-columns: 3fr 1.1fr;
-    grid-template-rows: min-content 3.5rem auto;
-    margin-bottom: 5rem;
+  display: grid;
+  grid-template-columns: 3fr 1.1fr;
+  grid-template-rows: min-content 3.5rem auto;
+  margin-bottom: 5rem;
 }
 
 .LatestPosts-entryTitle {
-    grid-column: 1;
-    grid-row: 1;
-    margin: 0;
-    font-size: 16pt;
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  font-size: 16pt;
 }
 
 .LatestPosts-entryDate {
-    grid-column: 2;
-    grid-row: 1;
-    margin: 0;
-    font-weight: normal;
-    font-size: 12pt;
-    text-align: right;
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  font-weight: normal;
+  font-size: 12pt;
+  text-align: right;
 }
 
 .LatestPosts-entryTags {
-    grid-row: 2;
-    margin-left: 4rem;
-    grid-column-start: 1;
-    grid-column-end: span 2;
-    align-self: center;
-    margin-top: -0.5rem;
+  grid-row: 2;
+  margin-left: 4rem;
+  grid-column-start: 1;
+  grid-column-end: span 2;
+  align-self: center;
+  margin-top: -0.5rem;
 }
 
 @media screen and (max-width: 667px) {
-    .LatestPosts-entryTags {
-        margin-left: 0rem;
-        margin-top: -1rem;
-    }
+  .LatestPosts-entryTags {
+    margin-left: 0rem;
+    margin-top: -1rem;
+  }
 }
 
 .LatestPosts-entryTag {
-    text-decoration: none;
-    border: 1px solid #c6c6c6;
-    padding: 5px 1rem;
-    background-color: #e6e6e6;
-    color: black;
-    border-radius: 5px;
-    margin-left: 1rem;
+  text-decoration: none;
+  border: 1px solid #c6c6c6;
+  padding: 5px 1rem;
+  background-color: #e6e6e6;
+  color: black;
+  border-radius: 5px;
+  margin-left: 1rem;
 }
 
 .LatestPosts-entryTag:hover {
-    color: #f2f2f2;
-    background-color: #2c2e43;
+  color: #f2f2f2;
+  background-color: #2c2e43;
 }
 
 .LatestPosts-entryExcerpt {
-    grid-column-start: 1;
-    grid-column-end: span 2;
-    grid-row: 3;
-    font-size: 14pt;
-    line-height: 20pt;
+  grid-column-start: 1;
+  grid-column-end: span 2;
+  grid-row: 3;
+  font-size: 14pt;
+  line-height: 20pt;
 }
 
 .Main-footer {
-    color: #f2f2f2;
-    background-color: #2c2e43;
-    margin: 0 -8px -8px -8px;
-    height: 10rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  color: #f2f2f2;
+  background-color: #2c2e43;
+  margin: 0 -8px -8px -8px;
+  height: 10rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .Main-footerContents {
-    width: 40rem;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    justify-content: space-between;
-    height: 8rem;
+  width: 40rem;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: space-between;
+  height: 8rem;
 }
 
 .Main-footerSyndicateSeparator {
-    margin: 0 0.5rem;
+  margin: 0 0.5rem;
 }
 
 .Main-footerSocialLink {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .Main-footerSocialAnchor {
-    color: #f2f2f2;
-    text-decoration: underline;
+  color: #f2f2f2;
+  text-decoration: underline;
 }
 
 .Main-footerCodeLink {
-    color: #f2f2f2;
-    text-decoration: underline;
-}
-
-.ArticleEnd {
-    margin-left: -8px;
-    margin-right: -8px;
-    margin-bottom: 3rem;
-    border-top: none;
-    border-color: #c6c6c6;
-}
-
-.ArticleComments {
-    margin: auto;
-    max-width: 80rem;
-}
-
-.ArticleComments-container {
-    text-align: center;
-}
-
-.ArticleComments-loadComments {
-    display: inline-block;
-    color: #6c6c6c;
-    text-decoration: underline;
-    cursor: pointer;
-    font-size: 16pt;
-    font-weight: 700;
-}
-
-/********************/
-
-.commento-root .commento-login-box-container .commento-login-box textarea {
-    font-family: Bookman, serif;
-}
-
-.commento-root-font * {
-    font-family: Arial, sans-serif;
-}
-
-#commento-markdown-help-root>tr>td>pre {
-    border: none;
-    margin: 10px 20px 20px 20px;
-    padding: 10px;
-    background-color: inherit;
+  color: #f2f2f2;
+  text-decoration: underline;
 }

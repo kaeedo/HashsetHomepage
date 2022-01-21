@@ -14,9 +14,7 @@ module Articles =
 
     let private getContent key parsed =
         parsed
-        |> List.find (fun (span, _) ->
-            span = key
-        )
+        |> List.find (fun (span, _) -> span = key)
         |> fun (_, value) -> value
 
     // UGLY HACK
@@ -27,21 +25,31 @@ module Articles =
 
         let rec buildDocument (accumulator: string) (markupToParse: string) =
             let startTableIndex = markupToParse.IndexOf(tableStartTag)
-            let endTableIndex = markupToParse.IndexOf(tableEndTag) + tableEndTag.Length
 
-            let untilTable = markupToParse.Substring(0, startTableIndex)
-            let table = markupToParse.Substring(startTableIndex, endTableIndex - startTableIndex)
+            let endTableIndex =
+                markupToParse.IndexOf(tableEndTag)
+                + tableEndTag.Length
+
+            let untilTable =
+                markupToParse.Substring(0, startTableIndex)
+
+            let table =
+                markupToParse.Substring(startTableIndex, endTableIndex - startTableIndex)
+
             let afterTable = markupToParse.Substring(endTableIndex)
 
-            let surrounded = sprintf "%s%s<div class=\"CodeBlock\">%s</div>" accumulator untilTable table
+            let surrounded =
+                sprintf "%s%s<div class=\"CodeBlock\">%s</div>" accumulator untilTable table
 
-            if afterTable.Contains(tableStartTag)
-            then buildDocument surrounded afterTable
-            else surrounded + afterTable
+            if afterTable.Contains(tableStartTag) then
+                buildDocument surrounded afterTable
+            else
+                surrounded + afterTable
 
-        if document.Contains(tableStartTag)
-        then buildDocument String.Empty document
-        else document
+        if document.Contains(tableStartTag) then
+            buildDocument String.Empty document
+        else
+            document
 
     let getLatestArticle (repository: IRepository) = repository.GetLatestArticle()
     let getArticles (repository: IRepository) = repository.GetArticles()
@@ -50,8 +58,11 @@ module Articles =
     let deleteArticleById (repository: IRepository) (articleId: int) = repository.DeleteArticleById articleId
 
     // TODO refactor these
-    let addArticle (repository: IRepository) (parsedDocument: ParsedDocument) (tags: string list) = repository.InsertArticle parsedDocument tags
-    let updateArticle (repository: IRepository) (articleId: int) (parsedDocument: ParsedDocument) (tags: string list) = repository.UpdateArticle articleId parsedDocument tags
+    let addArticle (repository: IRepository) (parsedDocument: ParsedDocument) (tags: string list) =
+        repository.InsertArticle parsedDocument tags
+
+    let updateArticle (repository: IRepository) (articleId: int) (parsedDocument: ParsedDocument) (tags: string list) =
+        repository.UpdateArticle articleId parsedDocument tags
 
     let parse (document: UpsertDocument) =
         let source = document.Source
@@ -59,11 +70,14 @@ module Articles =
         let articleDate = document.ArticleDate
 
         task {
-            let tmpFileName = Path.GetTempPath() ++ Guid.NewGuid().ToString()
+            let tmpFileName =
+                Path.GetTempPath() ++ Guid.NewGuid().ToString()
 
             do! File.WriteAllTextAsync(tmpFileName, source)
 
-            let parsed = Literate.ProcessMarkdown(tmpFileName, generateAnchors = true)
+            let parsed =
+                Literate.ProcessMarkdown(tmpFileName, generateAnchors = true)
+
             let title = title.Trim()
 
             let parsedDocument =
@@ -71,8 +85,11 @@ module Articles =
                   Title = title
                   Source = source
                   Description = document.Description
-                  Document = parsed.Parameters |> getContent "document" |> transformHtml
-                  ArticleDate =  articleDate
+                  Document =
+                    parsed.Parameters
+                    |> getContent "document"
+                    |> transformHtml
+                  ArticleDate = articleDate
                   Tooltips = parsed.Parameters |> getContent "tooltips"
                   Tags = [] }
 

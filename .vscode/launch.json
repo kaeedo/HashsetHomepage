@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "App.dll",
-            "cwd": "${workspaceFolder}/src/App/bin/Debug/net5",
+            "cwd": "${workspaceFolder}/src/App/bin/Debug/net6",
             "console": "integratedTerminal",
             "stopAtEntry": false
         },
@@ -27,7 +27,7 @@
             "request": "launch",
             "preLaunchTask": "emitCompilerTmp",
             "program": "App.dll",
-            "cwd": "${workspaceFolder}/src/App/bin/Debug/net5"
+            "cwd": "${workspaceFolder}/src/App/bin/Debug/net6"
         }
     ]
 }

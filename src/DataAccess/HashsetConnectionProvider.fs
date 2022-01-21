@@ -1,4 +1,5 @@
 namespace Rezoom.SQL.Mapping
+
 open System
 open System.Configuration
 open System.Data.Common

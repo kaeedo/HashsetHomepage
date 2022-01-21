@@ -2,10 +2,9 @@
 
 open System
 open FSlugify.SlugGenerator
+open System.Threading.Tasks
 
-type Tag =
-    { Id: int
-      Name: string }
+type Tag = { Id: int; Name: string }
 
 type MasterContent =
     { PageTitle: string
@@ -29,16 +28,16 @@ type ParsedDocument =
       Document: string
       Tooltips: string
       Tags: Tag list }
-    with
-        member this.GetFirstParagraph =
-            let content = this.Document
-            let firstIndex = content.IndexOf("<p>") + 3
-            let lastIndex = content.IndexOf("</p>")
-            let count = lastIndex - firstIndex
+    member this.GetFirstParagraph =
+        let content = this.Document
+        let firstIndex = content.IndexOf("<p>") + 3
+        let lastIndex = content.IndexOf("</p>")
+        let count = lastIndex - firstIndex
 
-            content.Substring(firstIndex, count)
-        member this.GetUrlTitle =
-            slugify DefaultSlugGeneratorOptions this.Title
+        content.Substring(firstIndex, count)
+
+    member this.GetUrlTitle =
+        slugify DefaultSlugGeneratorOptions this.Title
 
 [<CLIMutable>]
 type UpsertDocument =
