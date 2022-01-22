@@ -10,7 +10,7 @@ module About =
             ]
             p [] [
                 str "I am a Software Developer at "
-                a [ _href "https://valora.digital/" ] [
+                a [ _href "https://valora.digital/"; _target "_blank" ] [
                     str "Valora Digital"
                 ]
                 str
