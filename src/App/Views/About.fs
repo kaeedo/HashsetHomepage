@@ -10,11 +10,11 @@ module About =
             ]
             p [] [
                 str "I am a Software Developer at "
-                a [ _href "https://www.zuehlke.com" ] [
-                    str "Zühlke Engineering"
+                a [ _href "https://valora.digital/" ] [
+                    str "Valora Digital"
                 ]
                 str
-                    " in Munich, Germany. I have been a Full Stack .Net web developer since 2012. Back then, I mainly used Asp.net MVC, and mostly jQuery on the frontend, with a little bit of Knockout.js sprinkled in.
+                    ". I have been a Full Stack .Net web developer since 2012. Back then, I mainly used Asp.net MVC, and mostly jQuery on the frontend, with a little bit of Knockout.js sprinkled in.
                 I have since taken a liking to Functional Programming, especially F#. In my experience, the functional paradigm has since proven to be invaluable in writing bug free software, especially when combined with a powerful type system like F#"
             ]
             p [] [

@@ -3,6 +3,7 @@
 - Add Basic Auth
 - Remove GitHub OAuth
 - Remove Commento
+- Write new about page content
 
 ### 1.9.2
 
