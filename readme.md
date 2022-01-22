@@ -2,12 +2,11 @@
 
 This is Blog website for personal usage. Currently, frontend styling is written for my personal blog. Maybe in the future I might add support for custom themes, and general blog generator features.
 
-If you want to run this project yourself, feel free, just keep the following in mind.
+If you want to run this project yourself, feel free.
 
-You need to register an OAuth application in Github to be able to authenticate to allow upserting blog posts.
-The actual upsert page is under `/articles/upsert/0`. Use 0 to add a new post, or any ID to update a post.
+The Upsert page is under `/articles/upsert`.
 
-When adding or updating a post, you can add any number of Tags. To do this, you can simply click the `Tag` label on the upsert page, and a new input field will appear.
+When adding or updating a post, you can add any number of Tags. A minimum of 1 is required. To do this, you can simply click the `Tag` label on the upsert page, and a new input field will appear.
 
 ### Running locally
 
@@ -24,8 +23,8 @@ You will also need to set several configuration options, either in the `appsetti
 They are:
 
 - `ConnectionString`: The postgres connection string
-- `Username`: The username of the author for use by Basic Authentication
-- `Password`: The password of the author for use by Basic Authentication
+- `AuthorUsername`: The username of the author for use by Basic Authentication
+- `AuthorPassword`: The password of the author for use by Basic Authentication
 
 Ideally, you should be able to simply run: `dotnet tool restore`, `dotnet build`, and `dotnet run`. It installs `paket` and `fake-cli` as local tools and they should be good to go out of the box.
 
