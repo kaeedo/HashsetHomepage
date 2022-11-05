@@ -10,7 +10,8 @@ module About =
             ]
             p [] [
                 str "I am a Software Developer at "
-                a [ _href "https://valora.digital/"; _target "_blank" ] [
+                a [ _href "https://valora.digital/"
+                    _target "_blank" ] [
                     str "Valora Digital"
                 ]
                 str
@@ -39,7 +40,7 @@ module About =
                     ]
                     li [ _class "About-socialLink" ] [
                         a [ _rel "me"
-                            _href "https://mastodon.technology/@kaeedo"
+                            _href "https://mstdn.social/@kaeedo"
                             _class "About-socialAnchor" ] [
                             i [ _class "About-socialIcon" ] [
                                 rawText
