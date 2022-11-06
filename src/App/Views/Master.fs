@@ -98,6 +98,11 @@ module Master =
                         span [] [
                             str "Source Code to website available "
                             a [ _class "Main-footerCodeLink"
+                                _href "https://codeberg.org/CubeOfShame/Hashset" ] [
+                                str "here"
+                            ]
+                            str " or "
+                            a [ _class "Main-footerCodeLink"
                                 _href "https://github.com/kaeedo/HashsetHomepage" ] [
                                 str "here"
                             ]
