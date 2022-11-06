@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Model/Model.fsproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="rzsql.json" />
-    <None Include="paket.references" />
     <None Include="v1.articles.sql" />
     <None Include="v2.articleDescription.sql" />
+    <None Include="v3.newColumn.sql" />
     <Compile Include="Queries.fs" />
     <Compile Include="HashsetConnectionProvider.fs" />
     <Compile Include="Repository.fs" />
     <Compile Include="FileStorage.fs" />
   </ItemGroup>
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" Version="6.0.3" />
+    <PackageReference Include="Npgsql" Version="6.0.3" />
+    <PackageReference Include="Rezoom.SQL.Provider" Version="1.0.3" />
+  </ItemGroup>
 </Project>

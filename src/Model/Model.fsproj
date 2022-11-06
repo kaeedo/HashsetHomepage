@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
@@ -10,7 +10,11 @@
   <ItemGroup>
     <Compile Include="Types.fs" />
     <Compile Include="Utils.fs" />
-    <None Include="paket.references" />
   </ItemGroup>
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" Version="6.0.3" />
+    <PackageReference Include="FSlugify" Version="1.1.0" />
+    <PackageReference Remove="FSharp.Core" />
+    <PackageReference Update="FSharp.Core" Version="6.0.3" />
+  </ItemGroup>
 </Project>

@@ -125,7 +125,7 @@ type Repository(connectionString) =
                                 source = document.Source,
                                 parsed = document.Document,
                                 tooltips = document.Tooltips,
-                                createdOn = document.ArticleDate
+                                createdOn = DateTime.SpecifyKind(document.ArticleDate, DateTimeKind.Utc)
                             )
                             .Plan()
 
