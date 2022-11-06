@@ -54,13 +54,13 @@ type Repository(connectionString) =
 
     interface IRepository with
         member this.Migrate() =
+            DefaultConnectionProvider.SetConfigurationReader (fun connectionName ->
+                { ConnectionString = connectionString; ProviderName = "Npgsql" }
+            )
             let config =
                 { MigrationConfig.Default with LogMigrationRan = fun m -> printfn "Ran migration: %s" m.MigrationName }
 
-            let connection = Configuration.ConnectionStringSettings()
-            connection.ConnectionString <- connectionString
-            connection.ProviderName <- "Npgsql"
-            Queries.HashsetModel.Migrate(config, connection)
+            Queries.HashsetModel.Migrate(config)
 
         member this.InsertArticle (document: ParsedDocument) (tags: string list) =
             let insertPlan =
@@ -82,7 +82,7 @@ type Repository(connectionString) =
                                 description = document.Description,
                                 parsed = document.Document,
                                 tooltips = document.Tooltips,
-                                createdOn = document.ArticleDate
+                                createdOn = DateTime.SpecifyKind(document.ArticleDate, DateTimeKind.Utc)
                             )
                             .Plan()
 

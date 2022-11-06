@@ -89,7 +89,7 @@ module Articles =
                     parsed.Parameters
                     |> getContent "document"
                     |> transformHtml
-                  ArticleDate = articleDate.DateTime
+                  ArticleDate = articleDate
                   Tooltips = parsed.Parameters |> getContent "tooltips"
                   Tags = [] }
 
