@@ -21,11 +21,23 @@ module About =
             p [] [
                 str
                     "These days, I have become an advocate of online privacy, especially because of the massive amounts of tracking that a large number websites and smartphone apps practice. I strongly believe in Open Source Software, and try to use them as much as possible.
-                You'll find a link to my Mastodon account below, and not to a Twitter of Facebook account for these reasons. For the moment, I'm still on Github, but ideally in the future, something like Gitea will allow federated communication."
+                You'll find a link to my Mastodon account below, and not to a Twitter of Facebook account for these reasons. For the moment, I'm still on Codeberg and Github, but ideally in the future, something like Gitea will allow federated communication."
             ]
             p [] [
                 str "Come find me at the following sites:"
                 ul [ _class "About-socialList" ] [
+                    li [ _class "About-socialLink" ] [
+                        a [ _href "https://codeberg.org/CubeOfShame"
+                            _class "About-socialAnchor" ] [
+                            i [ _class "About-socialIcon" ] [
+                                rawText
+                                    """<svg width="32px" height="32px" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.955.49A12 12 0 0 0 0 12.49a12 12 0 0 0 1.832 6.373L11.838 5.928a.187.14 0 0 1 .324 0l10.006 12.935A12 12 0 0 0 24 12.49a12 12 0 0 0-12-12 12 12 0 0 0-.045 0zm.375 6.467 4.416 16.553a12 12 0 0 0 5.137-4.213z"/></svg>"""
+                            ]
+                            span [ _class "About-socialText" ] [
+                                str "Codeberg"
+                            ]
+                        ]
+                    ]
                     li [ _class "About-socialLink" ] [
                         a [ _href "https://github.com/kaeedo/"
                             _class "About-socialAnchor" ] [
