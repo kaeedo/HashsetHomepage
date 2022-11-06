@@ -8,13 +8,13 @@ type Tag = { Id: int; Name: string }
 
 type MasterContent =
     { PageTitle: string
-      ArticleDate: DateTime option
+      ArticleDate: DateTimeOffset option
       Tags: Tag list }
 
 type ArticleStub =
     { Id: int
       Title: string
-      Date: DateTime
+      Date: DateTimeOffset
       Description: string
       Excerpt: string
       Tags: Tag list }
@@ -44,6 +44,6 @@ type UpsertDocument =
     { ExistingIds: (int * string) seq
       Title: string
       Description: string
-      ArticleDate: DateTime
+      ArticleDate: DateTimeOffset
       Source: string
       Tags: string list }

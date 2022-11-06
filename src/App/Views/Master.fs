@@ -7,7 +7,7 @@ open Model
 module Master =
     open Giraffe.ViewEngine
 
-    let private getDate (date: DateTime option) =
+    let private getDate (date: DateTimeOffset option) =
         match date with
         | Some d -> d.ToString("dd MMMM, yyyy")
         | None -> String.Empty

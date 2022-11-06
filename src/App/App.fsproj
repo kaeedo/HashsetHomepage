@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <Version>1.8.0</Version>
-    <TargetFramework>net6</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <LangVersion>preview</LangVersion>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
@@ -14,7 +14,6 @@
     <ProjectReference Include="../Model/Model.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="paket.references" />
     <Compile Include="Views/Master.fs" />
     <Compile Include="Views/LatestArticles.fs" />
     <Compile Include="Views/About.fs" />
@@ -35,9 +34,17 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" Version="6.0.3" />
+    <PackageReference Include="Giraffe" Version="5.0.0" />
+    <PackageReference Include="FSharp.Literate" Version="4.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0-preview.1.22076.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0-preview.1.22076.8" />
+    <PackageReference Remove="FSharp.Core" />
+    <PackageReference Update="FSharp.Core" Version="6.0.3" />
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors>FS0025</WarningsAsErrors>
   </PropertyGroup>
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
