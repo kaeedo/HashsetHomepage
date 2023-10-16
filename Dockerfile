@@ -10,8 +10,6 @@ COPY . .
 
 RUN dotnet tool restore
 
-RUN dotnet paket restore
-
 RUN dotnet fake build -t BuildApplication
 
 #################################
