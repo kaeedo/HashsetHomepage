@@ -16,7 +16,7 @@ module Master =
 
 
     let view (aboveTheFold: string) (masterData: MasterContent) (content: XmlNode) =
-        html [] [
+        html [ ] [
             head [] [
                 title [] [
                     str
@@ -40,7 +40,7 @@ module Master =
                     _content "width=device-width, initial-scale=1.0"
                 ]
             ]
-            body [ _class "Main-body" ] [
+            body [ attr "hx-boost" "true"; _class "Main-body" ] [
                 header [ _class "Main-headerContainer" ] [
                     div [ _class "Main-header" ] [
                         span [] [
@@ -152,5 +152,8 @@ module Master =
             script [ _async
                      _defer
                      _src "/js/main.js"
+                     _type "text/javascript" ] []
+            script [ _defer
+                     _src "https://unpkg.com/htmx.org@1.9.6/dist/htmx.min.js"
                      _type "text/javascript" ] []
         ]
