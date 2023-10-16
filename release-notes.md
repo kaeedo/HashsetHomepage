@@ -1,3 +1,8 @@
+### 2.2.0
+
+- Introduce HTMX
+- Upgrade to .Net 7
+
 ### 2.1.0
 
 - Update mastodon links
