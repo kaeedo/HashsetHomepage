@@ -22,7 +22,7 @@ RUN mkdir app
 
 WORKDIR app
 
-COPY . .
+COPY ./src/App/bin/Release/net7.0/ .
 
 EXPOSE 5000
 
