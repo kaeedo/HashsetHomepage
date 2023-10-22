@@ -24,6 +24,6 @@ jobs:
       - name: Push container
         env:
           USERNAME: ${{ github.actor }}
-        run: dotnet fake build -t PushContainer
+        run: docker push docker.pkg.github.com/${{ github.actor }}/hashsethomepage/hashset:${{ env.VERSION }}
       - name: Docker logout
         run: docker logout
