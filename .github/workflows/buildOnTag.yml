@@ -11,8 +11,8 @@ jobs:
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: "7.0"
-      - name: Dotnet restore
-        run: dotnet restore
+      - name: Dotnet add nuget source
+        run: dotnet nuget add source https://www.myget.org/F/secret-feed-lamp/api/v3/index.json
       - name: Dotnet build
         run: dotnet build -c Release
       - name: Docker login
