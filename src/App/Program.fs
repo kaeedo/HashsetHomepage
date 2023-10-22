@@ -10,6 +10,10 @@ open Microsoft.AspNetCore.HttpOverrides
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.Configuration
+#if !DEBUG
+open Microsoft.Extensions.FileProviders
+open Microsoft.Extensions.Hosting
+#endif
 
 open Giraffe
 
@@ -66,7 +70,7 @@ module Program =
 
     let configureApp (app: IApplicationBuilder) =
         app
-#if RELEASE
+#if !DEBUG
             .UseWebOptimizer()
 #endif
             .UseStaticFiles()
@@ -117,7 +121,7 @@ module Program =
         services.AddTransient<IUserService, UserService>()
         |> ignore
 
-#if RELEASE
+#if !DEBUG
         services.AddWebOptimizer() |> ignore
 #endif
         services.AddGiraffe() |> ignore

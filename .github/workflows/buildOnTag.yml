@@ -11,8 +11,10 @@ jobs:
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: "7.0"
+      - name: Dotnet restore
+        run: dotnet restore
       - name: Dotnet build
-        run: dotnet build -configuration Release
+        run: dotnet build -c Release
       - name: Docker login
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com --username ${{ github.actor }} --password-stdin
       - name: Set Version
