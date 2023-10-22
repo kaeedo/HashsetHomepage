@@ -18,8 +18,7 @@ jobs:
       - name: Set Version
         run: echo "VERSION=$(head -n 1 release-notes.md | cut -d' ' -f 2)" >> $GITHUB_ENV
       - name: Build container
-        run: |
-          docker build . -t docker.pkg.github.com/${{ github.actor }}/hashsethomepage/hashset:$VERSION
+        run: docker build . -t docker.pkg.github.com/${{ github.actor }}/hashsethomepage/hashset:${{ env.VERSION }}
       # - name: Push container
       #   env:
       #     USERNAME: ${{ github.actor }}
