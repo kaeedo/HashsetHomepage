@@ -16,8 +16,8 @@ jobs:
       - name: Docker login
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com --username ${{ github.actor }} --password-stdin
       - name: Build container
-        env: 
-          VERSION: `head -n 1 release-notes.md | cut -d' ' -f 2`
+        env:
+          VERSION: head -n 1 release-notes.md | cut -d' ' -f 2
         run: docker build . -t docker.pkg.github.com/${{ github.actor }}/hashsethomepage/hashset:${{ env.VERSION }}
       # - name: Push container
       #   env:
