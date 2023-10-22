@@ -1,16 +1,16 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0.402-alpine3.18 AS builder
+# FROM mcr.microsoft.com/dotnet/sdk:7.0.402-alpine3.18 AS builder
 
-ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
+# ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 
-RUN mkdir app
+# RUN mkdir app
 
-WORKDIR app
+# WORKDIR app
 
-COPY . .
+# COPY . .
 
-RUN dotnet tool restore
+# RUN dotnet tool restore
 
-RUN dotnet build -configuration Release
+# RUN dotnet build -configuration Release
 
 #################################
 
@@ -22,7 +22,7 @@ RUN mkdir app
 
 WORKDIR app
 
-COPY --from=builder /app/build .
+COPY . .
 
 EXPOSE 5000
 
