@@ -6,7 +6,6 @@
     <TargetFramework>net7.0</TargetFramework>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
-    <UserSecretsId>043bee96-2eb5-415c-b811-3bcedcd3be86</UserSecretsId>
     <WarningsAsErrors>FS0025</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
