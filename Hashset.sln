@@ -14,7 +14,6 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Model", "src\Model\Model.fs
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4293EDD7-22AD-4860-A61C-25E9EA46693D}"
 	ProjectSection(SolutionItems) = preProject
-		build.fsx = build.fsx
 		Dockerfile = Dockerfile
 		LICENSE.md = LICENSE.md
 		readme.md = readme.md

@@ -24,9 +24,6 @@ let builder =
 builder.Configuration
     .AddJsonFile("appsettings.json", false, true)
     .AddEnvironmentVariables()
-#if DEBUG
-    .AddUserSecrets(Reflection.Assembly.GetCallingAssembly())
-#endif
 |> ignore
 
 let services = builder.Services
