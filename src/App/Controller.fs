@@ -1,14 +1,13 @@
 namespace Hashset
 
 open Microsoft.AspNetCore.Http
-open FSharp.Control.Tasks.V2.ContextInsensitive
 open Hashset.Views
 open System
 open System.IO
 open Giraffe
 open Model
 open DataAccess
-open System.Threading
+open Fun.Blazor
 
 module private Load =
     let styledMasterView =
@@ -44,13 +43,31 @@ module Controller =
                         renderArticlePage la host next ctx
             }
 
+    let funHomepage: HttpHandler =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                let repository = ctx.GetService<IRepository>()
+
+
+                let! latestArticle = Articles.getLatestArticle repository
+
+                return!
+                    match latestArticle with
+                    | None -> redirectTo false ("/articles/upsert") next ctx
+                    | Some la ->
+                        let host = ctx.Request.Host.Value
+
+                        //renderArticlePage la host next ctx
+                        App.View.Build (App.FunViews.Layout.Create(div { "wef" })) next ctx
+            }
+
     let articleRedirect articleId : HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 let repository = ctx.GetService<IRepository>()
                 let! article = Articles.getArticle repository articleId
 
-                return! redirectTo true (sprintf "/article/%s" (Utils.getUrl article.Id article.Title)) next ctx
+                return! redirectTo true (sprintf "/article/%s" (App.Utils.getUrl article.Id article.Title)) next ctx
             }
 
     let article articleId : HttpHandler =
@@ -149,7 +166,7 @@ module Controller =
                 else
                     do! Articles.updateArticle repository id parsedDocument document.Tags
 
-                    return! redirectTo false (sprintf "/article/%s" (Utils.getUrl id parsedDocument.Title)) next ctx
+                    return! redirectTo false (sprintf "/article/%s" (App.Utils.getUrl id parsedDocument.Title)) next ctx
             }
 
     let articles: HttpHandler =

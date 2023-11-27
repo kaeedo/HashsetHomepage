@@ -6,11 +6,9 @@
     <WarningsAsErrors>FS0025</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Types.fs" />
-    <Compile Include="Utils.fs" />
+    <PackageReference Update="FSharp.Core" Version="8.0.100" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="FSharp.Core" Version="8.0.100" />
-    <PackageReference Include="FSlugify" Version="1.1.0" />
+    <Compile Include="Types.fs" />
   </ItemGroup>
 </Project>

@@ -9,7 +9,7 @@ module Article =
 
     let view (parsedDocument: ParsedDocument) currentUrl =
         let permaLink =
-            $"https://%s{currentUrl}/article/%s{Utils.getUrl parsedDocument.Id parsedDocument.Title}"
+            $"https://%s{currentUrl}/article/%s{App.Utils.getUrl parsedDocument.Id parsedDocument.Title}"
 
         div [] [
             meta [
