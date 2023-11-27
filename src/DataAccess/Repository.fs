@@ -12,15 +12,15 @@ open Npgsql.Logging
 open Model
 
 type IRepository =
-    abstract member Migrate : unit -> unit
-    abstract member InsertArticle : ParsedDocument -> string list -> Task<unit>
-    abstract member UpdateArticle : int -> ParsedDocument -> string list -> Task<unit>
-    abstract member GetArticleById : int -> Task<ParsedDocument>
-    abstract member DeleteArticleById : int -> Task<unit>
-    abstract member GetLatestArticle : unit -> Task<ParsedDocument option>
-    abstract member GetArticles : unit -> Task<ParsedDocument seq>
-    abstract member GetAllArticles : unit -> Task<ParsedDocument seq>
-    abstract member GetArticlesByTag : string -> Task<ParsedDocument seq>
+    abstract member Migrate: unit -> unit
+    abstract member InsertArticle: ParsedDocument -> string list -> Task<unit>
+    abstract member UpdateArticle: int -> ParsedDocument -> string list -> Task<unit>
+    abstract member GetArticleById: int -> Task<ParsedDocument>
+    abstract member DeleteArticleById: int -> Task<unit>
+    abstract member GetLatestArticle: unit -> Task<ParsedDocument option>
+    abstract member GetArticles: unit -> Task<ParsedDocument seq>
+    abstract member GetAllArticles: unit -> Task<ParsedDocument seq>
+    abstract member GetArticlesByTag: string -> Task<ParsedDocument seq>
 
 type Repository(connectionString) =
 #if DEBUG
@@ -34,14 +34,15 @@ type Repository(connectionString) =
         serviceConfig.SetConfiguration<ConnectionProvider>(HashsetConnectionProvider(connectionString))
         |> ignore
 
-    let executionConfig =
-        { Execution.ExecutionConfig.Default with ServiceConfig = serviceConfig :> IServiceConfig }
+    let executionConfig = {
+        Execution.ExecutionConfig.Default with
+            ServiceConfig = serviceConfig :> IServiceConfig
+    }
 
     let getTag (name: string) =
         plan {
             let! persistedTag =
-                Queries
-                    .GetTag
+                Queries.GetTag
                     .Command(name = name)
                     .TryExactlyOne()
 
@@ -54,11 +55,15 @@ type Repository(connectionString) =
 
     interface IRepository with
         member this.Migrate() =
-            DefaultConnectionProvider.SetConfigurationReader (fun connectionName ->
-                { ConnectionString = connectionString; ProviderName = "Npgsql" }
-            )
-            let config =
-                { MigrationConfig.Default with LogMigrationRan = fun m -> printfn "Ran migration: %s" m.MigrationName }
+            DefaultConnectionProvider.SetConfigurationReader(fun connectionName -> {
+                ConnectionString = connectionString
+                ProviderName = "Npgsql"
+            })
+
+            let config = {
+                MigrationConfig.Default with
+                    LogMigrationRan = fun m -> printfn "Ran migration: %s" m.MigrationName
+            }
 
             Queries.HashsetModel.Migrate(config)
 
@@ -74,8 +79,7 @@ type Repository(connectionString) =
                     let document = { document with Tags = tags }
 
                     let! article =
-                        Queries
-                            .InsertArticle
+                        Queries.InsertArticle
                             .Command(
                                 title = document.Title,
                                 source = document.Source,
@@ -90,8 +94,7 @@ type Repository(connectionString) =
 
                     for tagId in batch tagIds do
                         do!
-                            Queries
-                                .InsertArticleTagsMapping
+                            Queries.InsertArticleTagsMapping
                                 .Command(articleId = article.Id, tagId = tagId)
                                 .Plan()
                 }
@@ -102,8 +105,7 @@ type Repository(connectionString) =
             let updatePlan =
                 plan {
                     do!
-                        Queries
-                            .DeleteArticleTagsByArticleId
+                        Queries.DeleteArticleTagsByArticleId
                             .Command(id = articleId)
                             .Plan()
 
@@ -116,8 +118,7 @@ type Repository(connectionString) =
                     let document = { document with Tags = tags }
 
                     do!
-                        Queries
-                            .UpdateArticleById
+                        Queries.UpdateArticleById
                             .Command(
                                 id = articleId,
                                 title = document.Title,
@@ -133,8 +134,7 @@ type Repository(connectionString) =
 
                     for tagId in batch tagIds do
                         do!
-                            Queries
-                                .InsertArticleTagsMapping
+                            Queries.InsertArticleTagsMapping
                                 .Command(articleId = articleId, tagId = tagId)
                                 .Plan()
                 }
@@ -145,8 +145,7 @@ type Repository(connectionString) =
             let getPlan =
                 plan {
                     let! article =
-                        Queries
-                            .GetArticleById
+                        Queries.GetArticleById
                             .Command(id = id)
                             .ExactlyOne()
 
@@ -159,8 +158,7 @@ type Repository(connectionString) =
             let deletePlan =
                 plan {
                     do!
-                        Queries
-                            .DeleteArticleTagsByArticleId
+                        Queries.DeleteArticleTagsByArticleId
                             .Command(id = id)
                             .Plan()
 

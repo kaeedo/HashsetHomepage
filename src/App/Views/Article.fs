@@ -36,10 +36,7 @@ module Article =
                 _name "description"
                 _content parsedDocument.Description
             ]
-            link [
-                _rel "canonical"
-                _href <| permaLink
-            ]
+            link [ _rel "canonical"; _href <| permaLink ]
 
             article [ _class "PostContents" ] [
                 Text parsedDocument.Document
