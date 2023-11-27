@@ -8,9 +8,7 @@ module Upsert =
     let view (upsertDocument: UpsertDocument) availableImages =
 
         let idDropdown =
-            option [ _value "0" ] [
-                str "New"
-            ]
+            option [ _value "0" ] [ str "New" ]
             :: (upsertDocument.ExistingIds
                 |> Seq.sortByDescending (fun (id, _) -> id)
                 |> Seq.map (fun (id, title) ->
@@ -30,26 +28,30 @@ module Upsert =
                 _href "/css/upsert.css"
                 _async
             ]
-            form [ _action "/upsert"
-                   _method "POST"
-                   _class "PostContents Upsert-form"
-                   _enctype "multipart/form-data" ] [
+            form [
+                _action "/upsert"
+                _method "POST"
+                _class "PostContents Upsert-form"
+                _enctype "multipart/form-data"
+            ] [
                 div [ _class "Upsert-inputRow" ] [
-                    label [ _class "Upsert-inputLabel"
-                            _for "Id" ] [
-                        str "Id"
-                    ]
+                    label [
+                        _class "Upsert-inputLabel"
+                        _for "Id"
+                    ] [ str "Id" ]
                     select
-                        [ _class "Upsert-inputValue"
-                          _id "Id"
-                          _name "Id" ]
+                        [
+                            _class "Upsert-inputValue"
+                            _id "Id"
+                            _name "Id"
+                        ]
                         idDropdown
                 ]
                 div [ _class "Upsert-inputRow" ] [
-                    label [ _class "Upsert-inputLabel"
-                            _for "ArticleDate" ] [
-                        str "ArticleDate"
-                    ]
+                    label [
+                        _class "Upsert-inputLabel"
+                        _for "ArticleDate"
+                    ] [ str "ArticleDate" ]
                     input [
                         _class "Upsert-inputValue"
                         _type "date"
@@ -59,10 +61,10 @@ module Upsert =
                     ]
                 ]
                 div [ _class "Upsert-inputRow" ] [
-                    label [ _class "Upsert-inputLabel"
-                            _for "Title" ] [
-                        str "Title"
-                    ]
+                    label [
+                        _class "Upsert-inputLabel"
+                        _for "Title"
+                    ] [ str "Title" ]
                     input [
                         _class "Upsert-inputValue"
                         _type "text"
@@ -72,10 +74,10 @@ module Upsert =
                     ]
                 ]
                 div [ _class "Upsert-inputRow" ] [
-                    label [ _class "Upsert-inputLabel"
-                            _for "Description" ] [
-                        str "Description"
-                    ]
+                    label [
+                        _class "Upsert-inputLabel"
+                        _for "Description"
+                    ] [ str "Description" ]
                     input [
                         _class "Upsert-inputValue"
                         _type "text"
@@ -85,10 +87,10 @@ module Upsert =
                     ]
                 ]
                 div [ _class "Upsert-inputRow" ] [
-                    label [ _class "Upsert-inputLabel"
-                            _for "Images" ] [
-                        str "Upload Images"
-                    ]
+                    label [
+                        _class "Upsert-inputLabel"
+                        _for "Images"
+                    ] [ str "Upload Images" ]
                     input [
                         _class "Upsert-inputValue Upsert-inputImages"
                         _type "file"
@@ -98,25 +100,21 @@ module Upsert =
                     ]
                 ]
                 div [] [
-                    label [ _class "Upsert-inputSourceLabel"
-                            _for "Source" ] [
-                        str "Source"
-                    ]
-                    textarea [ _class "Upsert-inputSourceValue"
-                               _rows "10"
-                               _id "Source"
-                               _name "Source" ] [
-                        str upsertDocument.Source
-                    ]
+                    label [
+                        _class "Upsert-inputSourceLabel"
+                        _for "Source"
+                    ] [ str "Source" ]
+                    textarea [
+                        _class "Upsert-inputSourceValue"
+                        _rows "10"
+                        _id "Source"
+                        _name "Source"
+                    ] [ str upsertDocument.Source ]
                 ]
                 div [] [
                     div [ _class "Upsert-tagContainer" ] [
-                        label [ _class "Upsert-tagLabel" ] [
-                            str "Tags"
-                        ]
-                        button [ _id "Upsert-addTagButton" ] [
-                            str "+"
-                        ]
+                        label [ _class "Upsert-tagLabel" ] [ str "Tags" ]
+                        button [ _id "Upsert-addTagButton" ] [ str "+" ]
                     ]
                     ul
                         [ _id "Upsert-tagList" ]
@@ -140,10 +138,7 @@ module Upsert =
                 ]
 
                 div [ _class "Upsert-actions" ] [
-                    input [
-                        _id "Upsert-submit"
-                        _type "Submit"
-                    ]
+                    input [ _id "Upsert-submit"; _type "Submit" ]
                     input [
                         _id "Upsert-delete"
                         _type "button"
@@ -151,19 +146,21 @@ module Upsert =
                     ]
                 ]
 
-                script [ _async
-                         _defer
-                         _src "/js/upsert.js"
-                         _type "text/javascript" ] []
+                script [
+                    _async
+                    _defer
+                    _src "/js/upsert.js"
+                    _type "text/javascript"
+                ] []
             ]
             aside
                 [ _class "Upsert-availableImagesAside" ]
                 (availableImages
                  |> List.map (fun ai ->
-                     div [ _class "Upsert-availableImageContainer" ] [
-                         label [ _class "Upsert-availableImageLabel" ] [
-                             str ai
-                         ]
+                     div [
+                         _class "Upsert-availableImageContainer"
+                     ] [
+                         label [ _class "Upsert-availableImageLabel" ] [ str ai ]
                          img [
                              _class "Upsert-availableImage"
                              _src <| sprintf "/images/%s" ai

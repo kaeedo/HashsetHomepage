@@ -137,17 +137,19 @@ module Queries =
         order by a.CreatedOn desc
     """>
 
-    let inline mapArticle row =
-        { ParsedDocument.Id = (^a: (member get_Id : unit -> int) (row))
-          Title = (^a: (member get_Title : unit -> string) (row))
-          ArticleDate = (^a: (member get_CreatedOn : unit -> DateTime) (row))
-          Description = (^a: (member get_Description : unit -> string) (row))
-          Source = (^a: (member get_Source : unit -> string) (row))
-          Document = (^a: (member get_Parsed : unit -> string) (row))
-          Tooltips = (^a: (member get_Tooltips : unit -> string) (row))
-          Tags =
-            (^a: (member get_tags : unit -> IReadOnlyList<_>) (row))
-            |> Seq.map (fun tagRow ->
-                { Tag.Id = (^b: (member get_Id : unit -> int) (tagRow))
-                  Name = (^b: (member get_Name : unit -> string) (tagRow)) })
-            |> Seq.toList }
+    let inline mapArticle row = {
+        ParsedDocument.Id = (^a: (member get_Id: unit -> int) (row))
+        Title = (^a: (member get_Title: unit -> string) (row))
+        ArticleDate = (^a: (member get_CreatedOn: unit -> DateTime) (row))
+        Description = (^a: (member get_Description: unit -> string) (row))
+        Source = (^a: (member get_Source: unit -> string) (row))
+        Document = (^a: (member get_Parsed: unit -> string) (row))
+        Tooltips = (^a: (member get_Tooltips: unit -> string) (row))
+        Tags =
+            (^a: (member get_tags: unit -> IReadOnlyList<_>) (row))
+            |> Seq.map (fun tagRow -> {
+                Tag.Id = (^b: (member get_Id: unit -> int) (tagRow))
+                Name = (^b: (member get_Name: unit -> string) (tagRow))
+            })
+            |> Seq.toList
+    }

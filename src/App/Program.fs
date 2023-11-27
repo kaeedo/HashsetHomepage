@@ -1,15 +1,8 @@
-namespace Hashset
-
 open System
-open System.IO
 
+open Hashset
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
-open Microsoft.AspNetCore.Hosting
-open Microsoft.AspNetCore.HttpOverrides
-open Microsoft.Extensions.DependencyInjection
-open Microsoft.Extensions.Logging
-open Microsoft.Extensions.Configuration
 #if !DEBUG
 open Microsoft.Extensions.FileProviders
 open Microsoft.Extensions.Hosting
@@ -17,16 +10,10 @@ open Microsoft.Extensions.Hosting
 
 open Giraffe
 
-open DataAccess
-open Model
-open Microsoft.AspNetCore.Authentication
-open System.Net.Http.Headers
-open System.Text
-open System.Security.Claims
 
 
 
-module Program =
+(*module Program2 =
     let mustBeLoggedIn: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             requiresAuthentication (Giraffe.Auth.challenge "BasicAuthentication") next ctx
@@ -136,7 +123,7 @@ module Program =
         ()
 
 
-    [<EntryPoint>]
+    //[<EntryPoint>]
     let main _ =
         let contentRoot = Directory.GetCurrentDirectory()
         let webRoot = Path.Combine(contentRoot, "WebRoot")
@@ -153,4 +140,65 @@ module Program =
             .Build()
             .Run()
 
-        0
+        0*)
+
+let builder = WebApplication.CreateBuilder()
+let services = builder.Services
+
+services.AddGiraffe() |> ignore
+
+let mustBeLoggedIn: HttpHandler =
+    fun (next: HttpFunc) (ctx: HttpContext) ->
+        requiresAuthentication (Giraffe.Auth.challenge "BasicAuthentication") next ctx
+
+let version =
+    Reflection.Assembly
+        .GetEntryAssembly()
+        .GetName()
+        .Version
+
+let webApp =
+    choose [
+        GET
+        >=> choose [
+            routeCi "/version" >=> text (version.ToString())
+            routeCi "/status" >=> text "ok"
+            routeCi "/" >=> Controller.homepage
+            routeCi "/articles" >=> Controller.articles
+            routeCi "/articles/upsert"
+            >=> mustBeLoggedIn
+            >=> Controller.upsertPage
+            routeCif "/article/%i_%s" (fun (id, _) -> Controller.article id)
+            routeCif "/article/%i" Controller.articleRedirect
+            routeCi "/about" >=> Controller.about
+            routeCi "/rss"
+            >=> setHttpHeader "Content-Type" "application/rss+xml"
+            >=> Controller.rss
+            routeCi "/atom"
+            >=> setHttpHeader "Content-Type" "application/atom+xml"
+            >=> Controller.atom
+        ]
+        POST
+        >=> mustBeLoggedIn
+        >=> choose [
+            routeCi "/upsert" >=> Controller.upsert
+        ]
+        DELETE
+        >=> mustBeLoggedIn
+        >=> choose [
+            routeCif "/article/%i" Controller.deleteArticle
+        ]
+    ]
+
+let app = builder.Build()
+
+app
+#if !DEBUG
+    .UseWebOptimizer()
+#endif
+    .UseStaticFiles()
+    .UseAuthentication()
+    .UseHttpsRedirection()
+    .UseGiraffe(webApp)
+
+app.Run()

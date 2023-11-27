@@ -34,6 +34,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Fun.Blazor.Server" Version="3.2.8" />
     <PackageReference Include="Giraffe" Version="6.0.0" />
     <PackageReference Include="FSharp.Literate" Version="4.1.0" />
     <PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.396" />
