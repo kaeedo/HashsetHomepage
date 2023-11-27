@@ -30,8 +30,7 @@ module Articles =
                 markupToParse.IndexOf(tableEndTag)
                 + tableEndTag.Length
 
-            let untilTable =
-                markupToParse.Substring(0, startTableIndex)
+            let untilTable = markupToParse.Substring(0, startTableIndex)
 
             let table =
                 markupToParse.Substring(startTableIndex, endTableIndex - startTableIndex)
@@ -70,38 +69,38 @@ module Articles =
         let articleDate = document.ArticleDate
 
         task {
-            let tmpFileName =
-                Path.GetTempPath() ++ Guid.NewGuid().ToString()
+            let tmpFileName = Path.GetTempPath() ++ Guid.NewGuid().ToString()
 
             do! File.WriteAllTextAsync(tmpFileName, source)
 
-            let parsed =
-                Literate.ProcessMarkdown(tmpFileName, generateAnchors = true)
+            let parsed = Literate.ProcessMarkdown(tmpFileName, generateAnchors = true)
 
             let title = title.Trim()
 
-            let parsedDocument =
-                { ParsedDocument.Id = Unchecked.defaultof<int>
-                  Title = title
-                  Source = source
-                  Description = document.Description
-                  Document =
+            let parsedDocument = {
+                ParsedDocument.Id = Unchecked.defaultof<int>
+                Title = title
+                Source = source
+                Description = document.Description
+                Document =
                     parsed.Parameters
                     |> getContent "document"
                     |> transformHtml
-                  ArticleDate = articleDate
-                  Tooltips = parsed.Parameters |> getContent "tooltips"
-                  Tags = [] }
+                ArticleDate = articleDate
+                Tooltips = parsed.Parameters |> getContent "tooltips"
+                Tags = []
+            }
 
             do File.Delete(tmpFileName)
 
             return parsedDocument
         }
 
-    let getArticleStub (parsedDocument: ParsedDocument) =
-        { ArticleStub.Id = parsedDocument.Id
-          Title = parsedDocument.Title.Trim()
-          Date = parsedDocument.ArticleDate
-          Description = parsedDocument.Description
-          Excerpt = parsedDocument.GetFirstParagraph
-          Tags = parsedDocument.Tags }
+    let getArticleStub (parsedDocument: ParsedDocument) = {
+        ArticleStub.Id = parsedDocument.Id
+        Title = parsedDocument.Title.Trim()
+        Date = parsedDocument.ArticleDate
+        Description = parsedDocument.Description
+        Excerpt = parsedDocument.GetFirstParagraph
+        Tags = parsedDocument.Tags
+    }

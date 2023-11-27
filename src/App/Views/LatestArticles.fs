@@ -13,10 +13,10 @@ module LatestArticles =
         |> Seq.map (fun c ->
             div [ _class "LatestPosts-entry" ] [
                 h3 [ _class "LatestPosts-entryTitle" ] [
-                    a [ _href
-                        <| sprintf "article/%s" (Utils.getUrl c.Id c.Title) ] [
-                        str c.Title
-                    ]
+                    a [
+                        _href
+                        <| sprintf "article/%s" (Utils.getUrl c.Id c.Title)
+                    ] [ str c.Title ]
                 ]
                 h5 [ _class "LatestPosts-entryDate" ] [
                     str <| c.Date.ToString("dd MMMM, yyyy")
@@ -25,16 +25,13 @@ module LatestArticles =
                     [ _class "LatestPosts-entryTags" ]
                     (c.Tags
                      |> List.map (fun t ->
-                         let encoded =
-                             Web.HttpUtility.UrlEncode(t.Name, Text.Encoding.ASCII)
+                         let encoded = Web.HttpUtility.UrlEncode(t.Name, Text.Encoding.ASCII)
 
-                         a [ _class "LatestPosts-entryTag"
-                             _href <| sprintf "articles?tag=%s" encoded ] [
-                             str t.Name
-                         ]))
-                div [ _class "LatestPosts-entryExcerpt" ] [
-                    rawText c.Excerpt
-                ]
+                         a [
+                             _class "LatestPosts-entryTag"
+                             _href <| sprintf "articles?tag=%s" encoded
+                         ] [ str t.Name ]))
+                div [ _class "LatestPosts-entryExcerpt" ] [ rawText c.Excerpt ]
             ])
         |> Seq.toList
 

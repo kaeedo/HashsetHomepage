@@ -9,7 +9,7 @@ open System
 open Microsoft.Extensions.Configuration
 
 type IUserService =
-    abstract member AuthenticateAsync : string -> string -> Task<bool>
+    abstract member AuthenticateAsync: string -> string -> Task<bool>
 
 type UserService(configuration: IConfiguration) =
     let username = configuration.["AuthorUsername"]
@@ -37,14 +37,11 @@ type BasicAuthHandler(options, logger, encoder, clock, userService: IUserService
         match request.Headers.TryGetValue "Authorization" with
         | (true, headerValue) ->
             task {
-                let headerValue =
-                    AuthenticationHeaderValue.Parse(headerValue.[0])
+                let headerValue = AuthenticationHeaderValue.Parse(headerValue.[0])
 
-                let bytes =
-                    Convert.FromBase64String headerValue.Parameter
+                let bytes = Convert.FromBase64String headerValue.Parameter
 
-                let credentials =
-                    (Encoding.UTF8.GetString bytes).Split(":")
+                let credentials = (Encoding.UTF8.GetString bytes).Split(":")
 
                 let! userFound = userService.AuthenticateAsync credentials.[0] credentials.[1]
 
@@ -52,15 +49,15 @@ type BasicAuthHandler(options, logger, encoder, clock, userService: IUserService
                     match userFound with
                     | false -> AuthenticateResult.Fail("Invalid username or password")
                     | true ->
-                        let claims =
-                            [| Claim(ClaimTypes.NameIdentifier, credentials.[0])
-                               Claim(ClaimTypes.Name, credentials.[0]) |]
+                        let claims = [|
+                            Claim(ClaimTypes.NameIdentifier, credentials.[0])
+                            Claim(ClaimTypes.Name, credentials.[0])
+                        |]
 
                         let identity = ClaimsIdentity(claims, this.Scheme.Name)
                         let principal = ClaimsPrincipal identity
 
-                        let ticket =
-                            AuthenticationTicket(principal, this.Scheme.Name)
+                        let ticket = AuthenticationTicket(principal, this.Scheme.Name)
 
                         AuthenticateResult.Success ticket
 

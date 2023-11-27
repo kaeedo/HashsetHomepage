@@ -12,18 +12,18 @@ open System.Threading
 
 module private Load =
     let styledMasterView =
-        let aboveTheFoldCss =
-            File.ReadAllText("WebRoot/css/aboveTheFold.css")
+        let aboveTheFoldCss = File.ReadAllText("WebRoot/css/aboveTheFold.css")
 
         Master.view aboveTheFoldCss
 
 [<RequireQualifiedAccess>]
 module Controller =
     let private renderArticlePage (article: ParsedDocument) currentUrl =
-        let masterData =
-            { MasterContent.PageTitle = article.Title
-              ArticleDate = Some article.ArticleDate
-              Tags = article.Tags }
+        let masterData = {
+            MasterContent.PageTitle = article.Title
+            ArticleDate = Some article.ArticleDate
+            Tags = article.Tags
+        }
 
         Article.view article currentUrl
         |> Load.styledMasterView masterData
@@ -76,10 +76,11 @@ module Controller =
     let upsertPage: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                let masterData =
-                    { MasterContent.PageTitle = "Upsert"
-                      ArticleDate = None
-                      Tags = [] }
+                let masterData = {
+                    MasterContent.PageTitle = "Upsert"
+                    ArticleDate = None
+                    Tags = []
+                }
 
                 let repository = ctx.GetService<IRepository>()
                 let fileStorage = ctx.GetService<IFileStorage>()
@@ -96,25 +97,27 @@ module Controller =
                     match ctx.TryGetQueryStringValue "id" with
                     | None ->
                         task {
-                            return
-                                { UpsertDocument.ExistingIds = articleIds
-                                  Title = String.Empty
-                                  Source = String.Empty
-                                  Description = String.Empty
-                                  ArticleDate = DateTime.UtcNow.Date
-                                  Tags = [] }
+                            return {
+                                UpsertDocument.ExistingIds = articleIds
+                                Title = String.Empty
+                                Source = String.Empty
+                                Description = String.Empty
+                                ArticleDate = DateTime.UtcNow.Date
+                                Tags = []
+                            }
                         }
                     | Some id ->
                         task {
                             let! article = repository.GetArticleById <| int id
 
-                            return
-                                { UpsertDocument.ExistingIds = articleIds
-                                  Title = article.Title
-                                  Source = article.Source
-                                  Description = article.Description
-                                  ArticleDate = article.ArticleDate
-                                  Tags = article.Tags |> List.map (fun t -> t.Name) }
+                            return {
+                                UpsertDocument.ExistingIds = articleIds
+                                Title = article.Title
+                                Source = article.Source
+                                Description = article.Description
+                                ArticleDate = article.ArticleDate
+                                Tags = article.Tags |> List.map (fun t -> t.Name)
+                            }
                         }
 
                 let view =
@@ -154,18 +157,18 @@ module Controller =
             task {
                 let repository = ctx.GetService<IRepository>()
 
-                let masterData =
-                    { MasterContent.PageTitle = "All Articles"
-                      ArticleDate = None
-                      Tags = [] }
+                let masterData = {
+                    MasterContent.PageTitle = "All Articles"
+                    ArticleDate = None
+                    Tags = []
+                }
 
                 let! articles =
                     match ctx.TryGetQueryStringValue "tag" with
                     | None -> Articles.getArticles repository
                     | Some t -> Articles.getArticlesByTag repository t
 
-                let articles =
-                    articles |> Seq.map Articles.getArticleStub
+                let articles = articles |> Seq.map Articles.getArticleStub
 
                 let view =
                     LatestArticles.view articles
@@ -178,10 +181,11 @@ module Controller =
     let about: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                let masterData =
-                    { MasterContent.PageTitle = "About Me"
-                      ArticleDate = None
-                      Tags = [] }
+                let masterData = {
+                    MasterContent.PageTitle = "About Me"
+                    ArticleDate = None
+                    Tags = []
+                }
 
                 let view =
                     About.view
