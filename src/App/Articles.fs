@@ -1,6 +1,5 @@
 namespace Hashset
 
-open FSharp.Control.Tasks.V2.ContextInsensitive
 open FSharp.Literate
 open System.IO
 open System

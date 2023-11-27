@@ -1,8 +1,6 @@
 ﻿namespace Model
 
 open System
-open FSlugify.SlugGenerator
-open System.Threading.Tasks
 
 type Tag = { Id: int; Name: string }
 
@@ -39,8 +37,6 @@ type ParsedDocument = {
         let count = lastIndex - firstIndex
 
         content.Substring(firstIndex, count)
-
-    member this.GetUrlTitle = slugify DefaultSlugGeneratorOptions this.Title
 
 [<CLIMutable>]
 type UpsertDocument = {
