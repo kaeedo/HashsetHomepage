@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <WarningsAsErrors>FS0025</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Model/Model.fsproj" />
@@ -19,5 +20,6 @@
   <ItemGroup>
     <PackageReference Include="Npgsql" Version="6.0.3" />
     <PackageReference Include="Rezoom.SQL.Core" Version="1.1.1-beta1" />
+    <PackageReference Update="FSharp.Core" Version="8.0.100" />
   </ItemGroup>
 </Project>
