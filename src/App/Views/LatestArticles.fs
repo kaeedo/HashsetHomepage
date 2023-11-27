@@ -1,7 +1,6 @@
 namespace Hashset.Views
 
 open System
-open System.Net
 
 open Model
 
@@ -15,7 +14,7 @@ module LatestArticles =
                 h3 [ _class "LatestPosts-entryTitle" ] [
                     a [
                         _href
-                        <| sprintf "article/%s" (Utils.getUrl c.Id c.Title)
+                        <| sprintf "article/%s" (App.Utils.getUrl c.Id c.Title)
                     ] [ str c.Title ]
                 ]
                 h5 [ _class "LatestPosts-entryDate" ] [

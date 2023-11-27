@@ -22,7 +22,7 @@ module Syndication =
                     xn "item",
                     elem "title" (WebUtility.HtmlEncode i.Title),
                     elem "link"
-                    <| sprintf "https://%s/article/%s" host (Utils.getUrl i.Id i.Title),
+                    <| sprintf "https://%s/article/%s" host (App.Utils.getUrl i.Id i.Title),
                     elem "guid" <| sprintf "%O" (Guid.NewGuid()),
                     elem "pubDate" (i.Date.ToString("r")),
                     elem "description" (WebUtility.HtmlEncode i.Description)
@@ -50,7 +50,7 @@ module Syndication =
                     xn "entry",
                     elem "title" i.Title,
 
-                    elemAttr "link" "href" (sprintf "https://%s/article/%s" host (Utils.getUrl i.Id i.Title)),
+                    elemAttr "link" "href" (sprintf "https://%s/article/%s" host (App.Utils.getUrl i.Id i.Title)),
                     elem "guid"
                     <| sprintf "urn:uuid:%O" (Guid.NewGuid()),
 

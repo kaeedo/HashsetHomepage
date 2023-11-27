@@ -1,5 +1,4 @@
 open System
-
 open System.IO
 open DataAccess
 open Hashset
@@ -7,14 +6,14 @@ open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Authentication
 open Microsoft.AspNetCore.HttpOverrides
+
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
+open Giraffe
 #if !DEBUG
 open Microsoft.Extensions.FileProviders
 open Microsoft.Extensions.Hosting
 #endif
-open Giraffe
-
 
 let builder =
     let contentRoot = Directory.GetCurrentDirectory()
@@ -62,6 +61,7 @@ services.AddTransient<IUserService, UserService>()
 #if !DEBUG
 services.AddWebOptimizer() |> ignore
 #endif
+services.AddControllersWithViews() |> ignore
 services.AddGiraffe() |> ignore
 
 
@@ -82,6 +82,7 @@ let webApp =
             routeCi "/version" >=> text (version.ToString())
             routeCi "/status" >=> text "ok"
             routeCi "/" >=> Controller.homepage
+            routeCi "/fun" >=> Controller.funHomepage
             routeCi "/articles" >=> Controller.articles
             routeCi "/articles/upsert"
             >=> mustBeLoggedIn
@@ -118,5 +119,12 @@ app
     .UseAuthentication()
     .UseHttpsRedirection()
     .UseGiraffe(webApp)
+
+
+// https://github.com/albertwoo/FunBlazorSSRDemo
+// let funGroup = app.MapGroup("/fun").AddFunBlazor()
+//
+// funGroup.MapGet("", Func<_>(fun () -> App.FunViews.Layout.Create(div { "wef" })))
+// |> ignore
 
 app.Run("http://0.0.0.0:5000")
