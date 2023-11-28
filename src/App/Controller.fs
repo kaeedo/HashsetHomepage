@@ -7,7 +7,6 @@ open System.IO
 open Giraffe
 open Model
 open DataAccess
-open Fun.Blazor
 
 module private Load =
     let styledMasterView =
@@ -48,17 +47,17 @@ module Controller =
             task {
                 let repository = ctx.GetService<IRepository>()
 
+                let! articles =
+                    match ctx.TryGetQueryStringValue "tag" with
+                    | None -> Articles.getArticles repository
+                    | Some t -> Articles.getArticlesByTag repository t
 
-                let! latestArticle = Articles.getLatestArticle repository
+                let articles =
+                    articles
+                    |> Seq.toList
+                    |> List.map Articles.getArticleStub
 
-                return!
-                    match latestArticle with
-                    | None -> redirectTo false ("/articles/upsert") next ctx
-                    | Some la ->
-                        let host = ctx.Request.Host.Value
-
-                        //renderArticlePage la host next ctx
-                        App.View.Build (App.FunViews.Layout.Create(div { "wef" })) next ctx
+                return! App.View.Build (App.FunViews.ArticleList.view articles) next ctx
             }
 
     let articleRedirect articleId : HttpHandler =
