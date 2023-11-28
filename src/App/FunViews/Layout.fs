@@ -5,6 +5,8 @@ open Fun.Blazor
 type Layout =
     static member Create(bodyNode: NodeRenderFragment, ?headerNode: NodeRenderFragment) =
         html' {
+            doctype "html"
+
             head {
                 chartsetUTF8
                 viewport "width=device-width, initial-scale=1.0"
@@ -17,30 +19,8 @@ type Layout =
             }
 
             body {
+                class' "container mx-auto p-10"
                 bodyNode
-
-                nav {
-                    class' "flex items-center gap-3 container mx-auto py-2"
-
-                    childContent [
-                        a {
-                            href ""
-                            class' "text-primary text-lg font-medium"
-                            "GiraffeHtmxBlazor"
-                        }
-                        div { class' "flex-grow" }
-                        a {
-                            href ""
-                            class' "link link-primary"
-                            "Home"
-                        }
-                        a {
-                            href "dashboard"
-                            class' "link link-primary"
-                            "Dashboard"
-                        }
-                    ]
-                }
 
                 script { src "https://unpkg.com/htmx.org@1.9.9" }
             }
