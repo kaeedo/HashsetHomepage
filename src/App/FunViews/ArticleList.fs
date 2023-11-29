@@ -16,10 +16,16 @@ let private articleCard (articles: ArticleStub list) idx (stub: ArticleStub) =
         | _ -> "col-span-2 row-span-1 h-72"
 
     div {
-        class' $"{span} border border-gray-900 p-4 overflow-hidden"
+        class' $"{span} p-4 overflow-hidden bg-gold-100 rounded shadow-xl"
 
         childContent [
-            div { stub.Title }
+            div {
+                h3 {
+                    class' "text-2xl"
+                    stub.Title
+                }
+            }
+            div { stub.Date.ToString("dd MMMM, yyyy") }
             div { stub.Description }
             div { html.raw stub.Excerpt }
         ]
