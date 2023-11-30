@@ -15,7 +15,7 @@ type Layout =
             }
 
             body {
-                class' "container mx-auto p-10 bg-orange-300"
+                class' "container mx-auto p-10 bg-orange"
                 bodyNode
 
                 script { src "https://unpkg.com/htmx.org@1.9.9" }

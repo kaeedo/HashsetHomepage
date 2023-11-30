@@ -16,7 +16,7 @@ let private articleCard (articles: ArticleStub list) idx (stub: ArticleStub) =
         | _ -> "col-span-2 row-span-1 h-72"
 
     div {
-        class' $"{span} p-4 overflow-hidden bg-gold-100 rounded shadow-xl"
+        class' $"{span} p-4 overflow-hidden bg-white border-4 border-black drop-shadow-[8px_8px_0px_#ff5dfd]"
 
         childContent [
             div {
@@ -34,7 +34,7 @@ let private articleCard (articles: ArticleStub list) idx (stub: ArticleStub) =
 let view (articles: ArticleStub list) =
     html.fragment [
         div {
-            class' "grid grid-flow-row grid-cols-6 gap-4"
+            class' "grid grid-flow-row grid-cols-6 gap-6"
 
             childContent (articles |> List.mapi (articleCard articles))
         }
