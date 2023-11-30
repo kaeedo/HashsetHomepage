@@ -12,6 +12,24 @@ let private button (label: string) link =
         label
     }
 
+let private tagList (tags: Tag list) =
+    div {
+        class' "flex flex-wrap"
+
+        childContent (
+            tags
+            |> List.map (fun t ->
+                a {
+                    class'
+                        "border-2 border-r-0 last:border-r-2 py-1 px-2 min-w-max bg-blue drop-shadow-[4px_4px_0px_#dd7dff]"
+                    //https://stackoverflow.com/questions/64174517/how-to-implement-separators-between-wrapped-flex-items
+                    href "#"
+
+                    t.Name
+                })
+        )
+    }
+
 let private articleCard (articles: ArticleStub list) idx (stub: ArticleStub) =
     let leftOver = articles.Length % 3
 
@@ -32,13 +50,18 @@ let private articleCard (articles: ArticleStub list) idx (stub: ArticleStub) =
             childContent [
                 div {
                     h3 {
-                        class' "text-2xl font-bold mb-4"
+                        class' "text-2xl font-bold mb-2"
                         stub.Title
                     }
                 }
                 div {
                     class' "mb-4"
                     stub.Date.ToString("dd MMM yyyy")
+                }
+
+                div {
+                    class' "mb-4 w-fit"
+                    tagList stub.Tags
                 }
 
                 div {
