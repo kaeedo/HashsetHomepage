@@ -3,6 +3,13 @@
 module.exports = {
   content: ["../**/*.fs", "../WebRoot/js/**/*.js"],
   theme: {
+    extend: {
+      spacing: {
+        112: "28rem",
+        128: "32rem",
+        136: "34rem",
+      },
+    },
     colors: {
       transparent: "transparent",
       current: "currentColor",
