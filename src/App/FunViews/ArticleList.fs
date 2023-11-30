@@ -6,7 +6,7 @@ open Model
 let private button (label: string) link =
     a {
         class'
-            "px-4 py-2 border-[3px] bg-green rounded-lg border-black drop-shadow-[4px_4px_0px_#000] active:drop-shadow-[1px_2px_0px_#000] active:translate-y-1 active:translate-x-1"
+            "px-4 py-2 border-[3px] bg-green rounded-full border-black text-xl font-extrabold drop-shadow-[4px_4px_0px_#000] active:drop-shadow-[1px_2px_0px_#000] active:translate-y-1 active:translate-x-1"
 
         href "#"
         label
@@ -31,42 +31,38 @@ let private articleCard (articles: ArticleStub list) idx (stub: ArticleStub) =
         div {
             childContent [
                 div {
-                    childContent [
-                        div {
-                            h3 {
-                                class' "text-2xl font-bold mb-4"
-                                stub.Title
-                            }
-                        }
-                        div {
-                            class' "mb-4"
-                            stub.Date.ToString("dd MMM yyyy")
-                        }
+                    h3 {
+                        class' "text-2xl font-bold mb-4"
+                        stub.Title
+                    }
+                }
+                div {
+                    class' "mb-4"
+                    stub.Date.ToString("dd MMM yyyy")
+                }
 
-                        div {
-                            class' "mb-2"
-                            stub.Description
-                        }
+                div {
+                    class' "mb-2"
+                    stub.Description
+                }
 
-                        div {
-                            class' "grid"
+                div {
+                    class' "grid"
 
-                            div {
-                                class' "col-start-1 row-start-1"
+                    div {
+                        class' "col-start-1 row-start-1"
 
-                                html.raw stub.Excerpt
-                            }
+                        html.raw stub.Excerpt
+                    }
 
 
-                            div { class' "bg-gradient-to-t from-white col-start-1 row-start-1" }
-                        }
-                    ]
+                    div { class' "bg-gradient-to-t from-white col-start-1 row-start-1" }
                 }
                 div {
                     class' "absolute bottom-4 right-4 flex justify-end w-full"
 
                     childContent [
-                        (button "Keep reading" (sprintf "article/%i" stub.Id))
+                        (button "→" (sprintf "article/%i" stub.Id))
                     ]
                 }
             ]
