@@ -3,6 +3,15 @@ module App.FunViews.ArticleList
 open Fun.Blazor
 open Model
 
+let private button (label: string) link =
+    a {
+        class'
+            "px-4 py-2 border-[3px] bg-green rounded-lg border-black drop-shadow-[4px_4px_0px_#000] active:drop-shadow-[1px_2px_0px_#000] active:translate-y-1 active:translate-x-1"
+
+        href "#"
+        label
+    }
+
 let private articleCard (articles: ArticleStub list) idx (stub: ArticleStub) =
     let leftOver = articles.Length % 3
 
@@ -13,22 +22,55 @@ let private articleCard (articles: ArticleStub list) idx (stub: ArticleStub) =
         | x when x < 6 -> "col-span-3 row-span-2"
         | x when x = articles.Length - 1 && leftOver = 1 -> "col-span-6 row-span-2"
         | x when x >= articles.Length - 2 && leftOver = 2 -> "col-span-3 row-span-2"
-        | _ -> "col-span-2 row-span-1 h-72"
+        | _ -> "col-span-2 row-span-1"
 
     div {
-        class' $"{span} p-4 overflow-hidden bg-white border-4 border-black drop-shadow-[8px_8px_0px_#ff5dfd]"
+        class'
+            $"{span} min-h-72 max-h-136 p-4 overflow-hidden bg-white border-4 border-black drop-shadow-[8px_8px_0px_#ff5dfd]"
 
-        childContent [
-            div {
-                h3 {
-                    class' "text-2xl"
-                    stub.Title
+        div {
+            childContent [
+                div {
+                    childContent [
+                        div {
+                            h3 {
+                                class' "text-2xl font-bold mb-4"
+                                stub.Title
+                            }
+                        }
+                        div {
+                            class' "mb-4"
+                            stub.Date.ToString("dd MMM yyyy")
+                        }
+
+                        div {
+                            class' "mb-2"
+                            stub.Description
+                        }
+
+                        div {
+                            class' "grid"
+
+                            div {
+                                class' "col-start-1 row-start-1"
+
+                                html.raw stub.Excerpt
+                            }
+
+
+                            div { class' "bg-gradient-to-t from-white col-start-1 row-start-1" }
+                        }
+                    ]
                 }
-            }
-            div { stub.Date.ToString("dd MMMM, yyyy") }
-            div { stub.Description }
-            div { html.raw stub.Excerpt }
-        ]
+                div {
+                    class' "absolute bottom-4 right-4 flex justify-end w-full"
+
+                    childContent [
+                        (button "Keep reading" (sprintf "article/%i" stub.Id))
+                    ]
+                }
+            ]
+        }
     }
 
 let view (articles: ArticleStub list) =
