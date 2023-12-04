@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
     <WarningsAsErrors>FS0025</WarningsAsErrors>
@@ -29,6 +29,7 @@
     <Compile Include="Views/Article.fs" />
     <Compile Include="Views/Upsert.fs" />
     <Compile Include="Articles.fs" />
+    <Compile Include="FunViews\Header.fs" />
     <Compile Include="FunViews\Layout.fs" />
     <Compile Include="FunViews\ArticleList.fs" />
     <Compile Include="Syndication.fs" />

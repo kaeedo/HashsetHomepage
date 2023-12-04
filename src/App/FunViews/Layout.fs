@@ -18,8 +18,22 @@ type Layout =
             body {
                 hxBoost true
 
-                class' "container mx-auto p-10 bg-orange"
-                bodyNode
+                class' "bg-orange"
+
+                Header.view ()
+
+                div {
+                    class' "container mx-auto p-10"
+                    bodyNode
+
+                }
+
                 script { src "https://unpkg.com/htmx.org@1.9.9" }
             }
         }
+
+// Just deal with it for now
+// script {
+//     type' "module"
+//     src "/js/wrapDetection.mjs"
+// }

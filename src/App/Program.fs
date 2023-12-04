@@ -6,13 +6,14 @@ open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Authentication
 open Microsoft.AspNetCore.HttpOverrides
-
+open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
+open Fun.Blazor
 #if !DEBUG
 open Microsoft.Extensions.FileProviders
-open Microsoft.Extensions.Hosting
+
 #endif
 
 let builder =
@@ -82,7 +83,6 @@ let webApp =
             routeCi "/version" >=> text (version.ToString())
             routeCi "/status" >=> text "ok"
             routeCi "/" >=> Controller.homepage
-            routeCi "/fun" >=> Controller.funHomepage
             routeCi "/articles" >=> Controller.articles
             routeCi "/articles/upsert"
             >=> mustBeLoggedIn
@@ -122,9 +122,28 @@ app
 
 
 // https://github.com/albertwoo/FunBlazorSSRDemo
-// let funGroup = app.MapGroup("/fun").AddFunBlazor()
-//
-// funGroup.MapGet("", Func<_>(fun () -> App.FunViews.Layout.Create(div { "wef" })))
-// |> ignore
+let funGroup = app.MapGroup("/fun").AddFunBlazor()
+
+funGroup.MapGet(
+    "",
+    Func<HttpRequest, IRepository, _>(fun (request: HttpRequest) (repository: IRepository) ->
+        task {
+            let (tagExists, tag) = request.Query.TryGetValue "tag"
+
+            let! articles =
+                if tagExists then
+                    Articles.getArticlesByTag repository (tag.ToString())
+                else
+                    Articles.getArticles repository
+
+            let articles =
+                articles
+                |> Seq.toList
+                |> List.map Articles.getArticleStub
+
+            return (App.FunViews.ArticleList.view articles)
+        })
+)
+|> ignore
 
 app.Run("http://0.0.0.0:5000")
