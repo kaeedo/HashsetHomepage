@@ -20,9 +20,7 @@ let private tagList (tags: Tag list) =
             tags
             |> List.map (fun t ->
                 a {
-                    class'
-                        "border-2 border-r-0 last:border-r-2 py-1 px-2 min-w-max bg-blue drop-shadow-[4px_4px_0px_#dd7dff]"
-                    //https://stackoverflow.com/questions/64174517/how-to-implement-separators-between-wrapped-flex-items
+                    class' "relative border-2 py-1 px-2 min-w-max bg-blue drop-shadow-[4px_4px_0px_#dd7dff]"
                     href "#"
 
                     t.Name
