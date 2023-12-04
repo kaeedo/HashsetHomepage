@@ -125,7 +125,7 @@ app
 let funGroup = app.MapGroup("/fun").AddFunBlazor()
 
 funGroup.MapGet(
-    "",
+    "articles",
     Func<HttpRequest, IRepository, _>(fun (request: HttpRequest) (repository: IRepository) ->
         task {
             let (tagExists, tag) = request.Query.TryGetValue "tag"

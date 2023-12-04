@@ -28,6 +28,8 @@ type Layout =
 
                 }
 
+                Footer.view ()
+
                 script { src "https://unpkg.com/htmx.org@1.9.9" }
             }
         }
