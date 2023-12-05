@@ -30,13 +30,13 @@ let view () =
                             div { class' "w-10 h-0" }
                             div {
                                 childContent [
-                                    span { "Source Code to website available " }
+                                    span { "Source Code available on " }
 
                                     a {
                                         class' "underline"
                                         target "_blank"
                                         href "https://codeberg.org/CubeOfShame/Hashset"
-                                        "here"
+                                        "Codeberg"
                                     }
 
                                     span { " or " }
@@ -45,7 +45,7 @@ let view () =
                                         class' "underline"
                                         target "_blank"
                                         href "https://github.com/kaeedo/HashsetHomepage"
-                                        "here"
+                                        "GitHub"
                                     }
                                 ]
                             }
@@ -72,7 +72,13 @@ let view () =
                             a {
                                 rel "me"
                                 href "https://mstdn.social/@kaeedo"
-                                "Follow me on Mastodon"
+
+                                span {
+                                    class' "underline"
+                                    "Follow me"
+                                }
+
+                                " on Mastodon"
                             }
                         }
                     }
@@ -98,6 +104,7 @@ let view () =
                             div {
                                 childContent [
                                     a {
+                                        class' "underline"
                                         href "/rss"
                                         "RSS"
                                     }
@@ -105,6 +112,7 @@ let view () =
                                     span { " | " }
 
                                     a {
+                                        class' "underline"
                                         href "/atom"
                                         "ATOM"
                                     }
