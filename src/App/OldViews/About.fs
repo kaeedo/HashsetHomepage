@@ -1,26 +1,10 @@
-namespace Hashset.Views
+namespace Hashset.OldViews
 
 module About =
     open Giraffe.ViewEngine
 
     let view =
         div [ _class "PostContents" ] [
-            h1 [] [ str "Hello, I'm Kai Ito" ]
-            p [] [
-                str "I am a Software Developer at "
-                a [
-                    _href "https://valora.digital/"
-                    _target "_blank"
-                ] [ str "Valora Digital" ]
-                str
-                    ". I have been a Full Stack .Net web developer since 2012. Back then, I mainly used Asp.net MVC, and mostly jQuery on the frontend, with a little bit of Knockout.js sprinkled in.
-                I have since taken a liking to Functional Programming, especially F#. In my experience, the functional paradigm has since proven to be invaluable in writing bug free software, especially when combined with a powerful type system like F#"
-            ]
-            p [] [
-                str
-                    "These days, I have become an advocate of online privacy, especially because of the massive amounts of tracking that a large number websites and smartphone apps practice. I strongly believe in Open Source Software, and try to use them as much as possible.
-                You'll find a link to my Mastodon account below, and not to a Twitter of Facebook account for these reasons. For the moment, I'm still on Codeberg and Github, but ideally in the future, something like Gitea will allow federated communication."
-            ]
             p [] [
                 str "Come find me at the following sites:"
                 ul [ _class "About-socialList" ] [

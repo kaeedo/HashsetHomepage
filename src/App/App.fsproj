@@ -23,16 +23,20 @@
     <TailwindMinify>true</TailwindMinify>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Views/Master.fs" />
-    <Compile Include="Views/LatestArticles.fs" />
-    <Compile Include="Views/About.fs" />
-    <Compile Include="Views/Article.fs" />
-    <Compile Include="Views/Upsert.fs" />
+    <Compile Include="OldViews/Master.fs" />
+    <Compile Include="OldViews/LatestArticles.fs" />
+    <Compile Include="OldViews/About.fs" />
+    <Compile Include="OldViews/Article.fs" />
+    <Compile Include="OldViews/Upsert.fs" />
     <Compile Include="Articles.fs" />
-    <Compile Include="FunViews\Header.fs" />
-    <Compile Include="FunViews\Footer.fs" />
-    <Compile Include="FunViews\Layout.fs" />
-    <Compile Include="FunViews\ArticleList.fs" />
+    <Compile Include="Views\Header.fs" />
+    <Compile Include="Views\Footer.fs" />
+    <Compile Include="Views\Layout.fs" />
+    <Compile Include="Views\Components\Button.fs" />
+    <Compile Include="Views\Components\TagList.fs" />
+    <Compile Include="Views\Components\Card.fs" />
+    <Compile Include="Views\Pages\ArticleList.fs" />
+    <Compile Include="Views\Pages\About.fs" />
     <Compile Include="Syndication.fs" />
     <Compile Include="Authentication.fs" />
     <Compile Include="Controller.fs" />
