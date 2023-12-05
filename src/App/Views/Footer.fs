@@ -1,4 +1,4 @@
-module App.FunViews.Footer
+module App.Views.Footer
 
 open Fun.Blazor
 open Fun.Htmx

@@ -11,6 +11,7 @@ open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
 open Fun.Blazor
+open App.Views.Pages
 #if !DEBUG
 open Microsoft.Extensions.FileProviders
 
@@ -77,7 +78,8 @@ let version =
         .Version
 
 let webApp =
-    choose [
+    routeCi "/old"
+    >=> choose [
         GET
         >=> choose [
             routeCi "/version" >=> text (version.ToString())
@@ -122,10 +124,10 @@ app
 
 
 // https://github.com/albertwoo/FunBlazorSSRDemo
-let funGroup = app.MapGroup("/fun").AddFunBlazor()
+let funGroup = app.MapGroup("").AddFunBlazor()
 
 funGroup.MapGet(
-    "articles",
+    "/articles",
     Func<HttpRequest, IRepository, _>(fun (request: HttpRequest) (repository: IRepository) ->
         task {
             let (tagExists, tag) = request.Query.TryGetValue "tag"
@@ -141,9 +143,12 @@ funGroup.MapGet(
                 |> Seq.toList
                 |> List.map Articles.getArticleStub
 
-            return (App.FunViews.ArticleList.view articles)
+            return (ArticleList.view articles)
         })
 )
+|> ignore
+
+funGroup.MapGet("/about", Func<_>(fun _ -> About.view ()))
 |> ignore
 
 app.Run("http://0.0.0.0:5000")

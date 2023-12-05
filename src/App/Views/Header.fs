@@ -1,4 +1,4 @@
-module App.FunViews.Header
+module App.Views.Header
 
 open Fun.Blazor
 open Model
@@ -6,7 +6,11 @@ open Model
 let navItem (label: string) =
     li {
         class' "after:content-[''] after:block after:w-12 after:mx-auto after:border-b-4"
-        a { label }
+
+        a {
+            href $"/{label.ToLowerInvariant()}"
+            label
+        }
     }
 
 let view (pageTitle: string) =
