@@ -10,18 +10,21 @@ module.exports = {
         136: "34rem",
       },
     },
+    // https://mdigi.tools/lighten-color/#000000
     colors: {
       transparent: "transparent",
       current: "currentColor",
       black: "#000000",
       white: "#ffffff",
       purple: "#dd7dff",
-      "purple-dark": "#620085",
+      "purple-dark": "#620085", // 65% darker
       green: "#00ff75",
       yellow: "#fff503",
       red: "#ff5d5d",
       orange: "#ffb443",
+      "blue-light": "#b9f2ff", // 65% lighter
       blue: "#38dbff",
+      "blue-dark": "#00596d", // 65% darker
     },
   },
   plugins: [],

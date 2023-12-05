@@ -66,7 +66,7 @@ type Layout =
 
                 class' "bg-orange"
 
-                Header.view ()
+                Header.view "All Articles"
 
                 div {
                     class' "container mx-auto p-10"
