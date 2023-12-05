@@ -1,7 +1,7 @@
 namespace Hashset
 
 open Microsoft.AspNetCore.Http
-open Hashset.Views
+open Hashset.OldViews
 open System
 open System.IO
 open Giraffe
@@ -40,24 +40,6 @@ module Controller =
                         let host = ctx.Request.Host.Value
 
                         renderArticlePage la host next ctx
-            }
-
-    let funHomepage: HttpHandler =
-        fun (next: HttpFunc) (ctx: HttpContext) ->
-            task {
-                let repository = ctx.GetService<IRepository>()
-
-                let! articles =
-                    match ctx.TryGetQueryStringValue "tag" with
-                    | None -> Articles.getArticles repository
-                    | Some t -> Articles.getArticlesByTag repository t
-
-                let articles =
-                    articles
-                    |> Seq.toList
-                    |> List.map Articles.getArticleStub
-
-                return! App.View.Build (App.FunViews.ArticleList.view articles) next ctx
             }
 
     let articleRedirect articleId : HttpHandler =

@@ -1,4 +1,4 @@
-namespace Hashset.Views
+namespace Hashset.OldViews
 
 open System
 
