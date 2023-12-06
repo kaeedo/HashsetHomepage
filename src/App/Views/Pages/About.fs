@@ -2,6 +2,7 @@
 module App.Views.Pages.About
 
 open Fun.Blazor
+open Fun.Htmx
 open App.Views.Components
 open App.Views
 
@@ -104,9 +105,11 @@ let private html =
                             }
 
                             span {
+                                hxBoost false
+
                                 a {
                                     class' "underline"
-                                    href "https://github.com/kaeedo"
+                                    href "/rss"
 
                                     "RSS"
                                 }
@@ -115,7 +118,7 @@ let private html =
 
                                 a {
                                     class' "underline"
-                                    href "https://github.com/kaeedo"
+                                    href "/atom"
 
                                     "ATOM"
                                 }
