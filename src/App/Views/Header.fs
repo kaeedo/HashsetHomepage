@@ -18,10 +18,11 @@ let view (pageTitle: NodeRenderFragment) =
         class' "bg-green border-b-4 border-black h-64 flex items-center"
 
         div {
-            class' "container mx-auto flex justify-between"
+            class'
+                "container mx-auto flex lg:justify-between lg:flex-row flex-col-reverse max-lg:gap-4 max-lg:items-center"
 
             div {
-                class' "border-4 w-max py-6 px-12 bg-orange drop-shadow-[8px_8px_0px_#000000]"
+                class' "hidden lg:block border-4 w-max py-6 px-12 bg-orange drop-shadow-[8px_8px_0px_#000000]"
 
                 h1 {
                     class' "text-3xl font-bold"
@@ -35,7 +36,9 @@ let view (pageTitle: NodeRenderFragment) =
             }
 
             div {
-                class' "flex items-end font-mono text-8xl font-black w-max drop-shadow-[2px_2px_0px_#ff5dfd]"
+                class'
+                    "flex items-end font-mono lg:text-6xl text-4xl font-black w-max drop-shadow-[2px_2px_0px_#ff5dfd]"
+
                 pageTitle
             }
 
