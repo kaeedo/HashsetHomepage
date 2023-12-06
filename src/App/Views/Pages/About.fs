@@ -33,7 +33,7 @@ let private html =
                         "These days, I have become an advocate of online privacy, especially because of the massive amounts of tracking that a large number websites and smartphone apps practice. I strongly believe in Open Source Software, and try to use them as much as possible. You'll find a link to my Mastodon account below, and not to a Twitter or Facebook account for these reasons. For the moment, I'm still on Codeberg and Github, but ideally in the future, something like Forgejo will allow federated communication."
                     }
                 ]
-                |> Card.simple "col-span-2"
+                |> Card.simple "md:col-span-2 col-span-3"
 
                 html.fragment [
                     h4 {
@@ -123,7 +123,7 @@ let private html =
                         }
                     }
                 ]
-                |> Card.simple ""
+                |> Card.simple "hidden md:block"
             ]
         }
     ]

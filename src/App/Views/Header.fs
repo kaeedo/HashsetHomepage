@@ -5,7 +5,7 @@ open Model
 
 let navItem (label: string) (link: string) =
     li {
-        class' "after:content-[''] after:block after:w-12 after:mx-auto after:border-b-4"
+        class' "after:block after:w-12 after:mx-auto after:border-b-4"
 
         a {
             href link
