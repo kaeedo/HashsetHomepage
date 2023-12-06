@@ -3,12 +3,12 @@ module App.Views.Header
 open Fun.Blazor
 open Model
 
-let navItem (label: string) =
+let navItem (label: string) (link: string) =
     li {
         class' "after:content-[''] after:block after:w-12 after:mx-auto after:border-b-4"
 
         a {
-            href $"/{label.ToLowerInvariant()}"
+            href link
             label
         }
     }
@@ -46,9 +46,9 @@ let view (pageTitle: NodeRenderFragment) =
                     class' "flex justify-between text-2xl gap-8"
 
                     childContent [
-                        navItem "Home"
-                        navItem "Articles"
-                        navItem "About"
+                        navItem "Home" "/"
+                        navItem "Articles" "/articles"
+                        navItem "About" "/about"
                     ]
                 }
             }
