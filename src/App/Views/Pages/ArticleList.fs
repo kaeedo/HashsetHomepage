@@ -25,7 +25,7 @@ let private articleStub (stub: ArticleStub) =
         }
 
         div {
-            class' "mb-2"
+            class' "mb-2 prose max-w-none"
             stub.Description
         }
 
@@ -33,7 +33,7 @@ let private articleStub (stub: ArticleStub) =
             class' "grid"
 
             div {
-                class' "col-start-1 row-start-1"
+                class' "col-start-1 row-start-1 prose max-w-none"
 
                 html.raw stub.Excerpt
             }
@@ -51,6 +51,8 @@ let private articleStub (stub: ArticleStub) =
     ]
 
 let private html (articles: ArticleStub list) =
+    let articles = articles |> List.tail
+
     html.fragment [
         div {
             class' "grid grid-flow-row grid-cols-6 gap-6"
@@ -58,18 +60,31 @@ let private html (articles: ArticleStub list) =
             childContent (
                 articles
                 |> List.mapi (fun i a ->
-                    let leftOver = articles.Length % 3
+                    let xlClasses =
+                        let leftOver = articles.Length % 3
 
-                    let gridSpanClasses =
                         match i with
-                        | 0 -> "col-span-6"
-                        | x when x < 4 -> "col-span-2 row-span-2"
-                        | x when x < 6 -> "col-span-3 row-span-2"
-                        | x when x = articles.Length - 1 && leftOver = 1 -> "col-span-6 row-span-2"
-                        | x when x >= articles.Length - 2 && leftOver = 2 -> "col-span-3 row-span-2"
-                        | _ -> "col-span-2 row-span-1"
+                        | 0 -> "xl:col-span-6"
+                        | x when x < 4 -> "xl:col-span-2 xl:row-span-2"
+                        | x when x < 6 -> "xl:col-span-3 xl:row-span-2"
+                        | x when x = articles.Length - 1 && leftOver = 1 -> "xl:col-span-6 xl:row-span-2"
+                        | x when x >= articles.Length - 2 && leftOver = 2 -> "xl:col-span-3 xl:row-span-2"
+                        | _ -> "xl:col-span-2 xl:row-span-1"
 
-                    Card.simple gridSpanClasses (articleStub a))
+                    let lgClasses =
+                        let leftOver = articles.Length % 2
+
+                        match i with
+                        | 0 -> "lg:col-span-6"
+                        | x when x < 3 -> "lg:col-span-3 lg:row-span-2"
+                        | x when x < 4 -> "lg:col-span-6"
+                        | x when x = articles.Length - 1 && leftOver = 1 -> "lg:col-span-6"
+                        | _ -> "lg:col-span-3 lg:row-span-1"
+
+                    let baseClasses = "col-span-6"
+
+
+                    Card.simple ($"{xlClasses} {lgClasses} {baseClasses}") (articleStub a))
             )
         }
     ]
