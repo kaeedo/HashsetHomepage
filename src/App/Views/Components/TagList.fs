@@ -1,6 +1,7 @@
 [<RequireQualifiedAccess>]
 module App.Views.Components.TagList
 
+open Microsoft.AspNetCore.Http
 open Fun.Blazor
 open Model
 open System
@@ -12,15 +13,26 @@ let simple (tags: Tag list) =
         childContent (
             tags
             |> List.map (fun t ->
-                let encoded = Web.HttpUtility.UrlEncode(t.Name, Text.Encoding.ASCII)
+                html.inject (fun (accessor: IHttpContextAccessor) ->
+                    let selectedTag =
+                        accessor.HttpContext.Request.Query["tag"]
+                        |> Seq.tryHead
 
-                a {
-                    class'
-                        "relative border-2 py-1 px-2 min-w-max bg-blue drop-shadow-[4px_4px_0px_#dd7dff] hover:bg-purple"
+                    let encoded = Web.HttpUtility.UrlEncode(t.Name, Text.Encoding.ASCII)
 
-                    href $"/articles?tag=%s{encoded}"
+                    let link, bgClass =
+                        match selectedTag with
+                        | Some tag when tag = t.Name -> "/articles", "bg-purple"
+                        | Some _
+                        | None -> $"/articles?tag=%s{encoded}", "bg-blue"
 
-                    t.Name
-                })
+                    a {
+                        class'
+                            $"relative border-2 py-1 px-2 min-w-max {bgClass} drop-shadow-[4px_4px_0px_#dd7dff] hover:bg-purple"
+
+                        href link
+
+                        t.Name
+                    }))
         )
     }
