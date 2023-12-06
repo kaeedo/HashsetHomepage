@@ -5,8 +5,6 @@ open Fun.Blazor
 open App.Views.Components
 open App.Views
 
-
-
 let private html =
     html.fragment [
         div {
@@ -130,4 +128,4 @@ let private html =
         }
     ]
 
-let view () = Layout.Create("About", html)
+let view () = Layout.Create(h1 { "About" }, html)

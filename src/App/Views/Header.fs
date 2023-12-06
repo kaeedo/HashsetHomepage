@@ -13,7 +13,7 @@ let navItem (label: string) =
         }
     }
 
-let view (pageTitle: string) =
+let view (pageTitle: NodeRenderFragment) =
     header {
         class' "bg-green border-b-4 border-black h-64 flex items-center"
 

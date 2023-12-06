@@ -52,7 +52,7 @@ type Layout =
             }
         ]
 
-    static member Create(pageTitle: string, bodyNode: NodeRenderFragment, ?headerNode: NodeRenderFragment) =
+    static member Create(pageTitle: NodeRenderFragment, bodyNode: NodeRenderFragment, ?headerNode: NodeRenderFragment) =
         html' {
             doctype "html"
 
