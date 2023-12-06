@@ -86,7 +86,7 @@ let webApp =
         GET
         >=> choose [
             routeCi "/version" >=> text (version.ToString())
-            routeCi "/status" >=> text "ok"
+            routeCi "/old/status" >=> text "ok" // done
             routeCi "/old" >=> Controller.homepage // done
             routeCi "/old/articles" >=> Controller.articles // done
             routeCif "/old/article/%i_%s" (fun (id, _) -> Controller.article id) // done
@@ -237,6 +237,9 @@ app.MapGet("/atom", Func<HttpContext, IRepository, _>(feedResult Syndication.syn
 |> ignore
 
 app.MapGet("/rss", Func<HttpContext, IRepository, _>(feedResult Syndication.channelFeed))
+|> ignore
+
+app.Map("/status", Func<_>(fun _ -> Results.Text("ok")))
 |> ignore
 
 app.Run("http://0.0.0.0:5000")
