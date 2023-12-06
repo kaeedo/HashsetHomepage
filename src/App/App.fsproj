@@ -36,6 +36,7 @@
     <Compile Include="Views\Components\Button.fs" />
     <Compile Include="Views\Components\TagList.fs" />
     <Compile Include="Views\Components\Card.fs" />
+    <Compile Include="Views\Pages\Article.fs" />
     <Compile Include="Views\Pages\ArticleList.fs" />
     <Compile Include="Views\Pages\About.fs" />
     <Compile Include="Syndication.fs" />
@@ -59,6 +60,7 @@
     <PackageReference Include="Giraffe" Version="6.0.0" />
     <PackageReference Include="FSharp.Literate" Version="4.1.0" />
     <PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.396" />
+    <PackageReference Include="Markdown.ColorCode" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Update="FSharp.Core" Version="8.0.100" />
     <PackageReference Include="Tailwind.MSBuild" Version="1.1.0">
