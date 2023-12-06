@@ -59,7 +59,7 @@ type Layout =
             head {
                 chartsetUTF8
                 viewport "width=device-width, initial-scale=1.0"
-                defaultArg headerNode (title { $"Hashset - {pageTitle}" })
+                defaultArg headerNode (title { $"Hashset" })
                 stylesheet "/css/tailwind.css"
                 Layout.favicon
             }
