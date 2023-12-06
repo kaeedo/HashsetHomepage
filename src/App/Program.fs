@@ -1,5 +1,6 @@
 open System
 open System.IO
+open System.Threading.Tasks
 open DataAccess
 open Hashset
 open Microsoft.AspNetCore.Http
@@ -12,6 +13,8 @@ open Giraffe
 open App.Views.Pages
 open Markdig
 open Markdown.ColorCode
+open System.Text
+open System.Xml.Linq
 #if !DEBUG
 open Microsoft.Extensions.FileProviders
 
@@ -89,16 +92,16 @@ let webApp =
             routeCif "/old/article/%i_%s" (fun (id, _) -> Controller.article id) // done
             routeCif "/old/article/%i" Controller.articleRedirect // done
             routeCi "/old/about" >=> Controller.about // done
+            routeCi "/old/rss" // done
+            >=> setHttpHeader "Content-Type" "application/rss+xml"
+            >=> Controller.rss
+            routeCi "/old/atom" // done
+            >=> setHttpHeader "Content-Type" "application/atom+xml"
+            >=> Controller.atom
 
             routeCi "/old/articles/upsert"
             >=> mustBeLoggedIn
             >=> Controller.upsertPage
-            routeCi "/rss"
-            >=> setHttpHeader "Content-Type" "application/rss+xml"
-            >=> Controller.rss
-            routeCi "/atom"
-            >=> setHttpHeader "Content-Type" "application/atom+xml"
-            >=> Controller.atom
         ]
         POST
         >=> mustBeLoggedIn
@@ -121,8 +124,15 @@ app
     .UseStaticFiles()
     .UseAuthentication()
     .UseHttpsRedirection()
+    .Use(
+        Func<HttpContext, RequestDelegate, _>(fun ctx next ->
+            (task {
+                ctx.Response.Headers.Add("X-Clacks-Overhead", "GNU Terry Pratchett")
+                return! next.Invoke ctx
+            }
+            :> Task))
+    )
     .UseGiraffe(webApp)
-
 
 // https://github.com/albertwoo/FunBlazorSSRDemo
 let funGroup = app.MapGroup("").AddFunBlazor()
@@ -197,6 +207,36 @@ funGroup.MapGet(
 |> ignore
 
 funGroup.MapGet("/about", Func<_>(fun _ -> task { return About.view () }))
+|> ignore
+
+let feedResult (feedFn: string -> Model.ArticleStub list -> XDocument) (ctx: HttpContext) repository =
+    task {
+        let (tagExists, tag) = ctx.Request.Query.TryGetValue "tag"
+
+        let! articles =
+            if tagExists then
+                Articles.getArticlesByTag repository (tag.ToString())
+            else
+                Articles.getArticles repository
+
+        let articles =
+            articles
+            |> Seq.map Articles.getArticleStub
+            |> List.ofSeq
+
+        let host = ctx.Request.Host.Value
+
+        let xml = (feedFn host articles).ToString()
+
+        ctx.Response.ContentType <- "application/atom+xml"
+
+        return Results.Text(xml, "application/rss+xml", Encoding.UTF8)
+    }
+
+app.MapGet("/atom", Func<HttpContext, IRepository, _>(feedResult Syndication.syndicationFeed))
+|> ignore
+
+app.MapGet("/rss", Func<HttpContext, IRepository, _>(feedResult Syndication.channelFeed))
 |> ignore
 
 app.Run("http://0.0.0.0:5000")

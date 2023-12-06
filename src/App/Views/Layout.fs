@@ -81,9 +81,3 @@ type Layout =
                 script { src "https://unpkg.com/htmx.org@1.9.9" }
             }
         }
-
-// Just deal with it for now
-// script {
-//     type' "module"
-//     src "/js/wrapDetection.mjs"
-// }

@@ -75,6 +75,8 @@ let view () =
                             i { html.raw Svg.rss }
                         }
                         span {
+                            hxBoost false
+
                             a {
                                 class' "underline"
                                 href "/rss"
@@ -86,7 +88,7 @@ let view () =
                             a {
                                 class' "underline"
                                 href "/atom"
-                                "ATOM"
+                                "Atom"
                             }
                         }
                     ]
