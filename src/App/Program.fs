@@ -6,12 +6,12 @@ open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Authentication
 open Microsoft.AspNetCore.HttpOverrides
-open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
-open Fun.Blazor
 open App.Views.Pages
+open Markdig
+open Markdown.ColorCode
 #if !DEBUG
 open Microsoft.Extensions.FileProviders
 
@@ -64,6 +64,7 @@ services.AddTransient<IUserService, UserService>()
 services.AddWebOptimizer() |> ignore
 #endif
 services.AddControllersWithViews() |> ignore
+services.AddHttpContextAccessor() |> ignore
 services.AddGiraffe() |> ignore
 
 
@@ -78,20 +79,20 @@ let version =
         .Version
 
 let webApp =
-    routeCi "/old"
-    >=> choose [
+    choose [
         GET
         >=> choose [
             routeCi "/version" >=> text (version.ToString())
             routeCi "/status" >=> text "ok"
-            routeCi "/" >=> Controller.homepage
-            routeCi "/articles" >=> Controller.articles
-            routeCi "/articles/upsert"
+            routeCi "/old" >=> Controller.homepage // done
+            routeCi "/old/articles" >=> Controller.articles // done
+            routeCif "/old/article/%i_%s" (fun (id, _) -> Controller.article id) // done
+            routeCif "/old/article/%i" Controller.articleRedirect // done
+            routeCi "/old/about" >=> Controller.about // done
+
+            routeCi "/old/articles/upsert"
             >=> mustBeLoggedIn
             >=> Controller.upsertPage
-            routeCif "/article/%i_%s" (fun (id, _) -> Controller.article id)
-            routeCif "/article/%i" Controller.articleRedirect
-            routeCi "/about" >=> Controller.about
             routeCi "/rss"
             >=> setHttpHeader "Content-Type" "application/rss+xml"
             >=> Controller.rss
@@ -127,6 +128,53 @@ app
 let funGroup = app.MapGroup("").AddFunBlazor()
 
 funGroup.MapGet(
+    "",
+    Func<IRepository, _>(fun (repository: IRepository) ->
+        task {
+            // TODO: replace getLatestArticle with only get latest slug
+            let! latestArticle = Articles.getLatestArticle repository
+
+            match latestArticle with
+            | None -> return Results.Redirect($"/articles/upsert", false)
+            | Some la -> return Results.Redirect($"/article/{App.Utils.getUrl la.Id la.Title}", false)
+        })
+)
+|> ignore
+
+funGroup.MapGet(
+    "/article/{slug:regex(^(\d+)_.*$)}",
+    Func<IRepository, string, _>(fun (repository: IRepository) (slug: string) ->
+        task {
+            let articleId = slug.Substring(0, slug.IndexOf('_')) |> int
+            let! article = Articles.getArticle repository articleId
+
+            let pipeline =
+                MarkdownPipelineBuilder()
+                    .UseAdvancedExtensions()
+                    .UseColorCode()
+                    .Build()
+
+            let html = Markdown.ToHtml(article.Source, pipeline)
+
+            let article = { article with Document = html }
+
+            return Article.view article
+        })
+)
+|> ignore
+
+funGroup.MapGet(
+    "/article/{articleId:int}",
+    Func<IRepository, int, _>(fun (repository: IRepository) (articleId: int) ->
+        task {
+            let! article = Articles.getArticle repository articleId
+
+            return Results.Redirect($"/article/{App.Utils.getUrl article.Id article.Title}", true, true)
+        })
+)
+|> ignore
+
+funGroup.MapGet(
     "/articles",
     Func<HttpRequest, IRepository, _>(fun (request: HttpRequest) (repository: IRepository) ->
         task {
@@ -148,7 +196,7 @@ funGroup.MapGet(
 )
 |> ignore
 
-funGroup.MapGet("/about", Func<_>(fun _ -> About.view ()))
+funGroup.MapGet("/about", Func<_>(fun _ -> task { return About.view () }))
 |> ignore
 
 app.Run("http://0.0.0.0:5000")

@@ -27,5 +27,5 @@ module.exports = {
       "blue-dark": "#00596d", // 65% darker
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 };
