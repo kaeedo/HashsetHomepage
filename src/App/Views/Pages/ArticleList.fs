@@ -51,8 +51,6 @@ let private articleStub (stub: ArticleStub) =
     ]
 
 let private html (articles: ArticleStub list) =
-    let articles = articles |> List.tail
-
     html.fragment [
         div {
             class' "grid grid-flow-row grid-cols-6 gap-6"
