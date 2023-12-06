@@ -63,12 +63,13 @@ let private articleHtml (parsedDocument: ParsedDocument) =
 let private title (article: ParsedDocument) =
     div {
         h1 {
-            class' "text-7xl mb-2"
+            class' "lg:text-6xl text-2xl mb-2"
             article.ArticleDate.ToString("dd MMM yyyy")
         }
 
         h2 {
             class' "text-base font-normal"
+
             TagList.simple article.Tags
         }
     }
