@@ -101,18 +101,17 @@ let webApp =
             >=> Controller.atom
 
             routeCi "/old/articles/upsert"
-            >=> mustBeLoggedIn
+            //>=> mustBeLoggedIn
             >=> Controller.upsertPage
         ]
         POST
-        >=> mustBeLoggedIn
         >=> choose [
-            routeCi "/upsert" >=> Controller.upsert
+            routeCi "/old/upsert" >=> Controller.upsert
         ]
         DELETE
-        >=> mustBeLoggedIn
+        //>=> mustBeLoggedIn
         >=> choose [
-            routeCif "/article/%i" Controller.deleteArticle
+            routeCif "/old/article/%i" Controller.deleteArticle
         ]
     ]
 
@@ -211,12 +210,6 @@ funGroup.MapGet(
     "/articles/upsert",
     Func<HttpContext, IRepository, IFileStorage, _>(fun ctx repository fileStore ->
         task {
-            let masterData = {
-                MasterContent.PageTitle = "Upsert"
-                ArticleDate = None
-                Tags = []
-            }
-
             let! articles = repository.GetAllArticles()
 
             let articleIds =
@@ -254,12 +247,54 @@ funGroup.MapGet(
                         }
                     }
 
-            (*let view =
-                Upsert.view upsertDocument (fileStorage.GetImages() |> Seq.toList)
-                |> Load.styledMasterView masterData
-                |> htmlView*)
-
             return Upsert.view upsertDocument (fileStore.GetImages() |> Seq.toList)
+        })
+)
+|> ignore
+
+app.MapPost(
+    "/upsert",
+    Func<HttpContext, IRepository, IFileStorage, _>
+        (fun (ctx: HttpContext) (repository: IRepository) (fileStorage: IFileStorage) ->
+            task {
+                let document = {
+                    UpsertDocument.Title = ctx.Request.Form["Title"].ToString()
+                    Description = ctx.Request.Form["Description"].ToString()
+                    ArticleDate = DateTime.Parse(ctx.Request.Form["ArticleDate"].ToString())
+                    Source = ctx.Request.Form["Source"].ToString()
+                    Tags = ctx.Request.Form["Tags"].ToArray() |> Array.toList
+                    ExistingIds = []
+                }
+
+                let! parsedDocument = Articles.parse document
+
+                ctx.Request.Form.Files
+                |> Seq.filter (fun f -> f.Length > 0L)
+                |> Seq.iter (fun f -> fileStorage.SaveFile f.FileName f.CopyToAsync)
+
+                let id = int <| ctx.Request.Form.["Id"].Item 0
+
+                if id = 0 then
+                    do! Articles.addArticle repository parsedDocument document.Tags
+                    ctx.Response.Headers.Add("HX-Location", "/")
+                else
+                    do! Articles.updateArticle repository id parsedDocument document.Tags
+                    ctx.Response.Headers.Add("HX-Location", $"/article/%s{App.Utils.getUrl id parsedDocument.Title}")
+
+                return Results.Created()
+            })
+)
+|> ignore
+
+app.MapDelete(
+    "/article/{articleId:int}",
+    Func<HttpContext, IRepository, int, _>(fun (ctx: HttpContext) (repository: IRepository) (articleId: int) ->
+        task {
+            do! Articles.deleteArticleById repository articleId
+
+            ctx.Response.Headers.Add("HX-Location", "/articles/upsert")
+
+            return Results.Accepted()
         })
 )
 |> ignore
