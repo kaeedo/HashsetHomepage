@@ -56,6 +56,4 @@ let view (pageTitle: NodeRenderFragment) =
                 }
             }
         }
-
-
     }

@@ -10,14 +10,14 @@ type IFileStorage =
 
 
 type FileStorage() =
-    let path = sprintf "%s/WebRoot/images" Environment.CurrentDirectory
+    let path = $"%s{Environment.CurrentDirectory}/WebRoot/images"
 
     do Directory.CreateDirectory(path) |> ignore
 
     interface IFileStorage with
         member this.SaveFile (fileName: string) (copyAsyncFn: Stream -> Task) =
             task {
-                use fileStream = File.Create(sprintf "%s/%s" path fileName)
+                use fileStream = File.Create $"%s{path}/%s{fileName}"
 
                 do! copyAsyncFn (fileStream)
             }

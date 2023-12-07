@@ -209,7 +209,12 @@ funGroup.MapGet(
 funGroup.MapGet("/about", Func<_>(fun _ -> task { return About.view () }))
 |> ignore
 
-let feedResult (feedFn: string -> Model.ArticleStub list -> XDocument) (ctx: HttpContext) repository =
+let feedResult
+    (feedFn: string -> Model.ArticleStub list -> XDocument)
+    (feedType: string)
+    (ctx: HttpContext)
+    repository
+    =
     task {
         let (tagExists, tag) = ctx.Request.Query.TryGetValue "tag"
 
@@ -228,15 +233,13 @@ let feedResult (feedFn: string -> Model.ArticleStub list -> XDocument) (ctx: Htt
 
         let xml = (feedFn host articles).ToString()
 
-        ctx.Response.ContentType <- "application/atom+xml"
-
-        return Results.Text(xml, "application/rss+xml", Encoding.UTF8)
+        return Results.Text(xml, $"application/{feedType}+xml", Encoding.UTF8)
     }
 
-app.MapGet("/atom", Func<HttpContext, IRepository, _>(feedResult Syndication.syndicationFeed))
+app.MapGet("/atom", Func<HttpContext, IRepository, _>(feedResult Syndication.syndicationFeed "atom"))
 |> ignore
 
-app.MapGet("/rss", Func<HttpContext, IRepository, _>(feedResult Syndication.channelFeed))
+app.MapGet("/rss", Func<HttpContext, IRepository, _>(feedResult Syndication.channelFeed "rss"))
 |> ignore
 
 app.Map("/status", Func<_>(fun _ -> Results.Text("ok")))
