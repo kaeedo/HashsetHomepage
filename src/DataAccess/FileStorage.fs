@@ -17,7 +17,8 @@ type FileStorage() =
     interface IFileStorage with
         member this.SaveFile (fileName: string) (copyAsyncFn: Stream -> Task) =
             task {
-                use fileStream = File.Create $"%s{path}/%s{fileName}"
+                let savePath = $"%s{path}/%s{fileName}"
+                use fileStream = File.Create savePath
 
                 do! copyAsyncFn (fileStream)
             }

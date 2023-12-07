@@ -76,7 +76,10 @@ type Repository(connectionString) =
                                 getTag tagName
                         ]
 
-                    let document = { document with Tags = tags }
+                    let document = {
+                        document with
+                            Tags = [ { Tag.Id = 8; Name = "F#" } ]
+                    }
 
                     let! article =
                         Queries.InsertArticle
