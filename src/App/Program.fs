@@ -15,6 +15,7 @@ open Markdig
 open Markdown.ColorCode
 open System.Text
 open System.Xml.Linq
+open Model
 #if !DEBUG
 open Microsoft.Extensions.FileProviders
 
@@ -145,7 +146,7 @@ funGroup.MapGet(
             let! latestArticle = Articles.getLatestArticle repository
 
             match latestArticle with
-            | None -> return Results.Redirect($"/articles/upsert", false)
+            | None -> return Results.Redirect("/articles/upsert", false)
             | Some la -> return Results.Redirect($"/article/{App.Utils.getUrl la.Id la.Title}", false)
         })
 )
@@ -186,9 +187,9 @@ funGroup.MapGet(
 
 funGroup.MapGet(
     "/articles",
-    Func<HttpRequest, IRepository, _>(fun (request: HttpRequest) (repository: IRepository) ->
+    Func<HttpContext, IRepository, _>(fun (ctx: HttpContext) (repository: IRepository) ->
         task {
-            let (tagExists, tag) = request.Query.TryGetValue "tag"
+            let (tagExists, tag) = ctx.Request.Query.TryGetValue "tag"
 
             let! articles =
                 if tagExists then
@@ -202,6 +203,63 @@ funGroup.MapGet(
                 |> List.map Articles.getArticleStub
 
             return (ArticleList.view articles)
+        })
+)
+|> ignore
+
+funGroup.MapGet(
+    "/articles/upsert",
+    Func<HttpContext, IRepository, IFileStorage, _>(fun ctx repository fileStore ->
+        task {
+            let masterData = {
+                MasterContent.PageTitle = "Upsert"
+                ArticleDate = None
+                Tags = []
+            }
+
+            let! articles = repository.GetAllArticles()
+
+            let articleIds =
+                articles
+                |> Seq.map (fun (pd: ParsedDocument) ->
+                    let id = pd.Id
+                    let title = pd.Title
+                    id, title)
+
+            let! upsertDocument =
+                let (idExists, id) = ctx.Request.Query.TryGetValue "id"
+
+                if idExists then
+                    task {
+                        let! article = repository.GetArticleById <| int (id.ToString())
+
+                        return {
+                            UpsertDocument.ExistingIds = articleIds
+                            Title = article.Title
+                            Source = article.Source
+                            Description = article.Description
+                            ArticleDate = article.ArticleDate
+                            Tags = article.Tags |> List.map (fun t -> t.Name)
+                        }
+                    }
+                else
+                    task {
+                        return {
+                            UpsertDocument.ExistingIds = articleIds
+                            Title = String.Empty
+                            Source = String.Empty
+                            Description = String.Empty
+                            ArticleDate = DateTime.UtcNow.Date
+                            Tags = []
+                        }
+                    }
+
+            (*let view =
+                Upsert.view upsertDocument (fileStorage.GetImages() |> Seq.toList)
+                |> Load.styledMasterView masterData
+                |> htmlView*)
+
+            return Upsert.view upsertDocument (fileStore.GetImages() |> Seq.toList)
         })
 )
 |> ignore
