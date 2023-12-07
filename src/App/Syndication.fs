@@ -22,7 +22,7 @@ module Syndication =
                     xn "item",
                     elem "title" (WebUtility.HtmlEncode i.Title),
                     elem "link"
-                    <| sprintf "https://%s/article/%s" host (App.Utils.getUrl i.Id i.Title),
+                    <| $"https://%s{host}/article/%s{App.Utils.getUrl i.Id i.Title}",
                     elem "guid" <| sprintf "%O" (Guid.NewGuid()),
                     elem "pubDate" (i.Date.ToString("r")),
                     elem "description" (WebUtility.HtmlEncode i.Description)
@@ -34,7 +34,7 @@ module Syndication =
                 xn "rss",
                 XAttribute(xn "version", "2.0"),
                 elem "title" "Hashset",
-                elem "link" <| sprintf "https://%s" host,
+                elem "link" <| $"https://%s{host}",
                 elem "description" "Kai Ito's blog mainly about programming",
                 elem "language" "en-us",
                 XElement(xn "channel", elems)
@@ -50,9 +50,8 @@ module Syndication =
                     xn "entry",
                     elem "title" i.Title,
 
-                    elemAttr "link" "href" (sprintf "https://%s/article/%s" host (App.Utils.getUrl i.Id i.Title)),
-                    elem "guid"
-                    <| sprintf "urn:uuid:%O" (Guid.NewGuid()),
+                    elemAttr "link" "href" $"https://%s{host}/article/%s{App.Utils.getUrl i.Id i.Title}",
+                    elem "guid" <| $"urn:uuid:{Guid.NewGuid()}",
 
                     elem "updated" (i.Date.ToString("yyyy-MM-dd'T'HH:mm:ss.fffK")),
                     elem "summary" i.Description
@@ -64,7 +63,7 @@ module Syndication =
                 XName.Get("feed", "http://www.w3.org/2005/Atom"),
                 XAttribute(xn "xmlns", "http://www.w3.org/2005/Atom"),
                 elem "title" "Hashset",
-                elemAttr "link" "href" (sprintf "https://%s" host),
+                elemAttr "link" "href" $"https://%s{host}",
                 XElement(xn "author", elem "name" "Kai Ito"),
                 elem "subtitle" "Kai Ito's blog mainly about programming",
                 elems
