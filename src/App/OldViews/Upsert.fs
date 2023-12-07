@@ -6,7 +6,6 @@ module Upsert =
     open Giraffe.ViewEngine
 
     let view (upsertDocument: UpsertDocument) availableImages =
-
         let idDropdown =
             option [ _value "0" ] [ str "New" ]
             :: (upsertDocument.ExistingIds
