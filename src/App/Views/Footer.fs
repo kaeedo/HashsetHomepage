@@ -4,7 +4,6 @@ open Fun.Blazor
 open Fun.Htmx
 open System
 
-
 let view () =
     footer {
         class' "mb-8"
