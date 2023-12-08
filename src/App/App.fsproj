@@ -23,11 +23,6 @@
     <TailwindMinify>true</TailwindMinify>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="OldViews/Master.fs"/>
-    <Compile Include="OldViews/LatestArticles.fs"/>
-    <Compile Include="OldViews/About.fs"/>
-    <Compile Include="OldViews/Article.fs"/>
-    <Compile Include="OldViews/Upsert.fs"/>
     <Compile Include="Articles.fs"/>
     <Compile Include="Views\Svg.fs"/>
     <Compile Include="Views\Header.fs"/>
@@ -42,7 +37,6 @@
     <Compile Include="Views\Pages\Upsert.fs"/>
     <Compile Include="Syndication.fs"/>
     <Compile Include="Authentication.fs"/>
-    <Compile Include="Controller.fs"/>
     <Compile Include="Program.fs"/>
     <Content Include="WebRoot/**/*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -58,7 +52,6 @@
     <PackageReference Include="FSlugify" Version="1.2.1"/>
     <PackageReference Include="Fun.Blazor.Server" Version="3.2.8"/>
     <PackageReference Include="Fun.Htmx" Version="3.2.9"/>
-    <PackageReference Include="Giraffe" Version="6.0.0"/>
     <PackageReference Include="FSharp.Literate" Version="4.1.0"/>
     <PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.396"/>
     <PackageReference Include="Markdown.ColorCode" Version="2.1.0"/>

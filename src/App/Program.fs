@@ -9,7 +9,6 @@ open Microsoft.AspNetCore.Authentication
 open Microsoft.AspNetCore.HttpOverrides
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
-open Giraffe
 open App.Views.Pages
 open Markdig
 open Markdown.ColorCode
@@ -18,7 +17,6 @@ open System.Xml.Linq
 open Model
 #if !DEBUG
 open Microsoft.Extensions.FileProviders
-
 #endif
 
 let builder =
@@ -69,51 +67,6 @@ services.AddWebOptimizer() |> ignore
 #endif
 services.AddControllersWithViews() |> ignore
 services.AddHttpContextAccessor() |> ignore
-services.AddGiraffe() |> ignore
-
-
-let mustBeLoggedIn: HttpHandler =
-    fun (next: HttpFunc) (ctx: HttpContext) ->
-        requiresAuthentication (Giraffe.Auth.challenge "BasicAuthentication") next ctx
-
-let version =
-    Reflection.Assembly
-        .GetEntryAssembly()
-        .GetName()
-        .Version
-
-let webApp =
-    choose [
-        GET
-        >=> choose [
-            routeCi "/version" >=> text (version.ToString())
-            routeCi "/old/status" >=> text "ok" // done
-            routeCi "/old" >=> Controller.homepage // done
-            routeCi "/old/articles" >=> Controller.articles // done
-            routeCif "/old/article/%i_%s" (fun (id, _) -> Controller.article id) // done
-            routeCif "/old/article/%i" Controller.articleRedirect // done
-            routeCi "/old/about" >=> Controller.about // done
-            routeCi "/old/rss" // done
-            >=> setHttpHeader "Content-Type" "application/rss+xml"
-            >=> Controller.rss
-            routeCi "/old/atom" // done
-            >=> setHttpHeader "Content-Type" "application/atom+xml"
-            >=> Controller.atom
-
-            routeCi "/old/articles/upsert"
-            //>=> mustBeLoggedIn
-            >=> Controller.upsertPage
-        ]
-        POST
-        >=> choose [
-            routeCi "/old/upsert" >=> Controller.upsert
-        ]
-        DELETE
-        //>=> mustBeLoggedIn
-        >=> choose [
-            routeCif "/old/article/%i" Controller.deleteArticle
-        ]
-    ]
 
 let app = builder.Build()
 
@@ -132,7 +85,7 @@ app
             }
             :> Task))
     )
-    .UseGiraffe(webApp)
+|> ignore
 
 // https://github.com/albertwoo/FunBlazorSSRDemo
 let funGroup = app.MapGroup("").AddFunBlazor()

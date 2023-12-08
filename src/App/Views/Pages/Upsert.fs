@@ -8,6 +8,48 @@ open App.Views
 open Microsoft.AspNetCore.Http
 open Model
 
+let private tagList (upsertDocument: UpsertDocument) =
+    div {
+        class' "flex mb-4"
+
+        div {
+            class' "flex w-40 self-center"
+
+            label {
+                class' "mr-4"
+                "Tags"
+            }
+
+            button {
+                class' "border-2 rounded-sm grow px-2 bg-gray mx-5"
+                "+"
+            }
+        }
+
+        ul {
+            childContent (
+                upsertDocument.Tags
+                |> List.map (fun t ->
+                    li {
+                        class' "mb-2"
+
+                        input {
+                            class' "border-2 rounded-sm px-4 py-2 mr-4"
+                            type' "text"
+                            name "Tags"
+                            value t
+                        }
+
+                        input {
+                            class' "border-2 rounded-sm grow px-2 bg-gray"
+                            type' "button"
+                            value "-"
+                        }
+                    })
+            )
+        }
+    }
+
 let private upsertForm (upsertDocument: UpsertDocument) =
     html.inject (fun (accessor: IHttpContextAccessor) ->
         let articleId =
@@ -155,46 +197,7 @@ let private upsertForm (upsertDocument: UpsertDocument) =
                     }
                 }
 
-                div {
-                    class' "flex mb-4"
-
-                    div {
-                        class' "flex w-40 self-center"
-
-                        label {
-                            class' "mr-4"
-                            "Tags"
-                        }
-
-                        button {
-                            class' "border-2 rounded-sm grow px-2 bg-gray mx-5"
-                            "+"
-                        }
-                    }
-
-                    ul {
-                        childContent (
-                            upsertDocument.Tags
-                            |> List.map (fun t ->
-                                li {
-                                    class' "mb-2"
-
-                                    input {
-                                        class' "border-2 rounded-sm px-4 py-2 mr-4"
-                                        type' "text"
-                                        name "Tags"
-                                        value t
-                                    }
-
-                                    input {
-                                        class' "border-2 rounded-sm grow px-2 bg-gray"
-                                        type' "button"
-                                        value "-"
-                                    }
-                                })
-                        )
-                    }
-                }
+                tagList upsertDocument
 
                 div {
                     class' "flex justify-between"
@@ -218,12 +221,6 @@ let private upsertForm (upsertDocument: UpsertDocument) =
                 }
             ]
         }
-        // script [
-        //     _async
-        //     _defer
-        //     _src "/js/upsert.js"
-        //     _type "text/javascript"
-        // ] []
         |> Card.simple "col-span-2")
 
 let private availableImages (images: string list) =
