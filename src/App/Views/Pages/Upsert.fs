@@ -2,6 +2,7 @@
 module App.Views.Pages.Upsert
 
 open App.Views.Components
+open App.Views.Partials
 open Fun.Blazor
 open Fun.Htmx
 open App.Views
@@ -22,30 +23,19 @@ let private tagList (upsertDocument: UpsertDocument) =
 
             button {
                 class' "border-2 rounded-sm grow px-2 bg-gray mx-5"
+                hxGet "/partials/taginput"
+                hxTarget "#tagList"
+                hxSwap_beforeend
                 "+"
             }
         }
 
         ul {
+            id "tagList"
+
             childContent (
                 upsertDocument.Tags
-                |> List.map (fun t ->
-                    li {
-                        class' "mb-2"
-
-                        input {
-                            class' "border-2 rounded-sm px-4 py-2 mr-4"
-                            type' "text"
-                            name "Tags"
-                            value t
-                        }
-
-                        input {
-                            class' "border-2 rounded-sm grow px-2 bg-gray"
-                            type' "button"
-                            value "-"
-                        }
-                    })
+                |> List.map (fun t -> TagInput.simple t)
             )
         }
     }

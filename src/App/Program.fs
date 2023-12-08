@@ -1,6 +1,7 @@
 open System
 open System.IO
 open System.Threading.Tasks
+open App.Views.Partials
 open DataAccess
 open Hashset
 open Microsoft.AspNetCore.Http
@@ -252,7 +253,10 @@ app.MapDelete(
 )
 |> ignore
 
-funGroup.MapGet("/about", Func<_>(fun _ -> task { return About.view () }))
+funGroup.MapGet("/about", Func<_>(fun _ -> About.view ()))
+|> ignore
+
+funGroup.MapGet("/partials/taginput", Func<_>(fun _ -> TagInput.simple ""))
 |> ignore
 
 let feedResult
