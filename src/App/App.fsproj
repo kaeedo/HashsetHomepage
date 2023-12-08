@@ -28,6 +28,7 @@
     <Compile Include="Views\Header.fs"/>
     <Compile Include="Views\Footer.fs"/>
     <Compile Include="Views\Layout.fs"/>
+    <Compile Include="Views\Partials\TagInput.fs"/>
     <Compile Include="Views\Components\Button.fs"/>
     <Compile Include="Views\Components\TagList.fs"/>
     <Compile Include="Views\Components\Card.fs"/>
