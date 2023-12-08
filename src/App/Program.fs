@@ -3,6 +3,7 @@ open System.IO
 open System.Threading.Tasks
 open App.Views.Partials
 open DataAccess
+open DataAccess.Hydra
 open Hashset
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
@@ -16,6 +17,7 @@ open Markdown.ColorCode
 open System.Text
 open System.Xml.Linq
 open Model
+open Npgsql
 #if !DEBUG
 open Microsoft.Extensions.FileProviders
 #endif
@@ -37,11 +39,15 @@ let conf =
         .BuildServiceProvider()
         .GetService<IConfiguration>()
 
+//// REZOOOOOOMMMM
 let repository = Repository(conf.["ConnectionString"]) :> IRepository
 repository.Migrate()
 
 services.AddTransient<IRepository>(fun _ -> repository)
 |> ignore
+
+// HYDRA
+services.AddNpgsqlDataSource("") |> ignore
 
 services.AddTransient<IFileStorage, FileStorage>()
 |> ignore
@@ -293,6 +299,17 @@ app.MapGet("/rss", Func<HttpContext, IRepository, _>(feedResult Syndication.chan
 |> ignore
 
 app.Map("/status", Func<_>(fun _ -> Results.Text("ok")))
+|> ignore
+
+app.Map(
+    "/new",
+    Func<NpgsqlDataSource, _>(fun dataSource ->
+        task {
+            let! tags = Queries.getAllTags dataSource
+
+            return tags
+        })
+)
 |> ignore
 
 app.Run("http://0.0.0.0:5000")

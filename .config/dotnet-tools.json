@@ -7,6 +7,18 @@
       "commands": [
         "fantomas"
       ]
+    },
+    "sqlhydra.cli": {
+      "version": "2.3.2",
+      "commands": [
+        "sqlhydra"
+      ]
+    },
+    "grate": {
+      "version": "1.5.4",
+      "commands": [
+        "grate"
+      ]
     }
   }
 }

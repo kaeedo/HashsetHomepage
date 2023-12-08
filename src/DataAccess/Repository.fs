@@ -7,7 +7,6 @@ open Rezoom
 open Rezoom.SQL.Plans
 open Rezoom.SQL.Migrations
 open Rezoom.SQL.Mapping
-open Npgsql.Logging
 
 open Model
 
@@ -23,10 +22,10 @@ type IRepository =
     abstract member GetArticlesByTag: string -> Task<ParsedDocument seq>
 
 type Repository(connectionString) =
-#if DEBUG
-    do NpgsqlLogManager.Provider <- ConsoleLoggingProvider(NpgsqlLogLevel.Trace, true, true) :> INpgsqlLoggingProvider
-    do NpgsqlLogManager.IsParameterLoggingEnabled <- true
-#endif
+    // #if DEBUG
+    //     do NpgsqlLogManager.Provider <- ConsoleLoggingProvider(NpgsqlLogLevel.Trace, true, true) :> INpgsqlLoggingProvider
+    //     do NpgsqlLogManager.IsParameterLoggingEnabled <- true
+    // #endif
 
     let serviceConfig = ServiceConfig()
 
