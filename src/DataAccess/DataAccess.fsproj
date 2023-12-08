@@ -6,20 +6,20 @@
     <WarningsAsErrors>FS0025</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Model/Model.fsproj" />
+    <ProjectReference Include="../Model/Model.fsproj"/>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="rzsql.json" />
-    <None Include="v1.articles.sql" />
-    <None Include="v2.articleDescription.sql" />
-    <Compile Include="Queries.fs" />
-    <Compile Include="HashsetConnectionProvider.fs" />
-    <Compile Include="Repository.fs" />
-    <Compile Include="FileStorage.fs" />
+    <Content Include="rzsql.json"/>
+    <None Include="v1.articles.sql"/>
+    <None Include="v2.articleDescription.sql"/>
+    <Compile Include="Queries.fs"/>
+    <Compile Include="HashsetConnectionProvider.fs"/>
+    <Compile Include="Repository.fs"/>
+    <Compile Include="FileStorage.fs"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Npgsql" Version="6.0.3" />
-    <PackageReference Include="Rezoom.SQL.Core" Version="1.1.1-beta1" />
-    <PackageReference Update="FSharp.Core" Version="8.0.100" />
+    <PackageReference Include="Npgsql" Version="8.0.1"/>
+    <PackageReference Include="Rezoom.SQL.Core" Version="1.1.1-beta1"/>
+    <PackageReference Update="FSharp.Core" Version="8.0.100"/>
   </ItemGroup>
 </Project>
