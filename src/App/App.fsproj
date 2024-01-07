@@ -9,7 +9,6 @@
     <WarningsAsErrors>FS0025</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../DataAccess/DataAccess.fsproj"/>
     <ProjectReference Include="../Model/Model.fsproj"/>
     <ProjectReference Include="..\DataAccess.Hydra\DataAccess.Hydra.fsproj"/>
   </ItemGroup>
@@ -24,6 +23,7 @@
     <TailwindMinify>true</TailwindMinify>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="FileStorage.fs"/>
     <Compile Include="Articles.fs"/>
     <Compile Include="Views\Svg.fs"/>
     <Compile Include="Views\Header.fs"/>

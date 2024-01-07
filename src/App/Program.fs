@@ -2,7 +2,7 @@ open System
 open System.IO
 open System.Threading.Tasks
 open App.Views.Partials
-open DataAccess
+open App
 open DataAccess.Hydra
 open Hashset
 open Microsoft.AspNetCore.Http
@@ -18,10 +18,6 @@ open System.Text
 open System.Xml.Linq
 open Model
 open Npgsql
-#if !DEBUG
-open Microsoft.Extensions.FileProviders
-#endif
-
 let builder =
     let contentRoot = Directory.GetCurrentDirectory()
     let webRoot = Path.Combine(contentRoot, "WebRoot")
@@ -38,13 +34,6 @@ let conf =
     services
         .BuildServiceProvider()
         .GetService<IConfiguration>()
-
-//// REZOOOOOOMMMM
-let repository = Repository(conf.["ConnectionString"]) :> IRepository
-repository.Migrate()
-
-services.AddTransient<IRepository>(fun _ -> repository)
-|> ignore
 
 // HYDRA
 services.AddNpgsqlDataSource("") |> ignore
@@ -99,10 +88,10 @@ let funGroup = app.MapGroup("").AddFunBlazor()
 
 funGroup.MapGet(
     "",
-    Func<IRepository, _>(fun (repository: IRepository) ->
+    Func<NpgsqlDataSource, _>(fun (dataSource: NpgsqlDataSource) ->
         task {
             // TODO: replace getLatestArticle with only get latest slug
-            let! latestArticle = Articles.getLatestArticle repository
+            let! latestArticle = Articles.getLatestArticle dataSource
 
             match latestArticle with
             | None -> return Results.Redirect("/articles/upsert", false)
@@ -113,10 +102,10 @@ funGroup.MapGet(
 
 funGroup.MapGet(
     "/article/{slug:regex(^(\d+)_.*$)}",
-    Func<IRepository, string, _>(fun (repository: IRepository) (slug: string) ->
+    Func<NpgsqlDataSource, string, _>(fun (dataSource: NpgsqlDataSource) (slug: string) ->
         task {
             let articleId = slug.Substring(0, slug.IndexOf('_')) |> int
-            let! article = Articles.getArticle repository articleId
+            let! article = Articles.getArticle dataSource articleId
 
             let pipeline =
                 MarkdownPipelineBuilder()
@@ -135,9 +124,9 @@ funGroup.MapGet(
 
 funGroup.MapGet(
     "/article/{articleId:int}",
-    Func<IRepository, int, _>(fun (repository: IRepository) (articleId: int) ->
+    Func<NpgsqlDataSource, int, _>(fun (dataSource: NpgsqlDataSource) (articleId: int) ->
         task {
-            let! article = Articles.getArticle repository articleId
+            let! article = Articles.getArticle dataSource articleId
 
             return Results.Redirect($"/article/{App.Utils.getUrl article.Id article.Title}", true, true)
         })
@@ -146,15 +135,15 @@ funGroup.MapGet(
 
 funGroup.MapGet(
     "/articles",
-    Func<HttpContext, IRepository, _>(fun (ctx: HttpContext) (repository: IRepository) ->
+    Func<HttpContext, NpgsqlDataSource, _>(fun (ctx: HttpContext) (dataSource: NpgsqlDataSource) ->
         task {
             let (tagExists, tag) = ctx.Request.Query.TryGetValue "tag"
 
             let! articles =
                 if tagExists then
-                    Articles.getArticlesByTag repository (tag.ToString())
+                    Articles.getArticlesByTag dataSource (tag.ToString())
                 else
-                    Articles.getArticles repository
+                    Articles.getArticles dataSource
 
             let articles =
                 articles
@@ -168,9 +157,9 @@ funGroup.MapGet(
 
 funGroup.MapGet(
     "/articles/upsert",
-    Func<HttpContext, IRepository, IFileStorage, _>(fun ctx repository fileStore ->
+    Func<HttpContext, NpgsqlDataSource, IFileStorage, _>(fun ctx dataSource fileStore ->
         task {
-            let! articles = repository.GetAllArticles()
+            let! articles = Queries.getAllArticles dataSource
 
             let articleIds =
                 articles
@@ -184,7 +173,7 @@ funGroup.MapGet(
 
                 if idExists then
                     task {
-                        let! article = repository.GetArticleById <| int (id.ToString())
+                        let! article = Queries.getArticleById dataSource <| int (id.ToString())
 
                         return {
                             UpsertDocument.ExistingIds = articleIds
@@ -214,8 +203,8 @@ funGroup.MapGet(
 
 app.MapPost(
     "/upsert",
-    Func<HttpContext, IRepository, IFileStorage, _>
-        (fun (ctx: HttpContext) (repository: IRepository) (fileStorage: IFileStorage) ->
+    Func<HttpContext, NpgsqlDataSource, IFileStorage, _>
+        (fun (ctx: HttpContext) (dataSource: NpgsqlDataSource) (fileStorage: IFileStorage) ->
             task {
                 let document = {
                     UpsertDocument.Title = ctx.Request.Form["Title"].ToString()
@@ -235,10 +224,10 @@ app.MapPost(
                 let id = int <| ctx.Request.Form.["Id"].Item 0
 
                 if id = 0 then
-                    do! Articles.addArticle repository parsedDocument document.Tags
+                    do! Articles.addArticle dataSource parsedDocument document.Tags
                     ctx.Response.Headers.Add("HX-Location", "/")
                 else
-                    do! Articles.updateArticle repository id parsedDocument document.Tags
+                    do! Articles.updateArticle dataSource id parsedDocument document.Tags
                     ctx.Response.Headers.Add("HX-Location", $"/article/%s{App.Utils.getUrl id parsedDocument.Title}")
 
                 return Results.Created()
@@ -248,9 +237,9 @@ app.MapPost(
 
 app.MapDelete(
     "/article/{articleId:int}",
-    Func<HttpContext, IRepository, int, _>(fun (ctx: HttpContext) (repository: IRepository) (articleId: int) ->
+    Func<HttpContext, NpgsqlDataSource, int, _>(fun (ctx: HttpContext) (dataSource: NpgsqlDataSource) (articleId: int) ->
         task {
-            do! Articles.deleteArticleById repository articleId
+            do! Articles.deleteArticleById dataSource articleId
 
             ctx.Response.Headers.Add("HX-Location", "/articles/upsert")
 
@@ -269,16 +258,16 @@ let feedResult
     (feedFn: string -> Model.ArticleStub list -> XDocument)
     (feedType: string)
     (ctx: HttpContext)
-    repository
+    dataSource
     =
     task {
         let (tagExists, tag) = ctx.Request.Query.TryGetValue "tag"
 
         let! articles =
             if tagExists then
-                Articles.getArticlesByTag repository (tag.ToString())
+                Articles.getArticlesByTag dataSource (tag.ToString())
             else
-                Articles.getArticles repository
+                Articles.getArticles dataSource
 
         let articles =
             articles
@@ -292,10 +281,10 @@ let feedResult
         return Results.Text(xml, $"application/{feedType}+xml", Encoding.UTF8)
     }
 
-app.MapGet("/atom", Func<HttpContext, IRepository, _>(feedResult Syndication.syndicationFeed "atom"))
+app.MapGet("/atom", Func<HttpContext, NpgsqlDataSource, _>(feedResult Syndication.syndicationFeed "atom"))
 |> ignore
 
-app.MapGet("/rss", Func<HttpContext, IRepository, _>(feedResult Syndication.channelFeed "rss"))
+app.MapGet("/rss", Func<HttpContext, NpgsqlDataSource, _>(feedResult Syndication.channelFeed "rss"))
 |> ignore
 
 app.Map("/status", Func<_>(fun _ -> Results.Text("ok")))
