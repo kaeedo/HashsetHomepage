@@ -1,20 +1,21 @@
 [<RequireQualifiedAccess>]
-module DataAccess.Hydra.Queries
+module DataAccess.Queries
 
+open DataAccess.``public``
 open Npgsql
 open SqlHydra.Query
-open DataAccess.Hydra
+open DataAccess
 open Model
 open System.Threading.Tasks
 
-let getAllTags (npgsqlDataSource: NpgsqlDataSource) =
-    let contextType =
-        Create(fun () ->
-            let connection = npgsqlDataSource.OpenConnection()
-            new QueryContext(connection, SqlKata.Compilers.PostgresCompiler()))
+let private contextType (dataSource: NpgsqlDataSource) =
+    Create(fun () ->
+        let connection = dataSource.OpenConnection()
+        new QueryContext(connection, SqlKata.Compilers.PostgresCompiler()))
 
-    selectTask HydraReader.Read contextType {
-        for t in ``public``.tags do
+let getAllTags (npgsqlDataSource: NpgsqlDataSource) =
+    selectTask HydraReader.Read (contextType npgsqlDataSource) {
+        for t in tags do
             select t
     }
 
@@ -91,16 +92,30 @@ let updateArticle (npgsqlDataSource: NpgsqlDataSource) (id:int) (parsed:ParsedDo
     // }
     Unchecked.defaultof<Task<unit>>
 
-let getArticleById (npgsqlDataSource: NpgsqlDataSource) (id:int)=
-    //  Queries.GetArticleById.Command(id = id)
-    Unchecked.defaultof<Task<ParsedDocument>>
+let getArticleById (npgsqlDataSource: NpgsqlDataSource) (id:int) =
+    task {
+        let! article = 
+            selectTask HydraReader.Read (contextType npgsqlDataSource) {
+                for article in articles do
+                    join at in article_tags on (article.id = at.articleid)
+                    join tag in tags on (at.tagid = tag.id)
+                    where (article.id = id)
+            }
+        
+        //return article
+        return Unchecked.defaultof<ParsedDocument>
+    }
 
 let deleteArticleById (npgsqlDataSource: NpgsqlDataSource) (id:int)=
-    // do!
-    // Queries.DeleteArticleTagsByArticleId
-    //     .Command(id = id)
-    //     .Plan()
-    Unchecked.defaultof<Task<unit>>
+    task {
+        let! _ =
+            deleteTask (contextType npgsqlDataSource) {
+                for article in articles do
+                    where (article.id = id)
+            }
+            
+        return ()
+    }
 
 let getLatestArticle (npgsqlDataSource: NpgsqlDataSource) =
     // let! articles = Queries.GetLatestArticle.Command().Plan()
@@ -120,7 +135,21 @@ let getAllArticles (npgsqlDataSource: NpgsqlDataSource) =
     Unchecked.defaultof<Task<ParsedDocument list>>
 
 let getArticlesByTag (npgsqlDataSource: NpgsqlDataSource) (tag: string)=
-    // let! articles = Queries.GetArticlesByTag.Command(tag = tag).Plan()
+    // select
+    //         a.*,
+    //         many tags(t.* )
+    //     from articles a
+    //     join article_tags at on a.Id = at.ArticleId
+    //     join tags t on t.id = at.TagId
+    //     where a.CreatedOn <= now()
+    //     and a.Id in (
+    //         select a.id
+    //         from articles a
+    //         join article_tags at on a.Id = at.ArticleId
+    //         join tags t on t.id = at.TagId
+    //         where t.Name = @tag
+    //     )
+    //     order by a.CreatedOn desc
     Unchecked.defaultof<Task<ParsedDocument list>>
 
 
@@ -188,16 +217,6 @@ let getArticlesByTag (npgsqlDataSource: NpgsqlDataSource) (tag: string)=
                 join tags t on t.id = at.TagId)
     """>
 
-    type GetArticleById =
-        SQL<"""
-        select
-            a.*,
-            many tags(t.*)
-        from articles a
-        join article_tags at on a.Id = at.ArticleId
-        join tags t on t.id = at.TagId
-        where a.Id = @id
-    """>
 
     type DeleteArticleTagsByArticleId =
         SQL<"""
@@ -205,11 +224,7 @@ let getArticlesByTag (npgsqlDataSource: NpgsqlDataSource) (tag: string)=
         where ArticleId = @id
     """>
 
-    type DeleteArticleById =
-        SQL<"""
-        delete from articles
-        where Id = @id
-    """>
+
 
     type GetPublishedArticles =
         SQL<"""
@@ -231,25 +246,6 @@ let getArticlesByTag (npgsqlDataSource: NpgsqlDataSource) (tag: string)=
         from articles a
         join article_tags at on a.Id = at.ArticleId
         join tags t on t.id = at.TagId
-        order by a.CreatedOn desc
-    """>
-
-    type GetArticlesByTag =
-        SQL<"""
-        select
-            a.*,
-            many tags(t.* )
-        from articles a
-        join article_tags at on a.Id = at.ArticleId
-        join tags t on t.id = at.TagId
-        where a.CreatedOn <= now()
-        and a.Id in (
-            select a.id
-            from articles a
-            join article_tags at on a.Id = at.ArticleId
-            join tags t on t.id = at.TagId
-            where t.Name = @tag
-        )
         order by a.CreatedOn desc
     """>
  *)

@@ -3,14 +3,12 @@ namespace Hashset
 open FSharp.Literate
 open System.IO
 open System
-open System.Reflection
 open Model
 open DataAccess
 open Npgsql
 
 [<RequireQualifiedAccess>]
 module Articles =
-    open DataAccess.Hydra
     let (++) a b = Path.Combine(a, b)
 
     let private getContent key parsed =
