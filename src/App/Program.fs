@@ -3,7 +3,7 @@ open System.IO
 open System.Threading.Tasks
 open App.Views.Partials
 open App
-open DataAccess.Hydra
+open DataAccess
 open Hashset
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
@@ -294,7 +294,7 @@ app.Map(
     "/new",
     Func<NpgsqlDataSource, _>(fun dataSource ->
         task {
-            let! tags = Queries.getAllTags dataSource
+            let! tags = Queries.getArticleById dataSource 1
 
             return tags
         })
