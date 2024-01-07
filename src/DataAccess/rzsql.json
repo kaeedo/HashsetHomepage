@@ -1,6 +1,0 @@
-{
-    "backend": "postgres",
-    "connectionname": "hashset",
-    "optionals":  "f#",
-    "migrations": "."
-  }

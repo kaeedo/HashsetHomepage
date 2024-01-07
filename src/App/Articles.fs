@@ -6,9 +6,11 @@ open System
 open System.Reflection
 open Model
 open DataAccess
+open Npgsql
 
 [<RequireQualifiedAccess>]
 module Articles =
+    open DataAccess.Hydra
     let (++) a b = Path.Combine(a, b)
 
     let private getContent key parsed =
@@ -49,18 +51,18 @@ module Articles =
         else
             document
 
-    let getLatestArticle (repository: IRepository) = repository.GetLatestArticle()
-    let getArticles (repository: IRepository) = repository.GetArticles()
-    let getArticlesByTag (repository: IRepository) (tag: string) = repository.GetArticlesByTag tag
-    let getArticle (repository: IRepository) (articleId: int) = repository.GetArticleById articleId
-    let deleteArticleById (repository: IRepository) (articleId: int) = repository.DeleteArticleById articleId
+    let getLatestArticle (dataSource: NpgsqlDataSource) = Queries.getLatestArticle dataSource
+    let getArticles (dataSource: NpgsqlDataSource) = Queries.getArticles dataSource
+    let getArticlesByTag (dataSource: NpgsqlDataSource) (tag: string) = Queries.getArticlesByTag dataSource tag
+    let getArticle (dataSource: NpgsqlDataSource) (articleId: int) = Queries.getArticleById dataSource articleId
+    let deleteArticleById (dataSource: NpgsqlDataSource) (articleId: int) = Queries.deleteArticleById dataSource articleId
 
     // TODO refactor these
-    let addArticle (repository: IRepository) (parsedDocument: ParsedDocument) (tags: string list) =
-        repository.InsertArticle parsedDocument tags
+    let addArticle (dataSource: NpgsqlDataSource) (parsedDocument: ParsedDocument) (tags: string list) =
+        Queries.insertArticle dataSource parsedDocument tags
 
-    let updateArticle (repository: IRepository) (articleId: int) (parsedDocument: ParsedDocument) (tags: string list) =
-        repository.UpdateArticle articleId parsedDocument tags
+    let updateArticle (dataSource: NpgsqlDataSource) (articleId: int) (parsedDocument: ParsedDocument) (tags: string list) =
+        Queries.updateArticle dataSource articleId parsedDocument tags
 
     let parse (document: UpsertDocument) =
         let source = document.Source

@@ -4,6 +4,9 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../Model/Model.fsproj"/>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="HashsetDatabase.fs">
       <Visible>False</Visible>
     </Compile>
