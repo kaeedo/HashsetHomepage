@@ -17,9 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\up\*.sql" CopyToOutputDirectory="PreserveNewest">
-      <LogicalName>Reto.DbMigrations.MigrationFiles.%(filename)%(extension)</LogicalName>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\up\*.sql" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

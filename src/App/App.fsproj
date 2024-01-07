@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Model/Model.fsproj"/>
-    <ProjectReference Include="..\DataAccess.Hydra\DataAccess.Hydra.fsproj"/>
+    <ProjectReference Include="..\DataAccess\DataAccess.fsproj"/>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Utils.fs"/>
