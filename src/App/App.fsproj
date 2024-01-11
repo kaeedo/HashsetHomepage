@@ -1,5 +1,4 @@
-﻿
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
@@ -10,39 +9,39 @@
     <UserSecretsId>a9a81c4f-d2ce-4dca-bd5a-bcb0e395d3ab</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Model/Model.fsproj" />
-    <ProjectReference Include="..\DataAccess\DataAccess.fsproj" />
+    <ProjectReference Include="../Model/Model.fsproj"/>
+    <ProjectReference Include="..\DataAccess\DataAccess.fsproj"/>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Utils.fs" />
-    <None Include="Properties\postcss.config.js" CopyToOutputDirectory="Never" />
-    <None Include="Properties\tailwind.config.js" CopyToOutputDirectory="Never" />
-    <None Include="Properties\tailwind.input.css" CopyToOutputDirectory="Never" />
+    <Compile Include="Utils.fs"/>
+    <None Include="Properties\postcss.config.js" CopyToOutputDirectory="Never"/>
+    <None Include="Properties\tailwind.config.js" CopyToOutputDirectory="Never"/>
+    <None Include="Properties\tailwind.input.css" CopyToOutputDirectory="Never"/>
   </ItemGroup>
   <PropertyGroup Label="Tailwind Properties">
     <TailwindOutputFile>$(MSBuildProjectDirectory)/WebRoot/css/tailwind.css</TailwindOutputFile>
     <TailwindMinify>true</TailwindMinify>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="FileStorage.fs" />
-    <Compile Include="Articles.fs" />
-    <Compile Include="Views\Svg.fs" />
-    <Compile Include="Views\Header.fs" />
-    <Compile Include="Views\Footer.fs" />
-    <Compile Include="Views\Layout.fs" />
-    <Compile Include="Views\Partials\TagInput.fs" />
-    <Compile Include="Views\Components\Button.fs" />
-    <Compile Include="Views\Components\TagList.fs" />
-    <Compile Include="Views\Components\Card.fs" />
-    <Compile Include="Views\Pages\Article.fs" />
-    <Compile Include="Views\Pages\ArticleList.fs" />
-    <Compile Include="Views\Pages\About.fs" />
-    <Compile Include="Views\Pages\Upsert.fs" />
-    <Compile Include="Syndication.fs" />
-    <Compile Include="CustomAuthStateProvider.fs" />
-    <Compile Include="CustomSupabaseSessionHandler.fs" />
-    <Compile Include="AuthService.fs" />
-    <Compile Include="Program.fs" />
+    <Compile Include="FileStorage.fs"/>
+    <Compile Include="Articles.fs"/>
+    <Compile Include="Views\Svg.fs"/>
+    <Compile Include="Views\Header.fs"/>
+    <Compile Include="Views\Footer.fs"/>
+    <Compile Include="Views\Layout.fs"/>
+    <Compile Include="Views\Partials\TagInput.fs"/>
+    <Compile Include="Views\Components\Button.fs"/>
+    <Compile Include="Views\Components\TagList.fs"/>
+    <Compile Include="Views\Components\Card.fs"/>
+    <Compile Include="Views\Pages\Article.fs"/>
+    <Compile Include="Views\Pages\ArticleList.fs"/>
+    <Compile Include="Views\Pages\About.fs"/>
+    <Compile Include="Views\Pages\Upsert.fs"/>
+    <Compile Include="Syndication.fs"/>
+    <Compile Include="CustomAuthStateProvider.fs"/>
+    <Compile Include="CustomSupabaseSessionHandler.fs"/>
+    <Compile Include="AuthService.fs"/>
+    <Compile Include="Program.fs"/>
     <Content Include="WebRoot/**/*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -54,16 +53,15 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FSharp.Literate" Version="4.1.0" />
-    <PackageReference Include="FSlugify" Version="1.2.1" />
-    <PackageReference Include="Fun.Blazor.Server" Version="3.2.8" />
-    <PackageReference Include="Fun.Htmx" Version="3.2.9" />
-    <PackageReference Include="Markdown.ColorCode" Version="2.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-    <PackageReference Update="FSharp.Core" Version="8.0.100" />
-    <PackageReference Include="Npgsql.DependencyInjection" Version="8.0.1" />
-    <PackageReference Include="supabase-csharp" Version="0.13.7" />
+    <PackageReference Include="FSlugify" Version="1.2.1"/>
+    <PackageReference Include="Fun.Blazor.Server" Version="3.2.8"/>
+    <PackageReference Include="Fun.Htmx" Version="3.2.9"/>
+    <PackageReference Include="Markdown.ColorCode" Version="2.1.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0"/>
+    <PackageReference Update="FSharp.Core" Version="8.0.100"/>
+    <PackageReference Include="Npgsql.DependencyInjection" Version="8.0.1"/>
+    <PackageReference Include="supabase-csharp" Version="0.13.7"/>
     <PackageReference Include="Tailwind.MSBuild" Version="1.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
