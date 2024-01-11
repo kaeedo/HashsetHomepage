@@ -1,6 +1,7 @@
 [<RequireQualifiedAccess>]
 module DataAccess.Queries
 
+open System
 open DataAccess.``public``
 open Npgsql
 open SqlHydra.Query
@@ -13,6 +14,28 @@ let private contextType (dataSource: NpgsqlDataSource) =
         let connection = dataSource.OpenConnection()
         new QueryContext(connection, SqlKata.Compilers.PostgresCompiler()))
 
+let private mapParsedDocument (articles: (articles * article_tags * tags) seq) =
+    articles
+    |> Seq.groupBy (fun (a, _, _) -> a)
+    |> Seq.map (fun (a, tags) ->
+        let tags =
+            tags
+            |> Seq.toList
+            |> List.map (fun (_, _, t) -> t)
+
+        {
+            ParsedDocument.Id = a.id
+            Title = a.title
+            Description = a.description
+            ArticleDate = a.createdon
+            Source = a.source
+            Document = a.parsed
+            Tooltips = ""
+            Tags =
+                tags
+                |> List.map (fun t -> { Tag.Id = t.id; Name = t.name })
+        })
+
 let getAllTags (npgsqlDataSource: NpgsqlDataSource) =
     selectTask HydraReader.Read (contextType npgsqlDataSource) {
         for t in tags do
@@ -20,81 +43,110 @@ let getAllTags (npgsqlDataSource: NpgsqlDataSource) =
     }
 
 let insertArticle (npgsqlDataSource: NpgsqlDataSource) (parsed: ParsedDocument) (tags: string list) =
-    //     plan {
-    //     let! tags =
-    //         Plan.concurrentList [
-    //             for tagName in tags do
-    //                 getTag tagName
-    //         ]
+    task {
+        let! tags =
+            selectTask HydraReader.Read (contextType npgsqlDataSource) {
+                for tag in ``public``.tags do
+                    where (tag.name |=| tags)
+                    mapList { Tag.Id = tag.id; Name = tag.name }
+            }
 
-    //     let document = {
-    //         document with
-    //             Tags = [ { Tag.Id = 8; Name = "F#" } ]
-    //     }
+        let document = { parsed with Tags = tags }
 
-    //     let! article =
-    //         Queries.InsertArticle
-    //             .Command(
-    //                 title = document.Title,
-    //                 source = document.Source,
-    //                 description = document.Description,
-    //                 parsed = document.Document,
-    //                 tooltips = document.Tooltips,
-    //                 createdOn = DateTime.SpecifyKind(document.ArticleDate, DateTimeKind.Utc)
-    //             )
-    //             .Plan()
+        let! newArticleId =
+            insertTask (contextType npgsqlDataSource) {
+                for article in articles do
+                    entity {
+                        articles.id = 0
+                        articles.createdon = document.ArticleDate
+                        articles.description = document.Description
+                        articles.parsed = document.Document
+                        articles.title = document.Title
+                        articles.source = document.Source
+                    }
 
-    //     let tagIds = tags |> List.map (fun tag -> tag.Id)
+                    getId article.id
+            }
 
-    //     for tagId in batch tagIds do
-    //         do!
-    //             Queries.InsertArticleTagsMapping
-    //                 .Command(articleId = article.Id, tagId = tagId)
-    //                 .Plan()
-    // }
-    Unchecked.defaultof<Task<unit>>
+        let articleTags =
+            tags
+            |> List.map (fun tag -> {
+                article_tags.articleid = parsed.Id
+                tagid = tag.Id
+            })
+            |> AtLeastOne.tryCreate
+
+        match articleTags with
+        | Some at ->
+            do!
+                insertTask (contextType npgsqlDataSource) {
+                    into article_tags
+                    entities at
+                }
+                :> Task
+        | None -> failwith "tags required"
+
+        return ()
+    }
 
 let updateArticle (npgsqlDataSource: NpgsqlDataSource) (id: int) (parsed: ParsedDocument) (tags: string list) =
-    //  plan {
-    //     do!
-    //         Queries.DeleteArticleTagsByArticleId
-    //             .Command(id = articleId)
-    //             .Plan()
+    task {
+        let! _ =
+            deleteTask (contextType npgsqlDataSource) {
+                for articleTag in article_tags do
+                    where (articleTag.articleid = id)
+            }
 
-    //     let! tags =
-    //         Plan.concurrentList [
-    //             for tagName in tags do
-    //                 getTag tagName
-    //         ]
+        let! tags =
+            selectTask HydraReader.Read (contextType npgsqlDataSource) {
+                for tag in ``public``.tags do
+                    where (tag.name |=| tags)
+                    mapList { Tag.Id = tag.id; Name = tag.name }
+            }
 
-    //     let document = { document with Tags = tags }
+        let parsed = {
+            parsed with
+                Tags = tags |> Seq.toList
+        }
 
-    //     do!
-    //         Queries.UpdateArticleById
-    //             .Command(
-    //                 id = articleId,
-    //                 title = document.Title,
-    //                 description = document.Description,
-    //                 source = document.Source,
-    //                 parsed = document.Document,
-    //                 tooltips = document.Tooltips,
-    //                 createdOn = DateTime.SpecifyKind(document.ArticleDate, DateTimeKind.Utc)
-    //             )
-    //             .Plan()
+        let! _ =
+            updateTask (contextType npgsqlDataSource) {
+                for a in articles do
+                    entity {
+                        articles.id = id
+                        articles.title = parsed.Title
+                        articles.source = parsed.Source
+                        articles.description = parsed.Description
+                        articles.parsed = parsed.Document
+                        articles.createdon = parsed.ArticleDate
+                    }
 
-    //     let tagIds = tags |> List.map (fun tag -> tag.Id)
+                    excludeColumn a.id
+                    where (a.id = id)
+            }
 
-    //     for tagId in batch tagIds do
-    //         do!
-    //             Queries.InsertArticleTagsMapping
-    //                 .Command(articleId = articleId, tagId = tagId)
-    //                 .Plan()
-    // }
-    Unchecked.defaultof<Task<unit>>
+        let articleTags =
+            tags
+            |> List.map (fun tag -> {
+                article_tags.articleid = parsed.Id
+                tagid = tag.Id
+            })
+            |> AtLeastOne.tryCreate
+
+        match articleTags with
+        | Some at ->
+            do!
+                insertTask (contextType npgsqlDataSource) {
+                    into article_tags
+                    entities at
+                }
+                :> Task
+        | None -> failwith "tags required"
+    }
 
 let getArticleById (npgsqlDataSource: NpgsqlDataSource) (id: int) =
     task {
-        let! article =
+        let! articles =
             selectTask HydraReader.Read (contextType npgsqlDataSource) {
                 for article in articles do
                     join at in article_tags on (article.id = at.articleid)
@@ -102,28 +154,7 @@ let getArticleById (npgsqlDataSource: NpgsqlDataSource) (id: int) =
                     where (article.id = id)
             }
 
-        let parsed =
-            article
-            |> Seq.groupBy (fun (a, _, _) -> a)
-            |> Seq.map (fun (a, tags) ->
-                let tags =
-                    tags
-                    |> Seq.toList
-                    |> List.map (fun (_, _, t) -> t)
-
-                {
-                    ParsedDocument.Id = a.id
-                    Title = a.title
-                    Description = a.description
-                    ArticleDate = a.createdon
-                    Source = a.source
-                    Document = a.parsed
-                    Tooltips = ""
-                    Tags =
-                        tags
-                        |> List.map (fun t -> { Tag.Id = t.id; Name = t.name })
-                })
-            |> Seq.head
+        let parsed = mapParsedDocument articles |> Seq.head
 
         return parsed
     }
@@ -140,134 +171,65 @@ let deleteArticleById (npgsqlDataSource: NpgsqlDataSource) (id: int) =
     }
 
 let getLatestArticle (npgsqlDataSource: NpgsqlDataSource) =
-    // let! articles = Queries.GetLatestArticle.Command().Plan()
+    task {
+        let! articles =
+            selectTask HydraReader.Read (contextType npgsqlDataSource) {
+                for article in articles do
+                    join at in article_tags on (article.id = at.articleid)
+                    join tag in tags on (at.tagid = tag.id)
+                    where (article.createdon <= DateTime.Now)
+                    orderByDescending article.createdon
+            }
 
-    // return
-    // articles
-    // |> Seq.tryHead
-    // |> Option.map (Queries.mapArticle)
-    Unchecked.defaultof<Task<ParsedDocument option>>
+        let parsed = mapParsedDocument articles |> Seq.tryHead
+
+        return parsed
+    }
 
 let getArticles (npgsqlDataSource: NpgsqlDataSource) =
-    // let! articles = Queries.GetPublishedArticles.Command().Plan()
-    Unchecked.defaultof<Task<ParsedDocument list>>
+    task {
+        let! articles =
+            selectTask HydraReader.Read (contextType npgsqlDataSource) {
+                for article in articles do
+                    join at in article_tags on (article.id = at.articleid)
+                    join tag in tags on (at.tagid = tag.id)
+                    where (article.createdon <= DateTime.Now)
+                    orderByDescending article.createdon
+            }
+
+        let parsed = mapParsedDocument articles
+
+        return parsed
+    }
 
 let getAllArticles (npgsqlDataSource: NpgsqlDataSource) =
-    // let! articles = Queries.GetAllArticles.Command().Plan()
-    Unchecked.defaultof<Task<ParsedDocument list>>
+    task {
+        let! articles =
+            selectTask HydraReader.Read (contextType npgsqlDataSource) {
+                for article in articles do
+                    join at in article_tags on (article.id = at.articleid)
+                    join tag in tags on (at.tagid = tag.id)
+                    orderByDescending article.createdon
+            }
 
-let getArticlesByTag (npgsqlDataSource: NpgsqlDataSource) (tag: string) =
-    // select
-    //         a.*,
-    //         many tags(t.* )
-    //     from articles a
-    //     join article_tags at on a.Id = at.ArticleId
-    //     join tags t on t.id = at.TagId
-    //     where a.CreatedOn <= now()
-    //     and a.Id in (
-    //         select a.id
-    //         from articles a
-    //         join article_tags at on a.Id = at.ArticleId
-    //         join tags t on t.id = at.TagId
-    //         where t.Name = @tag
-    //     )
-    //     order by a.CreatedOn desc
-    Unchecked.defaultof<Task<ParsedDocument list>>
+        let parsed = mapParsedDocument articles
 
+        return parsed
+    }
 
-(*
-    type InsertTag =
-        SQL<"""
-        insert into tags
-        row
-            Name = @name;
-        select lastval() as Id;
-    """>
+let getArticlesByTag (npgsqlDataSource: NpgsqlDataSource) (filterTag: string) =
+    task {
+        let! articles =
+            selectTask HydraReader.Read (contextType npgsqlDataSource) {
+                for article in articles do
+                    join at in article_tags on (article.id = at.articleid)
+                    join tag in tags on (at.tagid = tag.id)
+                    where (article.createdon <= DateTime.Now)
+                    where (tag.name = filterTag)
+                    orderByDescending article.createdon
+            }
 
-    type GetTag =
-        SQL<"""
-        select * from tags
-        where Name = @name
-    """>
+        let parsed = mapParsedDocument articles
 
-    type InsertArticle =
-        SQL<"""
-        insert into articles
-        row
-            Title = @title,
-            Source = @source,
-            Description = @description,
-            Parsed = @parsed,
-            Tooltips = @tooltips,
-            CreatedOn = @createdOn;
-        select lastval() as Id;
-    """>
-
-    type InsertArticleTagsMapping =
-        SQL<"""
-        insert into article_tags
-        row
-            ArticleId = @articleId,
-            TagId = @tagId
-    """>
-
-    type UpdateArticleById =
-        SQL<"""
-        update articles set
-            Title = @title,
-            Source = @source,
-            Description = @description,
-            Parsed = @parsed,
-            Tooltips = @tooltips,
-            CreatedOn = @createdOn
-        where Id = @id
-    """>
-
-    type GetLatestArticle =
-        SQL<"""
-        select
-            a.*,
-            many tags(t.* )
-        from articles a
-        join article_tags at on a.Id = at.ArticleId
-        join tags t on t.id = at.TagId
-        where a.CreatedOn <= now()
-        order by a.CreatedOn desc
-        limit (select count(* ) as count
-                from articles a
-                join article_tags at on a.Id = at.ArticleId
-                join tags t on t.id = at.TagId)
-    """>
-
-
-    type DeleteArticleTagsByArticleId =
-        SQL<"""
-        delete from article_tags
-        where ArticleId = @id
-    """>
-
-
-
-    type GetPublishedArticles =
-        SQL<"""
-        select
-            a.*,
-            many tags(t. * )
-        from articles a
-        join article_tags at on a.Id = at.ArticleId
-        join tags t on t.id = at.TagId
-        where a.CreatedOn <= now()
-        order by a.CreatedOn desc
-    """>
-
-    type GetAllArticles =
-        SQL<"""
-        select
-            a.*,
-            many tags(t.* )
-        from articles a
-        join article_tags at on a.Id = at.ArticleId
-        join tags t on t.id = at.TagId
-        order by a.CreatedOn desc
-    """>
- *)
+        return parsed
+    }
