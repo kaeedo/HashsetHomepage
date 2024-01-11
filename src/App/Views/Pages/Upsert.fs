@@ -7,7 +7,6 @@ open Fun.Blazor
 open Fun.Htmx
 open App.Views
 open Microsoft.AspNetCore.Http
-open Microsoft.Extensions.Configuration
 open Model
 
 let private tagList (upsertDocument: UpsertDocument) =
@@ -215,23 +214,20 @@ let private upsertForm (upsertDocument: UpsertDocument) =
         |> Card.simple "col-span-2")
 
 let private availableImages (images: string list) =
-    html.inject (fun (config: IConfiguration) ->
-        let baseUrl = config["Supabase:BaseUrl"]
+    div {
+        childContent (
+            images
+            |> List.map (fun image ->
+                div {
+                    class' "mb-2"
+                    label { image }
 
-        div {
-            childContent (
-                images
-                |> List.map (fun image ->
-                    div {
-                        class' "mb-2"
-                        label { image }
+                    img { src image }
 
-                        img { src $"%s{baseUrl}/storage/v1/object/public/images/%s{image}" }
-
-                    })
-            )
-        }
-        |> Card.simple "")
+                })
+        )
+    }
+    |> Card.simple ""
 
 let private html (upsertDocument: UpsertDocument) (images: string list) =
     div {
