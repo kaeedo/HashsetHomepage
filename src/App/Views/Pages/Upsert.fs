@@ -78,7 +78,7 @@ let private upsertForm (upsertDocument: UpsertDocument) =
 
                             yield!
                                 (upsertDocument.ExistingIds
-                                 |> Seq.sortByDescending (fun (id, _) -> id)
+                                 |> Seq.sortByDescending fst
                                  |> Seq.map (fun (articleId, title) ->
                                      option {
                                          value (articleId.ToString())
