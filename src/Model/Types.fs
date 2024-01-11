@@ -26,7 +26,6 @@ type ParsedDocument = {
     ArticleDate: DateTime
     Source: string
     Document: string
-    Tooltips: string
     Tags: Tag list
 } with
 
