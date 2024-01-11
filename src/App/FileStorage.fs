@@ -22,10 +22,16 @@ type FileStorage(config: IConfiguration) =
     interface IFileStorage with
         member this.SaveFile (fileName: string) (copyAsyncFn: Stream -> Task) =
             task {
-                let savePath = $"%s{path}/%s{fileName}"
-                use fileStream = File.Create savePath
+                use memoryStream = new MemoryStream()
 
-                do! copyAsyncFn (fileStream)
+                do! copyAsyncFn memoryStream
+
+                let! _ =
+                    supabaseClient.Storage
+                        .From("images")
+                        .Upload(memoryStream.ToArray(), fileName)
+
+                return ()
             }
             |> ignore
 
@@ -35,5 +41,10 @@ type FileStorage(config: IConfiguration) =
 
                 let! objects = supabaseClient.Storage.From("images").List()
 
-                return objects |> Seq.map (fun o -> o.Name)
+                return
+                    objects
+                    |> Seq.map (fun o ->
+                        supabaseClient.Storage
+                            .From("images")
+                            .GetPublicUrl($"{o.Name}"))
             }
