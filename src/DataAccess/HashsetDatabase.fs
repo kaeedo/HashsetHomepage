@@ -327,14 +327,6 @@ module pgsodium =
                 if __.id.IsNull() then None else Some(__.Read())
 
 module auth =
-    type factor_type =
-        | totp = 1
-        | webauthn = 2
-
-    type factor_status =
-        | unverified = 1
-        | verified = 2
-
     type aal_level =
         | aal1 = 1
         | aal2 = 2
@@ -343,6 +335,14 @@ module auth =
     type code_challenge_method =
         | s256 = 1
         | plain = 2
+
+    type factor_status =
+        | unverified = 1
+        | verified = 2
+
+    type factor_type =
+        | totp = 1
+        | webauthn = 2
 
     [<CLIMutable>]
     type audit_log_entries =
@@ -1024,6 +1024,108 @@ module auth =
 
             member __.ReadIfNotNull() =
                 if __.id.IsNull() then None else Some(__.Read())
+
+module cron =
+    [<CLIMutable>]
+    type job =
+        { [<SqlHydra.ProviderDbType("Bigint")>]
+          jobid: int64
+          [<SqlHydra.ProviderDbType("Text")>]
+          schedule: string
+          [<SqlHydra.ProviderDbType("Text")>]
+          command: string
+          [<SqlHydra.ProviderDbType("Text")>]
+          nodename: string
+          [<SqlHydra.ProviderDbType("Integer")>]
+          nodeport: int
+          [<SqlHydra.ProviderDbType("Text")>]
+          database: string
+          [<SqlHydra.ProviderDbType("Text")>]
+          username: string
+          [<SqlHydra.ProviderDbType("Boolean")>]
+          active: bool
+          [<SqlHydra.ProviderDbType("Name")>]
+          jobname: Option<string> }
+
+    let job = SqlHydra.Query.Table.table<job>
+
+    [<CLIMutable>]
+    type job_run_details =
+        { [<SqlHydra.ProviderDbType("Bigint")>]
+          jobid: Option<int64>
+          [<SqlHydra.ProviderDbType("Bigint")>]
+          runid: int64
+          [<SqlHydra.ProviderDbType("Integer")>]
+          job_pid: Option<int>
+          [<SqlHydra.ProviderDbType("Text")>]
+          database: Option<string>
+          [<SqlHydra.ProviderDbType("Text")>]
+          username: Option<string>
+          [<SqlHydra.ProviderDbType("Text")>]
+          command: Option<string>
+          [<SqlHydra.ProviderDbType("Text")>]
+          status: Option<string>
+          [<SqlHydra.ProviderDbType("Text")>]
+          return_message: Option<string>
+          [<SqlHydra.ProviderDbType("TimestampTz")>]
+          start_time: Option<System.DateTime>
+          [<SqlHydra.ProviderDbType("TimestampTz")>]
+          end_time: Option<System.DateTime> }
+
+    let job_run_details = SqlHydra.Query.Table.table<job_run_details>
+
+    module Readers =
+        type jobReader(reader: Npgsql.NpgsqlDataReader, getOrdinal) =
+            member __.jobid = RequiredColumn(reader, getOrdinal, reader.GetInt64, "jobid")
+            member __.schedule = RequiredColumn(reader, getOrdinal, reader.GetString, "schedule")
+            member __.command = RequiredColumn(reader, getOrdinal, reader.GetString, "command")
+            member __.nodename = RequiredColumn(reader, getOrdinal, reader.GetString, "nodename")
+            member __.nodeport = RequiredColumn(reader, getOrdinal, reader.GetInt32, "nodeport")
+            member __.database = RequiredColumn(reader, getOrdinal, reader.GetString, "database")
+            member __.username = RequiredColumn(reader, getOrdinal, reader.GetString, "username")
+            member __.active = RequiredColumn(reader, getOrdinal, reader.GetBoolean, "active")
+            member __.jobname = OptionalColumn(reader, getOrdinal, reader.GetString, "jobname")
+
+            member __.Read() =
+                { job.jobid = __.jobid.Read()
+                  schedule = __.schedule.Read()
+                  command = __.command.Read()
+                  nodename = __.nodename.Read()
+                  nodeport = __.nodeport.Read()
+                  database = __.database.Read()
+                  username = __.username.Read()
+                  active = __.active.Read()
+                  jobname = __.jobname.Read() }
+
+            member __.ReadIfNotNull() =
+                if __.jobid.IsNull() then None else Some(__.Read())
+
+        type job_run_detailsReader(reader: Npgsql.NpgsqlDataReader, getOrdinal) =
+            member __.jobid = OptionalColumn(reader, getOrdinal, reader.GetInt64, "jobid")
+            member __.runid = RequiredColumn(reader, getOrdinal, reader.GetInt64, "runid")
+            member __.job_pid = OptionalColumn(reader, getOrdinal, reader.GetInt32, "job_pid")
+            member __.database = OptionalColumn(reader, getOrdinal, reader.GetString, "database")
+            member __.username = OptionalColumn(reader, getOrdinal, reader.GetString, "username")
+            member __.command = OptionalColumn(reader, getOrdinal, reader.GetString, "command")
+            member __.status = OptionalColumn(reader, getOrdinal, reader.GetString, "status")
+            member __.return_message = OptionalColumn(reader, getOrdinal, reader.GetString, "return_message")
+            member __.start_time = OptionalColumn(reader, getOrdinal, reader.GetDateTime, "start_time")
+            member __.end_time = OptionalColumn(reader, getOrdinal, reader.GetDateTime, "end_time")
+
+            member __.Read() =
+                { job_run_details.jobid = __.jobid.Read()
+                  runid = __.runid.Read()
+                  job_pid = __.job_pid.Read()
+                  database = __.database.Read()
+                  username = __.username.Read()
+                  command = __.command.Read()
+                  status = __.status.Read()
+                  return_message = __.return_message.Read()
+                  start_time = __.start_time.Read()
+                  end_time = __.end_time.Read() }
+
+            member __.ReadIfNotNull() =
+                if __.runid.IsNull() then None else Some(__.Read())
 
 module extensions =
     [<CLIMutable>]
@@ -1708,6 +1810,8 @@ type HydraReader(reader: Npgsql.NpgsqlDataReader) =
     let lazyauthsso_domains = lazy (auth.Readers.sso_domainsReader (reader, buildGetOrdinal 5))
     let lazyauthsso_providers = lazy (auth.Readers.sso_providersReader (reader, buildGetOrdinal 4))
     let lazyauthusers = lazy (auth.Readers.usersReader (reader, buildGetOrdinal 34))
+    let lazycronjob = lazy (cron.Readers.jobReader (reader, buildGetOrdinal 9))
+    let lazycronjob_run_details = lazy (cron.Readers.job_run_detailsReader (reader, buildGetOrdinal 10))
     let lazyextensionspg_stat_statements = lazy (extensions.Readers.pg_stat_statementsReader (reader, buildGetOrdinal 43))
     let lazyextensionspg_stat_statements_info = lazy (extensions.Readers.pg_stat_statements_infoReader (reader, buildGetOrdinal 2))
     let lazygrateScriptsRun = lazy (grate.Readers.ScriptsRunReader(reader, buildGetOrdinal 9))
@@ -1741,6 +1845,8 @@ type HydraReader(reader: Npgsql.NpgsqlDataReader) =
     member __.``auth.sso_domains`` = lazyauthsso_domains.Value
     member __.``auth.sso_providers`` = lazyauthsso_providers.Value
     member __.``auth.users`` = lazyauthusers.Value
+    member __.``cron.job`` = lazycronjob.Value
+    member __.``cron.job_run_details`` = lazycronjob_run_details.Value
     member __.``extensions.pg_stat_statements`` = lazyextensionspg_stat_statements.Value
     member __.``extensions.pg_stat_statements_info`` = lazyextensionspg_stat_statements_info.Value
     member __.``grate.ScriptsRun`` = lazygrateScriptsRun.Value
@@ -1798,6 +1904,10 @@ type HydraReader(reader: Npgsql.NpgsqlDataReader) =
         | "auth.sso_providers", true -> __.``auth.sso_providers``.ReadIfNotNull >> box
         | "auth.users", false -> __.``auth.users``.Read >> box
         | "auth.users", true -> __.``auth.users``.ReadIfNotNull >> box
+        | "cron.job", false -> __.``cron.job``.Read >> box
+        | "cron.job", true -> __.``cron.job``.ReadIfNotNull >> box
+        | "cron.job_run_details", false -> __.``cron.job_run_details``.Read >> box
+        | "cron.job_run_details", true -> __.``cron.job_run_details``.ReadIfNotNull >> box
         | "extensions.pg_stat_statements", false -> __.``extensions.pg_stat_statements``.Read >> box
         | "extensions.pg_stat_statements", true -> __.``extensions.pg_stat_statements``.ReadIfNotNull >> box
         | "extensions.pg_stat_statements_info", false -> __.``extensions.pg_stat_statements_info``.Read >> box
