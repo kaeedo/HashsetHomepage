@@ -30,48 +30,78 @@ let private mapParsedDocument (articles: (articles * article_tags * tags) seq) =
             ArticleDate = a.createdon
             Source = a.source
             Document = a.parsed
-            Tooltips = ""
             Tags =
                 tags
                 |> List.map (fun t -> { Tag.Id = t.id; Name = t.name })
         })
 
-let getAllTags (npgsqlDataSource: NpgsqlDataSource) =
+let private getTags (npgsqlDataSource: NpgsqlDataSource) (tags: string seq) =
     selectTask HydraReader.Read (contextType npgsqlDataSource) {
-        for t in tags do
-            select t
+        for tag in ``public``.tags do
+            where (tag.name |=| tags)
+            mapList { Tag.Id = tag.id; Name = tag.name }
+    }
+
+let private getOrCreateTags (npgsqlDataSource: NpgsqlDataSource) (allTags: string seq) =
+    task {
+        let! tags = getTags npgsqlDataSource allTags
+
+        let newTags =
+            allTags
+            |> Seq.except (tags |> Seq.map (fun t -> t.Name))
+            |> Seq.map (fun t -> { tags.id = 0; name = t })
+            |> AtLeastOne.tryCreate
+
+        match newTags with
+        | Some t ->
+            do!
+                insertTask (contextType npgsqlDataSource) {
+                    for tag in ``public``.tags do
+                        entities t
+                        excludeColumn tag.id
+                }
+                :> Task
+
+            let! newTags =
+                getTags
+                    npgsqlDataSource
+                    (t
+                     |> AtLeastOne.getSeq
+                     |> Seq.map (fun t -> t.name))
+
+            return tags |> List.append newTags
+        | None -> return tags
     }
 
 let insertArticle (npgsqlDataSource: NpgsqlDataSource) (parsed: ParsedDocument) (tags: string list) =
     task {
-        let! tags =
-            selectTask HydraReader.Read (contextType npgsqlDataSource) {
-                for tag in ``public``.tags do
-                    where (tag.name |=| tags)
-                    mapList { Tag.Id = tag.id; Name = tag.name }
-            }
-
-        let document = { parsed with Tags = tags }
+        let! tags = getOrCreateTags npgsqlDataSource tags
 
         let! newArticleId =
             insertTask (contextType npgsqlDataSource) {
                 for article in articles do
                     entity {
                         articles.id = 0
-                        articles.createdon = document.ArticleDate
-                        articles.description = document.Description
-                        articles.parsed = document.Document
-                        articles.title = document.Title
-                        articles.source = document.Source
+                        articles.createdon = DateTime.SpecifyKind(parsed.ArticleDate, DateTimeKind.Utc)
+                        articles.description = parsed.Description
+                        articles.parsed = parsed.Document
+                        articles.title = parsed.Title
+                        articles.source = parsed.Source
                     }
 
                     getId article.id
             }
 
+        let document = {
+            parsed with
+                Id = newArticleId
+                Tags = tags
+        }
+
         let articleTags =
             tags
-            |> List.map (fun tag -> {
-                article_tags.articleid = parsed.Id
+            |> Seq.map (fun tag -> {
+                article_tags.articleid = document.Id
                 tagid = tag.Id
             })
             |> AtLeastOne.tryCreate
@@ -97,12 +127,7 @@ let updateArticle (npgsqlDataSource: NpgsqlDataSource) (id: int) (parsed: Parsed
                     where (articleTag.articleid = id)
             }
 
-        let! tags =
-            selectTask HydraReader.Read (contextType npgsqlDataSource) {
-                for tag in ``public``.tags do
-                    where (tag.name |=| tags)
-                    mapList { Tag.Id = tag.id; Name = tag.name }
-            }
+        let! tags = getOrCreateTags npgsqlDataSource tags
 
         let parsed = {
             parsed with
@@ -118,7 +143,7 @@ let updateArticle (npgsqlDataSource: NpgsqlDataSource) (id: int) (parsed: Parsed
                         articles.source = parsed.Source
                         articles.description = parsed.Description
                         articles.parsed = parsed.Document
-                        articles.createdon = parsed.ArticleDate
+                        articles.createdon = DateTime.SpecifyKind(parsed.ArticleDate, DateTimeKind.Utc)
                     }
 
                     excludeColumn a.id
