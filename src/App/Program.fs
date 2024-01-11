@@ -8,6 +8,7 @@ open Hashset
 open Microsoft.AspNetCore.Components.Authorization
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
+open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.AspNetCore.Authentication.JwtBearer
 open Microsoft.AspNetCore.HttpOverrides
@@ -29,7 +30,6 @@ let builder =
 
 let services = builder.Services
 
-// HYDRA
 services.AddNpgsqlDataSource(builder.Configuration["ConnectionString"])
 |> ignore
 
@@ -46,7 +46,7 @@ services
         authenticationOptions.DefaultAuthenticateScheme <- JwtBearerDefaults.AuthenticationScheme
         authenticationOptions.DefaultChallengeScheme <- JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(fun bearerOptions ->
-        let url = "https://Reference ID.supabase.co"
+        let url = builder.Configuration["Supabase:BaseUrl"]
         bearerOptions.RequireHttpsMetadata <- false
         bearerOptions.Authority <- $"{url}/auth/v1/authorize"
 
@@ -66,10 +66,10 @@ services.AddScoped<IGotrueSessionPersistence<Session>, CustomSupabaseSessionHand
 |> ignore
 
 services.AddScoped<Supabase.Client>(fun sp ->
-    let url = "https://Reference ID.supabase.co"
+    let url = builder.Configuration["Supabase:BaseUrl"]
 
-    let key = "public project API key"
-
+    let key = builder.Configuration["Supabase:PublicApiKey"]
+    
     let sessionHandler = sp.GetRequiredService<IGotrueSessionPersistence<Session>>()
 
     let options: Supabase.SupabaseOptions =
@@ -348,10 +348,10 @@ app.MapGet(
 
 app.MapGet(
     "/login",
-    Func<AuthService, _>(fun authService ->
+    Func<AuthService, IConfiguration, _>(fun authService config ->
         task {
             // https://github.com/supabase-community/supabase-csharp/discussions/88
-            do! authService.Login("ke", "")
+            do! authService.Login(config["AdminEmail"], config["AdminPassword"])
             let! user = authService.GetUser()
             return Results.Text(user.Email)
         })
