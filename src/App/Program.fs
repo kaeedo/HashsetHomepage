@@ -213,7 +213,9 @@ funGroup.MapGet(
                         }
                     }
 
-            return Upsert.view upsertDocument (fileStore.GetImages() |> Seq.toList)
+            let! images = fileStore.GetImages()
+
+            return Upsert.view upsertDocument (images |> Seq.toList)
         })
 )
 |> ignore
