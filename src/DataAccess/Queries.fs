@@ -19,42 +19,42 @@ let getAllTags (npgsqlDataSource: NpgsqlDataSource) =
             select t
     }
 
-let insertArticle (npgsqlDataSource: NpgsqlDataSource) (parsed:ParsedDocument) (tags: string list)=
-//     plan {
-//     let! tags =
-//         Plan.concurrentList [
-//             for tagName in tags do
-//                 getTag tagName
-//         ]
+let insertArticle (npgsqlDataSource: NpgsqlDataSource) (parsed: ParsedDocument) (tags: string list) =
+    //     plan {
+    //     let! tags =
+    //         Plan.concurrentList [
+    //             for tagName in tags do
+    //                 getTag tagName
+    //         ]
 
-//     let document = {
-//         document with
-//             Tags = [ { Tag.Id = 8; Name = "F#" } ]
-//     }
+    //     let document = {
+    //         document with
+    //             Tags = [ { Tag.Id = 8; Name = "F#" } ]
+    //     }
 
-//     let! article =
-//         Queries.InsertArticle
-//             .Command(
-//                 title = document.Title,
-//                 source = document.Source,
-//                 description = document.Description,
-//                 parsed = document.Document,
-//                 tooltips = document.Tooltips,
-//                 createdOn = DateTime.SpecifyKind(document.ArticleDate, DateTimeKind.Utc)
-//             )
-//             .Plan()
+    //     let! article =
+    //         Queries.InsertArticle
+    //             .Command(
+    //                 title = document.Title,
+    //                 source = document.Source,
+    //                 description = document.Description,
+    //                 parsed = document.Document,
+    //                 tooltips = document.Tooltips,
+    //                 createdOn = DateTime.SpecifyKind(document.ArticleDate, DateTimeKind.Utc)
+    //             )
+    //             .Plan()
 
-//     let tagIds = tags |> List.map (fun tag -> tag.Id)
+    //     let tagIds = tags |> List.map (fun tag -> tag.Id)
 
-//     for tagId in batch tagIds do
-//         do!
-//             Queries.InsertArticleTagsMapping
-//                 .Command(articleId = article.Id, tagId = tagId)
-//                 .Plan()
-// }
+    //     for tagId in batch tagIds do
+    //         do!
+    //             Queries.InsertArticleTagsMapping
+    //                 .Command(articleId = article.Id, tagId = tagId)
+    //                 .Plan()
+    // }
     Unchecked.defaultof<Task<unit>>
 
-let updateArticle (npgsqlDataSource: NpgsqlDataSource) (id:int) (parsed:ParsedDocument) (tags: string list)=
+let updateArticle (npgsqlDataSource: NpgsqlDataSource) (id: int) (parsed: ParsedDocument) (tags: string list) =
     //  plan {
     //     do!
     //         Queries.DeleteArticleTagsByArticleId
@@ -92,28 +92,50 @@ let updateArticle (npgsqlDataSource: NpgsqlDataSource) (id:int) (parsed:ParsedDo
     // }
     Unchecked.defaultof<Task<unit>>
 
-let getArticleById (npgsqlDataSource: NpgsqlDataSource) (id:int) =
+let getArticleById (npgsqlDataSource: NpgsqlDataSource) (id: int) =
     task {
-        let! article = 
+        let! article =
             selectTask HydraReader.Read (contextType npgsqlDataSource) {
                 for article in articles do
                     join at in article_tags on (article.id = at.articleid)
                     join tag in tags on (at.tagid = tag.id)
                     where (article.id = id)
             }
-        
-        //return article
-        return Unchecked.defaultof<ParsedDocument>
+
+        let parsed =
+            article
+            |> Seq.groupBy (fun (a, _, _) -> a)
+            |> Seq.map (fun (a, tags) ->
+                let tags =
+                    tags
+                    |> Seq.toList
+                    |> List.map (fun (_, _, t) -> t)
+
+                {
+                    ParsedDocument.Id = a.id
+                    Title = a.title
+                    Description = a.description
+                    ArticleDate = a.createdon
+                    Source = a.source
+                    Document = a.parsed
+                    Tooltips = ""
+                    Tags =
+                        tags
+                        |> List.map (fun t -> { Tag.Id = t.id; Name = t.name })
+                })
+            |> Seq.head
+
+        return parsed
     }
 
-let deleteArticleById (npgsqlDataSource: NpgsqlDataSource) (id:int)=
+let deleteArticleById (npgsqlDataSource: NpgsqlDataSource) (id: int) =
     task {
         let! _ =
             deleteTask (contextType npgsqlDataSource) {
                 for article in articles do
                     where (article.id = id)
             }
-            
+
         return ()
     }
 
@@ -134,7 +156,7 @@ let getAllArticles (npgsqlDataSource: NpgsqlDataSource) =
     // let! articles = Queries.GetAllArticles.Command().Plan()
     Unchecked.defaultof<Task<ParsedDocument list>>
 
-let getArticlesByTag (npgsqlDataSource: NpgsqlDataSource) (tag: string)=
+let getArticlesByTag (npgsqlDataSource: NpgsqlDataSource) (tag: string) =
     // select
     //         a.*,
     //         many tags(t.* )

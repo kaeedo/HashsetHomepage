@@ -1,45 +1,87 @@
 open System
 open System.IO
 open System.Threading.Tasks
-open App.Views.Partials
 open App
+open App.Views.Partials
 open DataAccess
 open Hashset
+open Microsoft.AspNetCore.Components.Authorization
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
-open Microsoft.AspNetCore.Authentication
-open Microsoft.AspNetCore.HttpOverrides
-open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
+open Microsoft.AspNetCore.Authentication.JwtBearer
+open Microsoft.AspNetCore.HttpOverrides
 open App.Views.Pages
 open Markdig
 open Markdown.ColorCode
 open System.Text
 open System.Xml.Linq
+open Microsoft.IdentityModel.Tokens
 open Model
 open Npgsql
+open Supabase.Gotrue
+open Supabase.Gotrue.Interfaces
+
 let builder =
     let contentRoot = Directory.GetCurrentDirectory()
     let webRoot = Path.Combine(contentRoot, "WebRoot")
     WebApplication.CreateBuilder(WebApplicationOptions(ContentRootPath = contentRoot, WebRootPath = webRoot))
 
-builder.Configuration
-    .AddJsonFile("appsettings.json", false, true)
-    .AddEnvironmentVariables()
-|> ignore
-
 let services = builder.Services
 
-let conf =
-    services
-        .BuildServiceProvider()
-        .GetService<IConfiguration>()
-
 // HYDRA
-services.AddNpgsqlDataSource("") |> ignore
+services.AddNpgsqlDataSource(builder.Configuration["ConnectionString"])
+|> ignore
 
 services.AddTransient<IFileStorage, FileStorage>()
 |> ignore
+
+services.AddControllersWithViews() |> ignore
+services.AddHttpContextAccessor() |> ignore
+
+// Auth?
+
+services
+    .AddAuthentication(fun authenticationOptions ->
+        authenticationOptions.DefaultAuthenticateScheme <- JwtBearerDefaults.AuthenticationScheme
+        authenticationOptions.DefaultChallengeScheme <- JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(fun bearerOptions ->
+        let url = "https://Reference ID.supabase.co"
+        bearerOptions.RequireHttpsMetadata <- false
+        bearerOptions.Authority <- $"{url}/auth/v1/authorize"
+
+        let parameters =
+            TokenValidationParameters(
+                ValidateIssuer = true,
+                ValidIssuer = $"{url}/auth/v1/authorize",
+                ValidateAudience = false,
+                ValidateLifetime = true
+            )
+
+        bearerOptions.TokenValidationParameters <- parameters)
+|> ignore
+
+
+services.AddScoped<IGotrueSessionPersistence<Session>, CustomSupabaseSessionHandler>()
+|> ignore
+
+services.AddScoped<Supabase.Client>(fun sp ->
+    let url = "https://Reference ID.supabase.co"
+
+    let key = "public project API key"
+
+    let sessionHandler = sp.GetRequiredService<IGotrueSessionPersistence<Session>>()
+
+    let options: Supabase.SupabaseOptions =
+        Supabase.SupabaseOptions(AutoRefreshToken = true, AutoConnectRealtime = true, SessionHandler = sessionHandler)
+
+    Supabase.Client(url, key, options))
+|> ignore
+
+services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>()
+|> ignore
+
+services.AddScoped<AuthService>() |> ignore
 
 services.Configure<ForwardedHeadersOptions>(fun (options: ForwardedHeadersOptions) ->
     options.ForwardedHeaders <-
@@ -50,28 +92,12 @@ services.Configure<ForwardedHeadersOptions>(fun (options: ForwardedHeadersOption
     options.KnownProxies.Clear())
 |> ignore
 
-services
-    .AddAuthentication("BasicAuthentication")
-    .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>("BasicAuthentication", null)
-|> ignore
-
-services.AddTransient<IUserService, UserService>()
-|> ignore
-
-#if !DEBUG
-services.AddWebOptimizer() |> ignore
-#endif
-services.AddControllersWithViews() |> ignore
-services.AddHttpContextAccessor() |> ignore
+services.AddAuthorizationCore() |> ignore
 
 let app = builder.Build()
 
 app
-#if !DEBUG
-    .UseWebOptimizer()
-#endif
     .UseStaticFiles()
-    .UseAuthentication()
     .UseHttpsRedirection()
     .Use(
         Func<HttpContext, RequestDelegate, _>(fun ctx next ->
@@ -81,6 +107,7 @@ app
             }
             :> Task))
     )
+    .UseAuthentication()
 |> ignore
 
 // https://github.com/albertwoo/FunBlazorSSRDemo
@@ -173,7 +200,9 @@ funGroup.MapGet(
 
                 if idExists then
                     task {
-                        let! article = Queries.getArticleById dataSource <| int (id.ToString())
+                        let! article =
+                            Queries.getArticleById dataSource
+                            <| int (id.ToString())
 
                         return {
                             UpsertDocument.ExistingIds = articleIds
@@ -237,14 +266,15 @@ app.MapPost(
 
 app.MapDelete(
     "/article/{articleId:int}",
-    Func<HttpContext, NpgsqlDataSource, int, _>(fun (ctx: HttpContext) (dataSource: NpgsqlDataSource) (articleId: int) ->
-        task {
-            do! Articles.deleteArticleById dataSource articleId
+    Func<HttpContext, NpgsqlDataSource, int, _>
+        (fun (ctx: HttpContext) (dataSource: NpgsqlDataSource) (articleId: int) ->
+            task {
+                do! Articles.deleteArticleById dataSource articleId
 
-            ctx.Response.Headers.Add("HX-Location", "/articles/upsert")
+                ctx.Response.Headers.Add("HX-Location", "/articles/upsert")
 
-            return Results.Accepted()
-        })
+                return Results.Accepted()
+            })
 )
 |> ignore
 
@@ -287,10 +317,10 @@ app.MapGet("/atom", Func<HttpContext, NpgsqlDataSource, _>(feedResult Syndicatio
 app.MapGet("/rss", Func<HttpContext, NpgsqlDataSource, _>(feedResult Syndication.channelFeed "rss"))
 |> ignore
 
-app.Map("/status", Func<_>(fun _ -> Results.Text("ok")))
+app.MapGet("/status", Func<_>(fun _ -> Results.Text("ok")))
 |> ignore
 
-app.Map(
+app.MapGet(
     "/new",
     Func<NpgsqlDataSource, _>(fun dataSource ->
         task {
@@ -300,5 +330,38 @@ app.Map(
         })
 )
 |> ignore
+
+
+//////////
+/// Auth
+//////////
+///
+app.MapGet(
+    "/secure",
+    Func<AuthService, _>(fun authService ->
+        task {
+            let! user = authService.GetUser()
+            return Results.Text($"is secure? {user.Email}")
+        })
+)
+|> ignore
+
+app.MapGet(
+    "/login",
+    Func<AuthService, _>(fun authService ->
+        task {
+            // https://github.com/supabase-community/supabase-csharp/discussions/88
+            do! authService.Login("ke", "")
+            let! user = authService.GetUser()
+            return Results.Text(user.Email)
+        })
+)
+|> ignore
+
+app
+    .MapGet("/derp", Func<_>(fun _ -> Results.Text("hhmmmm")))
+    .RequireAuthorization()
+|> ignore
+
 
 app.Run("http://0.0.0.0:5000")
