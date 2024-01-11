@@ -13,8 +13,6 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.AspNetCore.Authentication.JwtBearer
 open Microsoft.AspNetCore.HttpOverrides
 open App.Views.Pages
-open Markdig
-open Markdown.ColorCode
 open System.Text
 open System.Xml.Linq
 open Microsoft.IdentityModel.Tokens
@@ -69,7 +67,7 @@ services.AddScoped<Supabase.Client>(fun sp ->
     let url = builder.Configuration["Supabase:BaseUrl"]
 
     let key = builder.Configuration["Supabase:PublicApiKey"]
-    
+
     let sessionHandler = sp.GetRequiredService<IGotrueSessionPersistence<Session>>()
 
     let options: Supabase.SupabaseOptions =
@@ -118,7 +116,7 @@ funGroup.MapGet(
     Func<NpgsqlDataSource, _>(fun (dataSource: NpgsqlDataSource) ->
         task {
             // TODO: replace getLatestArticle with only get latest slug
-            let! latestArticle = Articles.getLatestArticle dataSource
+            let! latestArticle = Queries.getLatestArticle dataSource
 
             match latestArticle with
             | None -> return Results.Redirect("/articles/upsert", false)
@@ -132,17 +130,7 @@ funGroup.MapGet(
     Func<NpgsqlDataSource, string, _>(fun (dataSource: NpgsqlDataSource) (slug: string) ->
         task {
             let articleId = slug.Substring(0, slug.IndexOf('_')) |> int
-            let! article = Articles.getArticle dataSource articleId
-
-            let pipeline =
-                MarkdownPipelineBuilder()
-                    .UseAdvancedExtensions()
-                    .UseColorCode()
-                    .Build()
-
-            let html = Markdown.ToHtml(article.Source, pipeline)
-
-            let article = { article with Document = html }
+            let! article = Queries.getArticleById dataSource articleId
 
             return Article.view article
         })
@@ -153,7 +141,7 @@ funGroup.MapGet(
     "/article/{articleId:int}",
     Func<NpgsqlDataSource, int, _>(fun (dataSource: NpgsqlDataSource) (articleId: int) ->
         task {
-            let! article = Articles.getArticle dataSource articleId
+            let! article = Queries.getArticleById dataSource articleId
 
             return Results.Redirect($"/article/{App.Utils.getUrl article.Id article.Title}", true, true)
         })
@@ -168,9 +156,9 @@ funGroup.MapGet(
 
             let! articles =
                 if tagExists then
-                    Articles.getArticlesByTag dataSource (tag.ToString())
+                    Queries.getArticlesByTag dataSource (tag.ToString())
                 else
-                    Articles.getArticles dataSource
+                    Queries.getArticles dataSource
 
             let articles =
                 articles
@@ -253,10 +241,10 @@ app.MapPost(
                 let id = int <| ctx.Request.Form.["Id"].Item 0
 
                 if id = 0 then
-                    do! Articles.addArticle dataSource parsedDocument document.Tags
+                    do! Queries.insertArticle dataSource parsedDocument document.Tags
                     ctx.Response.Headers.Add("HX-Location", "/")
                 else
-                    do! Articles.updateArticle dataSource id parsedDocument document.Tags
+                    do! Queries.updateArticle dataSource id parsedDocument document.Tags
                     ctx.Response.Headers.Add("HX-Location", $"/article/%s{App.Utils.getUrl id parsedDocument.Title}")
 
                 return Results.Created()
@@ -269,7 +257,7 @@ app.MapDelete(
     Func<HttpContext, NpgsqlDataSource, int, _>
         (fun (ctx: HttpContext) (dataSource: NpgsqlDataSource) (articleId: int) ->
             task {
-                do! Articles.deleteArticleById dataSource articleId
+                do! Queries.deleteArticleById dataSource articleId
 
                 ctx.Response.Headers.Add("HX-Location", "/articles/upsert")
 
@@ -295,9 +283,9 @@ let feedResult
 
         let! articles =
             if tagExists then
-                Articles.getArticlesByTag dataSource (tag.ToString())
+                Queries.getArticlesByTag dataSource (tag.ToString())
             else
-                Articles.getArticles dataSource
+                Queries.getArticles dataSource
 
         let articles =
             articles
