@@ -158,7 +158,7 @@ funGroup.MapGet(
                 if tagExists then
                     Queries.getArticlesByTag dataSource (tag.ToString())
                 else
-                    Queries.getArticles dataSource
+                    Queries.getPublishedArticles dataSource
 
             let articles =
                 articles
@@ -285,7 +285,7 @@ let feedResult
             if tagExists then
                 Queries.getArticlesByTag dataSource (tag.ToString())
             else
-                Queries.getArticles dataSource
+                Queries.getPublishedArticles dataSource
 
         let articles =
             articles

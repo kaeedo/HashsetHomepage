@@ -73,6 +73,18 @@ let private getOrCreateTags (npgsqlDataSource: NpgsqlDataSource) (allTags: strin
         | None -> return tags
     }
 
+let private deleteOrphanedTags (npgsqlDataSource: NpgsqlDataSource) =
+    let usedTags =
+        select {
+            for at in article_tags do
+                select at.tagid
+        }
+
+    deleteTask (contextType npgsqlDataSource) {
+        for tag in tags do
+            where (tag.id |<>| subqueryMany usedTags)
+    }
+
 let insertArticle (npgsqlDataSource: NpgsqlDataSource) (parsed: ParsedDocument) (tags: string list) =
     task {
         let! tags = getOrCreateTags npgsqlDataSource tags
@@ -127,6 +139,8 @@ let updateArticle (npgsqlDataSource: NpgsqlDataSource) (id: int) (parsed: Parsed
                     where (articleTag.articleid = id)
             }
 
+        let! _ = deleteOrphanedTags npgsqlDataSource
+
         let! tags = getOrCreateTags npgsqlDataSource tags
 
         let parsed = {
@@ -153,7 +167,7 @@ let updateArticle (npgsqlDataSource: NpgsqlDataSource) (id: int) (parsed: Parsed
         let articleTags =
             tags
             |> List.map (fun tag -> {
-                article_tags.articleid = parsed.Id
+                article_tags.articleid = id
                 tagid = tag.Id
             })
             |> AtLeastOne.tryCreate
@@ -188,6 +202,14 @@ let deleteArticleById (npgsqlDataSource: NpgsqlDataSource) (id: int) =
     task {
         let! _ =
             deleteTask (contextType npgsqlDataSource) {
+                for articleTag in article_tags do
+                    where (articleTag.articleid = id)
+            }
+
+        let! _ = deleteOrphanedTags npgsqlDataSource
+
+        let! _ =
+            deleteTask (contextType npgsqlDataSource) {
                 for article in articles do
                     where (article.id = id)
             }
@@ -197,12 +219,15 @@ let deleteArticleById (npgsqlDataSource: NpgsqlDataSource) (id: int) =
 
 let getLatestArticle (npgsqlDataSource: NpgsqlDataSource) =
     task {
+        let now = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc)
+
         let! articles =
             selectTask HydraReader.Read (contextType npgsqlDataSource) {
                 for article in articles do
                     join at in article_tags on (article.id = at.articleid)
                     join tag in tags on (at.tagid = tag.id)
-                    where (article.createdon <= DateTime.Now)
+                    where (article.createdon <= now)
+
                     orderByDescending article.createdon
             }
 
@@ -211,14 +236,16 @@ let getLatestArticle (npgsqlDataSource: NpgsqlDataSource) =
         return parsed
     }
 
-let getArticles (npgsqlDataSource: NpgsqlDataSource) =
+let getPublishedArticles (npgsqlDataSource: NpgsqlDataSource) =
     task {
+        let now = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc)
+
         let! articles =
             selectTask HydraReader.Read (contextType npgsqlDataSource) {
                 for article in articles do
                     join at in article_tags on (article.id = at.articleid)
                     join tag in tags on (at.tagid = tag.id)
-                    where (article.createdon <= DateTime.Now)
+                    where (article.createdon <= now)
                     orderByDescending article.createdon
             }
 
@@ -244,12 +271,14 @@ let getAllArticles (npgsqlDataSource: NpgsqlDataSource) =
 
 let getArticlesByTag (npgsqlDataSource: NpgsqlDataSource) (filterTag: string) =
     task {
+        let now = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc)
+
         let! articles =
             selectTask HydraReader.Read (contextType npgsqlDataSource) {
                 for article in articles do
                     join at in article_tags on (article.id = at.articleid)
                     join tag in tags on (at.tagid = tag.id)
-                    where (article.createdon <= DateTime.Now)
+                    where (article.createdon <= now)
                     where (tag.name = filterTag)
                     orderByDescending article.createdon
             }
