@@ -25,7 +25,7 @@ type CustomAuthStateProvider(client: Supabase.Client) =
 
     override this.GetAuthenticationStateAsync() =
         task {
-            let! initialized = client.InitializeAsync()
+            let! _ = client.InitializeAsync()
 
             let identity =
                 if
@@ -39,8 +39,6 @@ type CustomAuthStateProvider(client: Supabase.Client) =
 
             let user = ClaimsPrincipal(identity)
             let state = AuthenticationState(user)
-
-            //  NotifyAuthenticationStateChanged(Task.FromResult(state));
 
             return state
         }
