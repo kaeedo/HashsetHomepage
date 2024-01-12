@@ -1,8 +1,10 @@
 namespace App
 
+open System.Security.Claims
+open Microsoft.AspNetCore.Authentication.Cookies
 open Microsoft.AspNetCore.Components.Authorization
 open Microsoft.AspNetCore.Http
-open Microsoft.AspNetCore.Mvc.ViewFeatures
+open Microsoft.AspNetCore.Authentication
 open Supabase.Gotrue
 open Supabase.Gotrue.Interfaces
 
@@ -11,27 +13,30 @@ type AuthService
         client: Supabase.Client,
         customAuthStateProvider: AuthenticationStateProvider,
         supabaseSessionHandler: IGotrueSessionPersistence<Session>,
-        accessor: IHttpContextAccessor,
-        tempDataFactory: ITempDataDictionaryFactory
+        accessor: IHttpContextAccessor
     ) =
-    let tempData = tempDataFactory.GetTempData(accessor.HttpContext)
-
     member _.Login(email: string, password: string) =
         task {
             let! session = client.Auth.SignIn(email, password)
             let! authState = customAuthStateProvider.GetAuthenticationStateAsync()
             supabaseSessionHandler.SaveSession(session)
-            return ()
+
+            let claimsPrincipal: ClaimsPrincipal = authState.User
+
+            do! accessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal)
+
+            return session.AccessToken
         }
 
     member _.Logout() =
         task {
             do! client.Auth.SignOut()
 
-            tempData.Remove("token") |> ignore
-            tempData.Save()
             let! authState = customAuthStateProvider.GetAuthenticationStateAsync()
             supabaseSessionHandler.DestroySession()
+
+            do! accessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme)
+
             return ()
         }
 
