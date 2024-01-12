@@ -2,7 +2,6 @@ namespace App
 
 open System.IO
 open System.Threading.Tasks
-open System
 open Microsoft.Extensions.Configuration
 
 type IFileStorage =
@@ -10,9 +9,6 @@ type IFileStorage =
     abstract member GetImages: unit -> Task<string seq>
 
 type FileStorage(config: IConfiguration) =
-    let path = $"%s{Environment.CurrentDirectory}/WebRoot/images"
-
-    do Directory.CreateDirectory(path) |> ignore
     let url = config["Supabase:BaseUrl"]
 
     let key = config["Supabase:SecretApiKey"]
