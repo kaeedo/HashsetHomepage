@@ -4,38 +4,51 @@ module App.Views.Pages.Login
 open Fun.Blazor
 open App.Views.Components
 open App.Views
+open Microsoft.AspNetCore.Http
 
 let private html =
-    html.fragment [
-        div {
-            form {
-                action "/login"
-                method "POST"
-                enctype "multipart/form-data"
+    html.inject (fun (accessor: IHttpContextAccessor) ->
+        html.fragment [
+            div {
+                form {
+                    action "/login"
+                    method "POST"
 
-                div {
                     input {
-                        placeholder "Username"
+                        type' "hidden"
 
+                        value (
+                            accessor.HttpContext.Request.Query["ReturnUrl"]
+                                .ToString()
+                        )
+
+                        name "returnUrl"
                     }
-                }
 
-                div {
-                    input {
-                        placeholder "Password"
-                        type' "password"
+                    div {
+                        input {
+                            placeholder "Username"
+                            name "username"
+                        }
                     }
-                }
 
-                div {
-                    input {
-                        type' "Submit"
-                        value "Login"
+                    div {
+                        input {
+                            placeholder "Password"
+                            type' "password"
+                            name "password"
+                        }
+                    }
+
+                    div {
+                        input {
+                            type' "Submit"
+                            value "Login"
+                        }
                     }
                 }
             }
-        }
-        |> Card.simple ""
-    ]
+            |> Card.simple ""
+        ])
 
 let view () = Layout.Create(h1 { "Login" }, html)

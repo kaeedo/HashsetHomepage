@@ -17,8 +17,6 @@ open System.Text
 open System.Xml.Linq
 open Model
 open Npgsql
-open Supabase.Gotrue
-open Supabase.Gotrue.Interfaces
 
 let builder =
     let contentRoot = Directory.GetCurrentDirectory()
@@ -47,20 +45,12 @@ services
 
 services.AddAuthorization() |> ignore
 
-services.AddScoped<IGotrueSessionPersistence<Session>, CustomSupabaseSessionHandler>()
-|> ignore
-
 services.AddScoped<Supabase.Client>(fun sp ->
     let url = builder.Configuration["Supabase:BaseUrl"]
 
     let key = builder.Configuration["Supabase:SecretApiKey"]
 
-    let sessionHandler = sp.GetRequiredService<IGotrueSessionPersistence<Session>>()
-
-    let options: Supabase.SupabaseOptions =
-        Supabase.SupabaseOptions(AutoRefreshToken = true, AutoConnectRealtime = true, SessionHandler = sessionHandler)
-
-    Supabase.Client(url, key, options))
+    Supabase.Client(url, key))
 |> ignore
 
 services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>()
@@ -156,102 +146,117 @@ funGroup.MapGet(
 )
 |> ignore
 
-funGroup.MapGet(
-    "/articles/upsert",
-    Func<HttpContext, NpgsqlDataSource, IFileStorage, _>(fun ctx dataSource fileStore ->
-        task {
-            let! articles = Queries.getAllArticles dataSource
+funGroup
+    .MapGet(
+        "/articles/upsert",
+        Func<HttpContext, NpgsqlDataSource, IFileStorage, _>(fun ctx dataSource fileStore ->
+            task {
+                let! articles = Queries.getAllArticles dataSource
 
-            let articleIds =
-                articles
-                |> Seq.map (fun (pd: ParsedDocument) ->
-                    let id = pd.Id
-                    let title = pd.Title
-                    id, title)
+                let articleIds =
+                    articles
+                    |> Seq.map (fun (pd: ParsedDocument) ->
+                        let id = pd.Id
+                        let title = pd.Title
+                        id, title)
 
-            let! upsertDocument =
-                let (idExists, id) = ctx.Request.Query.TryGetValue "id"
+                let! upsertDocument =
+                    let (idExists, id) = ctx.Request.Query.TryGetValue "id"
 
-                if idExists then
-                    task {
-                        let! article =
-                            Queries.getArticleById dataSource
-                            <| int (id.ToString())
+                    if idExists then
+                        task {
+                            let! article =
+                                Queries.getArticleById dataSource
+                                <| int (id.ToString())
 
-                        return {
-                            UpsertDocument.ExistingIds = articleIds
-                            Title = article.Title
-                            Source = article.Source
-                            Description = article.Description
-                            ArticleDate = article.ArticleDate
-                            Tags = article.Tags |> List.map (fun t -> t.Name)
+                            return {
+                                UpsertDocument.ExistingIds = articleIds
+                                Title = article.Title
+                                Source = article.Source
+                                Description = article.Description
+                                ArticleDate = article.ArticleDate
+                                Tags = article.Tags |> List.map (fun t -> t.Name)
+                            }
                         }
-                    }
-                else
-                    task {
-                        return {
-                            UpsertDocument.ExistingIds = articleIds
-                            Title = String.Empty
-                            Source = String.Empty
-                            Description = String.Empty
-                            ArticleDate = DateTime.UtcNow.Date
-                            Tags = []
+                    else
+                        task {
+                            return {
+                                UpsertDocument.ExistingIds = articleIds
+                                Title = String.Empty
+                                Source = String.Empty
+                                Description = String.Empty
+                                ArticleDate = DateTime.UtcNow.Date
+                                Tags = []
+                            }
                         }
-                    }
 
-            let! images = fileStore.GetImages()
+                let! images = fileStore.GetImages()
 
-            return Upsert.view upsertDocument (images |> Seq.toList)
-        })
-)
+                return Upsert.view upsertDocument (images |> Seq.toList)
+            })
+    )
+    .RequireAuthorization()
 |> ignore
 
-app.MapPost(
-    "/upsert",
-    Func<HttpContext, NpgsqlDataSource, IFileStorage, _>
-        (fun (ctx: HttpContext) (dataSource: NpgsqlDataSource) (fileStorage: IFileStorage) ->
-            task {
-                let document = {
-                    UpsertDocument.Title = ctx.Request.Form["Title"].ToString()
-                    Description = ctx.Request.Form["Description"].ToString()
-                    ArticleDate = DateTime.Parse(ctx.Request.Form["ArticleDate"].ToString())
-                    Source = ctx.Request.Form["Source"].ToString()
-                    Tags = ctx.Request.Form["Tags"].ToArray() |> Array.toList
-                    ExistingIds = []
-                }
+app
+    .MapPost(
+        "/upsert",
+        Func<HttpContext, NpgsqlDataSource, IFileStorage, _>
+            (fun (ctx: HttpContext) (dataSource: NpgsqlDataSource) (fileStorage: IFileStorage) ->
+                task {
+                    // let email =
+                    //     ctx.User.Claims
+                    //     |> Seq.find (fun c -> c.Type = "email")
+                    //     |> fun claim -> claim.Value
 
-                let! parsedDocument = Articles.parse document
+                    let document = {
+                        UpsertDocument.Title = ctx.Request.Form["Title"].ToString()
+                        Description = ctx.Request.Form["Description"].ToString()
+                        ArticleDate = DateTime.Parse(ctx.Request.Form["ArticleDate"].ToString())
+                        Source = ctx.Request.Form["Source"].ToString()
+                        Tags = ctx.Request.Form["Tags"].ToArray() |> Array.toList
+                        ExistingIds = []
+                    }
 
-                ctx.Request.Form.Files
-                |> Seq.filter (fun f -> f.Length > 0L)
-                |> Seq.iter (fun f -> fileStorage.SaveFile f.FileName f.CopyToAsync)
+                    let! parsedDocument = Articles.parse document
 
-                let id = int <| ctx.Request.Form.["Id"].Item 0
+                    ctx.Request.Form.Files
+                    |> Seq.filter (fun f -> f.Length > 0L)
+                    |> Seq.iter (fun f -> fileStorage.SaveFile f.FileName f.CopyToAsync)
 
-                if id = 0 then
-                    do! Queries.insertArticle dataSource parsedDocument document.Tags
-                    ctx.Response.Headers.Add("HX-Location", "/")
-                else
-                    do! Queries.updateArticle dataSource id parsedDocument document.Tags
-                    ctx.Response.Headers.Add("HX-Location", $"/article/%s{App.Utils.getUrl id parsedDocument.Title}")
+                    let id = int <| ctx.Request.Form.["Id"].Item 0
 
-                return Results.Created()
-            })
-)
+                    if id = 0 then
+                        do! Queries.insertArticle dataSource parsedDocument document.Tags
+                        ctx.Response.Headers.Add("HX-Location", "/")
+                    else
+                        do! Queries.updateArticle dataSource id parsedDocument document.Tags
+
+                        ctx.Response.Headers.Add(
+                            "HX-Location",
+                            $"/article/%s{App.Utils.getUrl id parsedDocument.Title}"
+                        )
+
+                    return Results.Created()
+                })
+    )
+    .RequireAuthorization()
 |> ignore
 
-app.MapDelete(
-    "/article/{articleId:int}",
-    Func<HttpContext, NpgsqlDataSource, int, _>
-        (fun (ctx: HttpContext) (dataSource: NpgsqlDataSource) (articleId: int) ->
-            task {
-                do! Queries.deleteArticleById dataSource articleId
+app
+    .MapDelete(
+        "/article/{articleId:int}",
+        Func<HttpContext, NpgsqlDataSource, int, _>
+            (fun (ctx: HttpContext) (dataSource: NpgsqlDataSource) (articleId: int) ->
+                task {
+                    do! Queries.deleteArticleById dataSource articleId
 
-                ctx.Response.Headers.Add("HX-Location", "/articles/upsert")
+                    ctx.Response.Headers.Add("HX-Location", "/articles/upsert")
 
-                return Results.Accepted()
-            })
-)
+                    return Results.Accepted()
+                })
+    )
+    .RequireAuthorization()
 |> ignore
 
 funGroup.MapGet("/about", Func<_>(fun _ -> About.view ()))
@@ -296,21 +301,6 @@ app.MapGet("/rss", Func<HttpContext, NpgsqlDataSource, _>(feedResult Syndication
 app.MapGet("/status", Func<_>(fun _ -> Results.Text("ok")))
 |> ignore
 
-
-//////////
-/// Auth
-//////////
-///
-app.MapGet(
-    "/secure",
-    Func<AuthService, _>(fun authService ->
-        task {
-            let! user = authService.GetUser()
-            return Results.Text($"is secure? {user.Email}")
-        })
-)
-|> ignore
-
 funGroup.MapGet("/login", Func<_>(fun _ -> Login.view ()))
 |> ignore
 
@@ -318,10 +308,17 @@ app.MapPost(
     "/login",
     Func<HttpContext, AuthService, IConfiguration, _>(fun ctx authService config ->
         task {
-            let! accessToken = authService.Login(config["AdminEmail"], config["AdminPassword"])
-            let! user = authService.GetUser()
+            let returnUrl =
+                let returnUrl = ctx.Request.Form["ReturnUrl"].ToString()
 
-            return Results.Text(user.Email)
+                if String.IsNullOrWhiteSpace(returnUrl) then
+                    "/"
+                else
+                    returnUrl
+
+            do! authService.Login(config["AdminEmail"], config["AdminPassword"])
+
+            return Results.Redirect(returnUrl, false)
         })
 )
 |> ignore
@@ -336,20 +333,5 @@ funGroup.MapGet(
         })
 )
 |> ignore
-
-app
-    .MapGet(
-        "/derp",
-        Func<HttpContext, _>(fun ctx ->
-            let email =
-                ctx.User.Claims
-                |> Seq.find (fun c -> c.Type = "email")
-                |> fun claim -> claim.Value
-
-            Results.Text(email))
-    )
-    .RequireAuthorization()
-|> ignore
-
 
 app.Run("https://0.0.0.0:5000")
