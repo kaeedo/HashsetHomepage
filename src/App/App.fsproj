@@ -40,7 +40,6 @@
     <Compile Include="Views\Pages\Upsert.fs"/>
     <Compile Include="Syndication.fs"/>
     <Compile Include="CustomAuthStateProvider.fs"/>
-    <Compile Include="CustomSupabaseSessionHandler.fs"/>
     <Compile Include="AuthService.fs"/>
     <Compile Include="Program.fs"/>
     <Content Include="WebRoot/**/*">
