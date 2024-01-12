@@ -36,6 +36,7 @@
     <Compile Include="Views\Pages\Article.fs"/>
     <Compile Include="Views\Pages\ArticleList.fs"/>
     <Compile Include="Views\Pages\About.fs"/>
+    <Compile Include="Views\Pages\Login.fs"/>
     <Compile Include="Views\Pages\Upsert.fs"/>
     <Compile Include="Syndication.fs"/>
     <Compile Include="CustomAuthStateProvider.fs"/>

@@ -5,17 +5,16 @@ open App
 open App.Views.Partials
 open DataAccess
 open Hashset
+open Microsoft.AspNetCore.Authentication.Cookies
 open Microsoft.AspNetCore.Components.Authorization
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
-open Microsoft.AspNetCore.Authentication.JwtBearer
 open Microsoft.AspNetCore.HttpOverrides
 open App.Views.Pages
 open System.Text
 open System.Xml.Linq
-open Microsoft.IdentityModel.Tokens
 open Model
 open Npgsql
 open Supabase.Gotrue
@@ -37,28 +36,16 @@ services.AddTransient<IFileStorage, FileStorage>()
 services.AddControllersWithViews() |> ignore
 services.AddHttpContextAccessor() |> ignore
 
-// Auth?
-
 services
     .AddAuthentication(fun authenticationOptions ->
-        authenticationOptions.DefaultAuthenticateScheme <- JwtBearerDefaults.AuthenticationScheme
-        authenticationOptions.DefaultChallengeScheme <- JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(fun bearerOptions ->
-        let url = builder.Configuration["Supabase:BaseUrl"]
-        bearerOptions.RequireHttpsMetadata <- false
-        bearerOptions.Authority <- $"{url}/auth/v1/authorize"
-
-        let parameters =
-            TokenValidationParameters(
-                ValidateIssuer = true,
-                ValidIssuer = $"{url}/auth/v1/authorize",
-                ValidateAudience = false,
-                ValidateLifetime = true
-            )
-
-        bearerOptions.TokenValidationParameters <- parameters)
+        authenticationOptions.DefaultAuthenticateScheme <- CookieAuthenticationDefaults.AuthenticationScheme
+        authenticationOptions.DefaultChallengeScheme <- CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(fun options ->
+        options.LoginPath <- "/login"
+        options.LogoutPath <- "/logout")
 |> ignore
 
+services.AddAuthorization() |> ignore
 
 services.AddScoped<IGotrueSessionPersistence<Session>, CustomSupabaseSessionHandler>()
 |> ignore
@@ -66,7 +53,7 @@ services.AddScoped<IGotrueSessionPersistence<Session>, CustomSupabaseSessionHand
 services.AddScoped<Supabase.Client>(fun sp ->
     let url = builder.Configuration["Supabase:BaseUrl"]
 
-    let key = builder.Configuration["Supabase:PublicApiKey"]
+    let key = builder.Configuration["Supabase:SecretApiKey"]
 
     let sessionHandler = sp.GetRequiredService<IGotrueSessionPersistence<Session>>()
 
@@ -90,8 +77,6 @@ services.Configure<ForwardedHeadersOptions>(fun (options: ForwardedHeadersOption
     options.KnownProxies.Clear())
 |> ignore
 
-services.AddAuthorizationCore() |> ignore
-
 let app = builder.Build()
 
 app
@@ -106,6 +91,7 @@ app
             :> Task))
     )
     .UseAuthentication()
+    .UseAuthorization()
 |> ignore
 
 // https://github.com/albertwoo/FunBlazorSSRDemo
@@ -310,17 +296,6 @@ app.MapGet("/rss", Func<HttpContext, NpgsqlDataSource, _>(feedResult Syndication
 app.MapGet("/status", Func<_>(fun _ -> Results.Text("ok")))
 |> ignore
 
-app.MapGet(
-    "/new",
-    Func<NpgsqlDataSource, _>(fun dataSource ->
-        task {
-            let! tags = Queries.getArticleById dataSource 1
-
-            return tags
-        })
-)
-|> ignore
-
 
 //////////
 /// Auth
@@ -336,22 +311,45 @@ app.MapGet(
 )
 |> ignore
 
-app.MapGet(
+funGroup.MapGet("/login", Func<_>(fun _ -> Login.view ()))
+|> ignore
+
+app.MapPost(
     "/login",
-    Func<AuthService, IConfiguration, _>(fun authService config ->
+    Func<HttpContext, AuthService, IConfiguration, _>(fun ctx authService config ->
         task {
-            // https://github.com/supabase-community/supabase-csharp/discussions/88
-            do! authService.Login(config["AdminEmail"], config["AdminPassword"])
+            let! accessToken = authService.Login(config["AdminEmail"], config["AdminPassword"])
             let! user = authService.GetUser()
+
             return Results.Text(user.Email)
         })
 )
 |> ignore
 
+funGroup.MapGet(
+    "/logout",
+    Func<AuthService, _>(fun authService ->
+        task {
+            do! authService.Logout()
+
+            return Results.Redirect("/", false)
+        })
+)
+|> ignore
+
 app
-    .MapGet("/derp", Func<_>(fun _ -> Results.Text("hhmmmm")))
+    .MapGet(
+        "/derp",
+        Func<HttpContext, _>(fun ctx ->
+            let email =
+                ctx.User.Claims
+                |> Seq.find (fun c -> c.Type = "email")
+                |> fun claim -> claim.Value
+
+            Results.Text(email))
+    )
     .RequireAuthorization()
 |> ignore
 
 
-app.Run("http://0.0.0.0:5000")
+app.Run("https://0.0.0.0:5000")
