@@ -9,9 +9,6 @@
     <PackageReference Update="FSharp.Core" Version="8.0.100"/>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Types.fs"/>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="Microsoft.AspNetCore.Http.Features">
       <HintPath>..\..\..\..\..\..\..\usr\lib64\dotnet\shared\Microsoft.AspNetCore.App\8.0.0-rc.2.23480.2\Microsoft.AspNetCore.Http.Features.dll</HintPath>
     </Reference>

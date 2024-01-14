@@ -37,7 +37,6 @@ type ParsedDocument = {
 
         content.Substring(firstIndex, count)
 
-//[<CLIMutable>]
 type UpsertDocument = {
     ExistingIds: (int * string) seq
     Title: string
