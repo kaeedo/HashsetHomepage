@@ -1,6 +1,6 @@
 name: BuildOnTag
 
-on: [create]
+on: [ create ]
 
 jobs:
   build:
@@ -11,8 +11,12 @@ jobs:
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: "7.0"
-      - name: Dotnet add nuget source
-        run: dotnet nuget add source https://www.myget.org/F/secret-feed-lamp/api/v3/index.json
+      - name: Dotnet tool restore
+        run: dotnet tool restore
+      - name: Generate Hydra files
+        env:
+          HASHSET_CONNECTION_STRING: ${{ secrets.HASHSET_CONNECTION_STRING }}
+        run: dotnet sqlhydra npgsql --connection-string "$HASHSET_CONNECTION_STRING"
       - name: Dotnet build
         run: dotnet build -c Release -o Release
       - name: Docker login
