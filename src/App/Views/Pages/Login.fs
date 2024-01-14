@@ -26,25 +26,41 @@ let private html =
                     }
 
                     div {
+                        class' "flex mb-4"
+
+                        label {
+                            class' "w-40 self-center"
+                            for' "username"
+                            "Username"
+                        }
+
                         input {
-                            placeholder "Username"
+                            type' "text"
                             name "username"
+                            class' "border-2 rounded-sm grow px-4 py-2"
                         }
                     }
 
                     div {
+                        class' "flex mb-4"
+
+                        label {
+                            class' "w-40 self-center"
+                            for' "password"
+                            "Password"
+                        }
+
                         input {
-                            placeholder "Password"
                             type' "password"
                             name "password"
+                            class' "border-2 rounded-sm grow px-4 py-2"
                         }
                     }
 
-                    div {
-                        input {
-                            type' "Submit"
-                            value "Login"
-                        }
+                    input {
+                        class' "border-2 rounded-sm grow px-2 bg-gray"
+                        type' "Submit"
+                        value "Login"
                     }
                 }
             }
