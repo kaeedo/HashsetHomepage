@@ -9,11 +9,13 @@
     <UserSecretsId>a9a81c4f-d2ce-4dca-bd5a-bcb0e395d3ab</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Model/Model.fsproj"/>
-    <ProjectReference Include="..\DataAccess\DataAccess.fsproj"/>
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="HashsetDatabase.fs">
+      <Visible>False</Visible>
+    </Compile>
+    <Compile Include="Types.fs"/>
     <Compile Include="Utils.fs"/>
+    <Content Include="sqlhydra-npgsql.toml"/>
+    <Compile Include="Queries.fs"/>
     <None Include="Properties\postcss.config.js" CopyToOutputDirectory="Never"/>
     <None Include="Properties\tailwind.config.js" CopyToOutputDirectory="Never"/>
     <None Include="Properties\tailwind.input.css" CopyToOutputDirectory="Never"/>
@@ -22,6 +24,9 @@
     <TailwindOutputFile>$(MSBuildProjectDirectory)/WebRoot/css/tailwind.css</TailwindOutputFile>
     <TailwindMinify>true</TailwindMinify>
   </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\up\*.sql" CopyToOutputDirectory="PreserveNewest"/>
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="FileStorage.fs"/>
     <Compile Include="Articles.fs"/>
@@ -45,9 +50,6 @@
     <Content Include="WebRoot/**/*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="posts/**/*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -57,10 +59,11 @@
     <PackageReference Include="Fun.Blazor.Server" Version="3.2.8"/>
     <PackageReference Include="Fun.Htmx" Version="3.2.9"/>
     <PackageReference Include="Markdown.ColorCode" Version="2.1.0"/>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0"/>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0"/>
     <PackageReference Update="FSharp.Core" Version="8.0.100"/>
     <PackageReference Include="Npgsql.DependencyInjection" Version="8.0.1"/>
+    <PackageReference Include="Npgsql" Version="8.0.1"/>
+    <PackageReference Include="SqlHydra.Query" Version="2.2.1"/>
     <PackageReference Include="supabase-csharp" Version="0.13.7"/>
     <PackageReference Include="Tailwind.MSBuild" Version="1.1.0">
       <PrivateAssets>all</PrivateAssets>

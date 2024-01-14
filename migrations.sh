@@ -9,10 +9,10 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-path="src/DataAccess/Migrations/up/$(date -u "+%Y%m%d%H%M%S")_$1.sql"
+path="src/App/Migrations/up/$(date -u "+%Y%m%d%H%M%S")_$1.sql"
 touch "$path"
 
 echo "Migration created: $path"
 
-# dotnet grate -c "connectionString" -f src/DataAccess/Migrations --dt postgresql -t
+# dotnet grate -c "connectionString" -f src/App/Migrations --dt postgresql -t
 # dotnet sqlhydra npgsql --connection-string $HASHSET_CONNECTION_STRING
