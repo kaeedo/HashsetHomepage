@@ -1,7 +1,7 @@
 module App.Views.Header
 
 open Fun.Blazor
-open Model
+open Microsoft.AspNetCore.Http
 
 let navItem (label: string) (link: string) =
     li {
@@ -51,6 +51,11 @@ let view (pageTitle: NodeRenderFragment) =
                     childContent [
                         navItem "Home" "/"
                         navItem "Articles" "/articles"
+                        html.inject (fun (accessor: IHttpContextAccessor) ->
+                            if accessor.HttpContext.User.Identity.IsAuthenticated then
+                                navItem "New" "/articles/upsert"
+                            else
+                                html.none)
                         navItem "About" "/about"
                     ]
                 }
