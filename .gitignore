@@ -21,4 +21,3 @@ devCert.crt
 .vs/
 src/App/Properties/launchSettings.json
 src/App/App.fsproj.user
-/src/DataAccess/sqlhydra-npgsql.toml
