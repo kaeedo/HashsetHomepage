@@ -1,3 +1,12 @@
+### 3.0.0
+
+- Upgrade to .Net 8
+- Drop Giraffe in favor of Minimal API
+- Rewrite using Fun.Blazor as view engine
+- Swap out self hosted postgres for Supabase
+- Use Supabase for image store
+- Use Supabase as authentication provider
+
 ### 2.2.0
 
 - Introduce HTMX

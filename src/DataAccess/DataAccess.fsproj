@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\up\*.sql" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="Migrations\up\*.sql" CopyToOutputDirectory="PreserveNewest"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +26,6 @@
   </ItemGroup>
 
   <Target Name="SqlHydra" BeforeTargets="Clean">
-    <Exec Command="dotnet sqlhydra npgsql"/>
+    <Exec Command="dotnet sqlhydra npgsql --connection-string $(FOO)" EnvironmentVariables="FOO=bar"/>
   </Target>
 </Project>

@@ -5,9 +5,15 @@ open Microsoft.AspNetCore.Authentication.Cookies
 open Microsoft.AspNetCore.Components.Authorization
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Authentication
+open Microsoft.Extensions.Configuration
 
 type AuthService
-    (client: Supabase.Client, customAuthStateProvider: AuthenticationStateProvider, accessor: IHttpContextAccessor) =
+    (
+        config: IConfiguration,
+        client: Supabase.Client,
+        customAuthStateProvider: AuthenticationStateProvider,
+        accessor: IHttpContextAccessor
+    ) =
     member _.Login(email: string, password: string) =
         task {
             let! _ = client.Auth.SignIn(email, password)

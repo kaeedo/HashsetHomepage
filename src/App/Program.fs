@@ -17,6 +17,7 @@ open System.Text
 open System.Xml.Linq
 open Model
 open Npgsql
+open Supabase.Gotrue.Exceptions
 
 let builder =
     let contentRoot = Directory.GetCurrentDirectory()
@@ -309,16 +310,19 @@ app.MapPost(
     Func<HttpContext, AuthService, IConfiguration, _>(fun ctx authService config ->
         task {
             let returnUrl =
-                let returnUrl = ctx.Request.Form["ReturnUrl"].ToString()
+                let returnUrl = ctx.Request.Form["returnUrl"].ToString()
 
                 if String.IsNullOrWhiteSpace(returnUrl) then
                     "/"
                 else
                     returnUrl
 
-            do! authService.Login(config["AdminEmail"], config["AdminPassword"])
+            try
+                do! authService.Login(ctx.Request.Form["username"], ctx.Request.Form["password"])
 
-            return Results.Redirect(returnUrl, false)
+                return Results.Redirect(returnUrl, false)
+            with :? GotrueException as e ->
+                return Results.Unauthorized()
         })
 )
 |> ignore
