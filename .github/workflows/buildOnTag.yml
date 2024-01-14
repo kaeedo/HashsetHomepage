@@ -14,6 +14,7 @@ jobs:
       - name: Dotnet tool restore
         run: dotnet tool restore
       - name: Generate Hydra files
+        working-directory: ./src/App
         env:
           HASHSET_CONNECTION_STRING: ${{ secrets.HASHSET_CONNECTION_STRING }}
         run: dotnet sqlhydra npgsql --connection-string "$HASHSET_CONNECTION_STRING"
