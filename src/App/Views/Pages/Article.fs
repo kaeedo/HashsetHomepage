@@ -57,6 +57,14 @@ let private article (article: ParsedDocument) =
 let private articleHtml (parsedDocument: ParsedDocument) =
     html.fragment [
         openGraph parsedDocument
+        html.inject (fun (accessor: IHttpContextAccessor) ->
+            if accessor.HttpContext.User.Identity.IsAuthenticated then
+                a {
+                    href $"/articles/upsert?id={parsedDocument.Id}"
+                    "Edit"
+                }
+            else
+                html.none)
         (Card.simple "" (article parsedDocument))
     ]
 
