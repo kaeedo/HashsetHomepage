@@ -23,6 +23,7 @@ let private tagList (upsertDocument: UpsertDocument) =
 
             button {
                 class' "border-2 rounded-sm grow px-2 bg-gray mx-5"
+                type' "button"
                 hxGet "/partials/taginput"
                 hxTarget "#tagList"
                 hxSwap_beforeend
@@ -49,7 +50,6 @@ let private upsertForm (upsertDocument: UpsertDocument) =
         form {
             action "/upsert"
             method "POST"
-            enctype "multipart/form-data"
 
             childContent [
                 div {
