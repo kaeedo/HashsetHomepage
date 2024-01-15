@@ -322,6 +322,7 @@ app.MapPost(
 
                 return Results.Redirect(returnUrl, false)
             with :? GotrueException as e ->
+                printfn "%A" e
                 return Results.Unauthorized()
         })
 )
@@ -338,4 +339,7 @@ funGroup.MapGet(
 )
 |> ignore
 
-app.Run("http://0.0.0.0:5000")
+app.Urls.Add("http://0.0.0.0:5000")
+app.Urls.Add("https://0.0.0.0:5001")
+
+app.Run()
