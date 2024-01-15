@@ -155,24 +155,6 @@ let private upsertForm (upsertDocument: UpsertDocument) =
 
                     label {
                         class' "w-40 self-center"
-                        for' "Images"
-                        "Upload Images"
-                    }
-
-                    input {
-                        type' "file"
-                        id "Images"
-                        name "Images"
-                        multiple true
-                        class' "border-2 rounded-sm grow px-4 py-2"
-                    }
-                }
-
-                div {
-                    class' "flex mb-4"
-
-                    label {
-                        class' "w-40 self-center"
                         for' "Source"
                         "Source"
                     }
@@ -214,24 +196,14 @@ let private upsertForm (upsertDocument: UpsertDocument) =
         |> Card.simple "col-span-2")
 
 let private availableImages (images: string list) =
-    div {
-        childContent (
-            images
-            |> List.map (fun image ->
-                div {
-                    class' "mb-2"
-                    label { image }
-
-                    img { src image }
-
-                })
-        )
-    }
-    |> Card.simple ""
+    AvailableImageList.view images |> Card.simple ""
 
 let private html (upsertDocument: UpsertDocument) (images: string list) =
     div {
         class' "grid grid-cols-3 gap-6"
+
+        stylesheet "/css/styles.css"
+
         upsertForm upsertDocument
         availableImages images
     }

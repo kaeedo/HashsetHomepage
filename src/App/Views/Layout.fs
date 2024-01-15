@@ -53,31 +53,76 @@ type Layout =
         ]
 
     static member Create(pageTitle: NodeRenderFragment, bodyNode: NodeRenderFragment, ?headerNode: NodeRenderFragment) =
-        html' {
+        fragment {
             doctype "html"
 
-            head {
-                chartsetUTF8
-                viewport "width=device-width, initial-scale=1.0"
-                defaultArg headerNode (title { $"Hashset" })
-                stylesheet "/css/tailwind.css"
-                Layout.favicon
-            }
+            html' {
+                head {
+                    chartsetUTF8
+                    viewport "width=device-width, initial-scale=1.0"
+                    defaultArg headerNode (title { $"Hashset" })
+#if DEBUG
+                    script { src "https://cdn.tailwindcss.com?plugins=typography" }
 
-            body {
-                hxBoost true
+                    script {
+                        type' "text/javascript"
 
-                class' "bg-orange"
+                        html.raw
+                            @"
+                            tailwind.config = {
+                                theme: {
+                                    extend: {
+                                        spacing: {
+                                            112: ""28rem"",
+                                            128: ""32rem"",
+                                            136: ""34rem"",
+                                            204: ""51rem""
+                                            
+                                        }
+                                    },
+                                    // https://mdigi.tools/lighten-color/#000000
+                                    colors: {
+                                        transparent: ""transparent"",
+                                        current: ""currentColor"",
+                                        black: ""#000000"",
+                                        gray: ""#a6a6a6"",
+                                        white: ""#ffffff"",
+                                        purple: ""#dd7dff"",
+                                        ""purple-dark"": ""#620085"", // 65% darker
+                                        green: ""#00ff75"",
+                                        yellow: ""#fff503"",
+                                        red: ""#ff5d5d"",
+                                        orange: ""#ffb443"",
+                                        ""blue-light"": ""#b9f2ff"", // 65% lighter
+                                        blue: ""#38dbff"",
+                                        ""blue-dark"": ""#00596d"", // 65% darker
+                                    }
+                                }
+                            }
+                        "
+                    }
+#else
+                    stylesheet "/css/tailwind.css"
+#endif
 
-                Header.view pageTitle
-
-                div {
-                    class' "container mx-auto p-10"
-                    bodyNode
+                    Layout.favicon
                 }
 
-                Footer.view ()
+                body {
+                    hxBoost true
 
-                script { src "https://unpkg.com/htmx.org@1.9.9" }
+                    class' "bg-orange"
+
+                    Header.view pageTitle
+
+                    div {
+                        class' "container mx-auto p-10"
+                        bodyNode
+                    }
+
+                    Footer.view ()
+
+                    script { src "https://unpkg.com/htmx.org@1.9.9" }
+                }
             }
         }

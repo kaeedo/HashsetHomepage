@@ -199,17 +199,12 @@ funGroup
     .RequireAuthorization()
 |> ignore
 
-app
+funGroup
     .MapPost(
         "/upsert",
         Func<HttpContext, NpgsqlDataSource, IFileStorage, _>
             (fun (ctx: HttpContext) (dataSource: NpgsqlDataSource) (fileStorage: IFileStorage) ->
                 task {
-                    // let email =
-                    //     ctx.User.Claims
-                    //     |> Seq.find (fun c -> c.Type = "email")
-                    //     |> fun claim -> claim.Value
-
                     let document = {
                         UpsertDocument.Title = ctx.Request.Form["Title"].ToString()
                         Description = ctx.Request.Form["Description"].ToString()
@@ -220,10 +215,6 @@ app
                     }
 
                     let! parsedDocument = Articles.parse document
-
-                    ctx.Request.Form.Files
-                    |> Seq.filter (fun f -> f.Length > 0L)
-                    |> Seq.iter (fun f -> fileStorage.SaveFile f.FileName f.CopyToAsync)
 
                     let id = int <| ctx.Request.Form.["Id"].Item 0
 
@@ -244,7 +235,7 @@ app
     .RequireAuthorization()
 |> ignore
 
-app
+funGroup
     .MapDelete(
         "/article/{articleId:int}",
         Func<HttpContext, NpgsqlDataSource, int, _>
@@ -293,19 +284,19 @@ let feedResult
         return Results.Text(xml, $"application/{feedType}+xml", Encoding.UTF8)
     }
 
-app.MapGet("/atom", Func<HttpContext, NpgsqlDataSource, _>(feedResult Syndication.syndicationFeed "atom"))
+funGroup.MapGet("/atom", Func<HttpContext, NpgsqlDataSource, _>(feedResult Syndication.syndicationFeed "atom"))
 |> ignore
 
-app.MapGet("/rss", Func<HttpContext, NpgsqlDataSource, _>(feedResult Syndication.channelFeed "rss"))
+funGroup.MapGet("/rss", Func<HttpContext, NpgsqlDataSource, _>(feedResult Syndication.channelFeed "rss"))
 |> ignore
 
-app.MapGet("/status", Func<_>(fun _ -> Results.Text("ok")))
+funGroup.MapGet("/status", Func<_>(fun _ -> Results.Text("ok")))
 |> ignore
 
 funGroup.MapGet("/login", Func<_>(fun _ -> Login.view ()))
 |> ignore
 
-app.MapPost(
+funGroup.MapPost(
     "/login",
     Func<HttpContext, AuthService, IConfiguration, _>(fun ctx authService config ->
         task {
@@ -338,6 +329,41 @@ funGroup.MapGet(
         })
 )
 |> ignore
+
+funGroup
+    .MapPost(
+        "/images",
+        Func<HttpContext, IFileStorage, _>(fun ctx fileStorage ->
+            task {
+
+                let uploadTasks =
+                    ctx.Request.Form.Files
+                    |> Seq.filter (fun f -> f.Length > 0L)
+                    |> Seq.map (fun f -> fileStorage.SaveFile f.FileName f.CopyToAsync)
+
+                let! _ = Task.WhenAll(uploadTasks)
+
+                let! images = fileStorage.GetImages()
+
+                return AvailableImageList.view (images |> List.ofSeq)
+            })
+    )
+    .RequireAuthorization()
+|> ignore
+
+funGroup
+    .MapDelete(
+        "/images/{image}",
+        Func<IFileStorage, string, _>(fun fileStorage image ->
+            task {
+                do! fileStorage.DeleteImage(image)
+                let! images = fileStorage.GetImages()
+                return AvailableImageList.view (images |> List.ofSeq)
+            })
+    )
+    .RequireAuthorization()
+|> ignore
+
 
 #if (!DEBUG)
 app.Urls.Add("http://0.0.0.0:5000")

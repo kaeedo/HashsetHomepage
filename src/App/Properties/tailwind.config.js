@@ -8,6 +8,7 @@ module.exports = {
                 112: "28rem",
                 128: "32rem",
                 136: "34rem",
+                204: "51rem"
             },
         },
         // https://mdigi.tools/lighten-color/#000000
