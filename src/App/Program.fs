@@ -339,7 +339,10 @@ funGroup.MapGet(
 )
 |> ignore
 
+#if (!DEBUG)
 app.Urls.Add("http://0.0.0.0:5000")
+#else
 app.Urls.Add("https://0.0.0.0:5001")
+#endif
 
 app.Run()
