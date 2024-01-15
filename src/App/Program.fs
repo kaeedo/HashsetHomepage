@@ -338,4 +338,4 @@ funGroup.MapGet(
 )
 |> ignore
 
-app.Run("https://0.0.0.0:5000")
+app.Run("http://0.0.0.0:5000")
