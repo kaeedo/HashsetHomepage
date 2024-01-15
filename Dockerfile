@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:7.0.12-alpine3.18
+FROM mcr.microsoft.com/dotnet/aspnet:8.0.1-alpine3.18
 
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 
