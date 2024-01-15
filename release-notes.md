@@ -1,3 +1,8 @@
+### 3.0.2
+
+- Listen on multiple urls.
+- Log exception
+
 ### 3.0.1
 
 - Set url to HTTP
