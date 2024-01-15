@@ -1,3 +1,7 @@
+### 3.0.1
+
+- Set url to HTTP
+
 ### 3.0.0
 
 - Upgrade to .Net 8
