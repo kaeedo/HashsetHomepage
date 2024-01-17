@@ -1,3 +1,7 @@
+### 3.1.1
+
+- Add tailwind again
+
 ### 3.1.0
 
 - Manage images directly
