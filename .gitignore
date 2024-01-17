@@ -20,4 +20,3 @@ devCert.txt
 devCert.crt
 .vs/
 src/App/App.fsproj.user
-src/App/WebRoot/css/tailwind.css
