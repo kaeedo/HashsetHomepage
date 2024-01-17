@@ -1,3 +1,7 @@
+### 3.1.0
+
+- Manage images directly
+
 ### 3.0.3
 
 - Conditionally use urls
