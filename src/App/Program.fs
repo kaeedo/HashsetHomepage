@@ -11,6 +11,7 @@ open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Hosting
 open Microsoft.AspNetCore.HttpOverrides
 open App.Views.Pages
 open System.Text
@@ -70,6 +71,12 @@ services.Configure<ForwardedHeadersOptions>(fun (options: ForwardedHeadersOption
 
 let app = builder.Build()
 
+if app.Environment.IsDevelopment() then
+    app.UseDeveloperExceptionPage() |> ignore
+else
+    app.UseExceptionHandler("/").UseStatusCodePages()
+    |> ignore
+
 app
     .UseStaticFiles()
     .UseHttpsRedirection()
@@ -92,6 +99,7 @@ funGroup.MapGet(
     "",
     Func<NpgsqlDataSource, _>(fun (dataSource: NpgsqlDataSource) ->
         task {
+            failwith "geroighejrgh"
             // TODO: replace getLatestArticle with only get latest slug
             let! latestArticle = Queries.getLatestArticle dataSource
 

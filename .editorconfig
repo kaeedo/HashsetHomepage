@@ -75,7 +75,3 @@ fsharp_space_before_uppercase_invocation = false
 fsharp_strict_mode = false
 indent_size = 4
 max_line_length = 120
-
-# giraffe handler composition (>=>) reads better that way
-[**/*RouteHandlers.fs]
-fsharp_max_infix_operator_expression = 120
