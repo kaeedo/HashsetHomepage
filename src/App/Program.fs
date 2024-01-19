@@ -99,13 +99,11 @@ funGroup.MapGet(
     "",
     Func<NpgsqlDataSource, _>(fun (dataSource: NpgsqlDataSource) ->
         task {
-            failwith "geroighejrgh"
-            // TODO: replace getLatestArticle with only get latest slug
-            let! latestArticle = Queries.getLatestArticle dataSource
+            let! latestSlug = Queries.getLatestSlug dataSource
 
-            match latestArticle with
+            match latestSlug with
             | None -> return Results.Redirect("/articles/upsert", false)
-            | Some la -> return Results.Redirect($"/article/{App.Utils.getUrl la.Id la.Title}", false)
+            | Some(id, title) -> return Results.Redirect($"/article/{Utils.getUrl id title}", false)
         })
 )
 |> ignore

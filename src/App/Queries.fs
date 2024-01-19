@@ -217,6 +217,22 @@ let deleteArticleById (npgsqlDataSource: NpgsqlDataSource) (id: int) =
         return ()
     }
 
+let getLatestSlug (npgsqlDataSource: NpgsqlDataSource) =
+    task {
+        let now = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc)
+
+        let! slugParts =
+            selectTask HydraReader.Read (contextType npgsqlDataSource) {
+                for article in articles do
+                    where (article.createdon <= now)
+                    orderByDescending article.createdon
+                    select (article.id, article.title) into selected
+                    tryHead
+            }
+
+        return slugParts
+    }
+
 let getLatestArticle (npgsqlDataSource: NpgsqlDataSource) =
     task {
         let now = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc)
