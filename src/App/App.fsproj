@@ -25,7 +25,7 @@
     <TailwindMinify>true</TailwindMinify>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\up\*.sql" CopyToOutputDirectory="PreserveNewest"/>
+    <EmbeddedResource Include="Migrations/up/*.sql" CopyToOutputDirectory="PreserveNewest"/>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileStorage.fs"/>
