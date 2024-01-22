@@ -1,3 +1,7 @@
+### 3.1.2
+
+- Improve mobile styling
+
 ### 3.1.1
 
 - Add tailwind again

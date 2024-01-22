@@ -116,7 +116,7 @@ type Layout =
                     Header.view pageTitle
 
                     div {
-                        class' "container mx-auto p-10"
+                        class' "container mx-auto p-4 py-8 md:p-10"
                         bodyNode
                     }
 
