@@ -19,7 +19,7 @@ let view (pageTitle: NodeRenderFragment) =
 
         div {
             class'
-                "container mx-auto flex lg:justify-between lg:flex-row flex-col-reverse max-lg:gap-4 max-lg:items-center"
+                "container mx-auto flex lg:justify-between lg:flex-row flex-col-reverse max-lg:gap-4 max-lg:items-center top-4 absolute md:relative"
 
             div {
                 class' "hidden lg:block border-4 w-max py-6 px-12 bg-orange drop-shadow-[8px_8px_0px_#000000]"
@@ -37,7 +37,7 @@ let view (pageTitle: NodeRenderFragment) =
 
             div {
                 class'
-                    "flex items-end font-mono lg:text-6xl text-4xl font-black w-max drop-shadow-[2px_2px_0px_#ff5dfd]"
+                    "flex items-end font-mono lg:text-6xl text-4xl font-black w-max lg:drop-shadow-[2px_2px_0px_#ff5dfd]"
 
                 pageTitle
             }
