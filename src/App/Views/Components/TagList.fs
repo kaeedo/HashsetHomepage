@@ -8,7 +8,7 @@ open System
 
 let simple (tags: Tag list) =
     div {
-        class' "flex flex-wrap sm:flex-row flex-col"
+        class' "md:flex flex-wrap flex-row grid grid-flow-row grid-cols-2"
 
         childContent (
             tags
