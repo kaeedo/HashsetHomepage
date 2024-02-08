@@ -1,0 +1,39 @@
+when:
+  event: [manual]
+
+steps:
+  build:
+    image: mcr.microsoft.com/dotnet/sdk:8.0.101-alpine3.19-amd64
+    secrets:
+      - hashset_connection_string
+    commands:
+      - DOTNET_CLI_TELEMETRY_OPTOUT=1
+      - dotnet tool restore
+      - cd ./src/App
+      - dotnet sqlhydra npgsql --connection-string "$HASHSET_CONNECTION_STRING"
+      - cd ../..
+      - dotnet build -c Release -o Release
+      - echo "VERSION=$(head -n 1 release-notes.md | cut -d' ' -f 2)" >> envvars
+
+  version-tag:
+    image: mcr.microsoft.com/dotnet/sdk:8.0.101-alpine3.19-amd64
+    depends_on: build
+    secrets:
+      - ci_token
+    commands:
+      - source envvars
+      # Avoid permission denied errors
+      - chmod -R a+w .
+      # Set up git in a working way
+      - git config --global --add safe.directory /woodpecker/src/codeberg.org/$CI_REPO/_site
+      - git config --global user.email "$CI_COMMIT_AUTHOR_EMAIL"
+      - git config --global user.name "$CI_COMMIT_AUTHOR"
+      # Clone and move the target repo
+      - git clone https://codeberg.org/$CI_REPO.git _site
+      - chmod -R a+w _site
+      - cd _site
+      # Push
+      - echo $VERSION
+      - git remote set-url origin https://$CI_TOKEN@codeberg.org/$CI_REPO.git
+      - git tag $VERSION
+      - git push origin --tags
