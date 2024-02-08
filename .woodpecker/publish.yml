@@ -1,0 +1,28 @@
+when:
+  event: [tag]
+
+steps:
+  build:
+    image: mcr.microsoft.com/dotnet/sdk:8.0.101-alpine3.19-amd64
+    secrets:
+      - hashset_connection_string
+    commands:
+      - DOTNET_CLI_TELEMETRY_OPTOUT=1
+      - dotnet tool restore
+      - cd ./src/App
+      - dotnet sqlhydra npgsql --connection-string "$HASHSET_CONNECTION_STRING"
+      - cd ../..
+      - dotnet build -c Release -o Release
+
+  publish:
+    image: woodpeckerci/plugin-docker-buildx
+    depends_on: build
+    settings:
+      platforms: linux/amd64
+      repo: codeberg.org/${CI_REPO,,}
+      registry: codeberg.org
+      tags: ${CI_COMMIT_TAG}
+      username: ${CI_REPO_OWNER}
+
+      password:
+        from_secret: ci_token
