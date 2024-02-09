@@ -13,7 +13,8 @@ steps:
       - dotnet sqlhydra npgsql --connection-string "$HASHSET_CONNECTION_STRING"
       - cd ../..
       - dotnet build -c Release -o Release
-      - echo "VERSION=$(head -n 1 release-notes.md | cut -d' ' -f 2)" >> envvars
+      # - echo "VERSION=$(head -n 1 release-notes.md | cut -d' ' -f 2)" >> envvars
+      - echo "VERSION=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c5)" >> envvars
 
   version-tag:
     image: mcr.microsoft.com/dotnet/sdk:8.0.101-alpine3.19-amd64
