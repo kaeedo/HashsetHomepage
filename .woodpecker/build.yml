@@ -35,5 +35,5 @@ steps:
       # Push
       - echo $VERSION
       - git remote set-url origin https://$CI_TOKEN@codeberg.org/$CI_REPO.git
-      - git tag ${VERSION}
+      - git tag $VERSION
       - git push origin --tags
