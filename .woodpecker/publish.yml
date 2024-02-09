@@ -1,3 +1,6 @@
+when:
+  event: [tag]
+
 steps:
   build:
     image: mcr.microsoft.com/dotnet/sdk:8.0.101-alpine3.19-amd64
@@ -10,3 +13,16 @@ steps:
       - dotnet sqlhydra npgsql --connection-string "$HASHSET_CONNECTION_STRING"
       - cd ../..
       - dotnet build -c Release -o Release
+
+  publish:
+    image: woodpeckerci/plugin-docker-buildx
+    depends_on: build
+    settings:
+      platforms: linux/amd64
+      repo: codeberg.org/${CI_REPO,,}
+      registry: codeberg.org
+      tags: ${CI_COMMIT_TAG}
+      username: ${CI_REPO_OWNER}
+
+      password:
+        from_secret: ci_token
