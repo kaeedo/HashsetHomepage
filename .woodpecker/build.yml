@@ -3,10 +3,11 @@ when:
 
 variables:
   - &vars
+  - &dotnet_sdk_image "mcr.microsoft.com/dotnet/sdk:8.0.101-alpine3.19-amd64"
 
 steps:
   build:
-    image: mcr.microsoft.com/dotnet/sdk:8.0.101-alpine3.19-amd64
+    image: *dotnet_sdk_image
     secrets:
       - hashset_connection_string
     commands:
@@ -16,17 +17,15 @@ steps:
       - dotnet sqlhydra npgsql --connection-string "$HASHSET_CONNECTION_STRING"
       - cd ../..
       - dotnet build -c Release -o Release
-      # - echo "VERSION=$(head -n 1 release-notes.md | cut -d' ' -f 2)" >> envvars
-      - export "VERSION=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c5)"
-      - <<: *vars
-      - version: ${VERSION}
+      - echo "VERSION=$(head -n 1 release-notes.md | cut -d' ' -f 2)" >> envvars
 
   version-tag:
-    image: mcr.microsoft.com/dotnet/sdk:8.0.101-alpine3.19-amd64
+    image: *dotnet_sdk_image
     depends_on: build
     secrets:
       - ci_token
     commands:
+      - source envvars
       # Avoid permission denied errors
       - chmod -R a+w .
       # Set up git in a working way
@@ -38,19 +37,19 @@ steps:
       - chmod -R a+w _site
       - cd _site
       # Push
-      - echo *vars.version
+      - echo $VERSION
       - git remote set-url origin https://$CI_TOKEN@codeberg.org/$CI_REPO.git
       # - git tag ${VERSION}
       # - git push origin --tags
 
-  # publish:
-  #   image: woodpeckerci/plugin-docker-buildx
-  #   depends_on: build
-  #   settings:
-  #     platforms: linux/amd64
-  #     repo: codeberg.org/${CI_REPO,,}
-  #     registry: codeberg.org
-  #     tags: ${VERSION}
-  #     username: ${CI_REPO_OWNER}
-  #     password:
-  #       from_secret: ci_token
+  publish:
+    image: woodpeckerci/plugin-docker-buildx
+    depends_on: build
+    settings:
+      platforms: linux/amd64
+      repo: codeberg.org/${CI_REPO,,}
+      registry: codeberg.org
+      tags: ${$(head -n 1 release-notes.md | cut -d' ' -f 2)}
+      username: ${CI_REPO_OWNER}
+      password:
+        from_secret: ci_token
