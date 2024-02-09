@@ -15,6 +15,7 @@ steps:
       - dotnet build -c Release -o Release
       - echo "VERSION=$(head -n 1 release-notes.md | cut -d' ' -f 2)" >> envvars
       - echo "VERSION=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c5)" >> envvars
+      - export $VERSION
 
   version-tag:
     image: mcr.microsoft.com/dotnet/sdk:8.0.101-alpine3.19-amd64
@@ -22,7 +23,6 @@ steps:
     secrets:
       - ci_token
     commands:
-      - source envvars
       # Avoid permission denied errors
       - chmod -R a+w .
       # Set up git in a working way
@@ -34,6 +34,7 @@ steps:
       - chmod -R a+w _site
       - cd _site
       # Push
+      - echo ${VERSION}
       - git remote set-url origin https://$CI_TOKEN@codeberg.org/$CI_REPO.git
       # - git tag ${VERSION}
       # - git push origin --tags
@@ -41,6 +42,8 @@ steps:
   publish:
     image: woodpeckerci/plugin-docker-buildx
     depends_on: build
+    environment:
+      - VERSION=${VERSION}
     settings:
       platforms: linux/amd64
       repo: codeberg.org/${CI_REPO,,}
