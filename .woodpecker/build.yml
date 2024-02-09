@@ -14,8 +14,7 @@ steps:
       - cd ../..
       - dotnet build -c Release -o Release
       - echo "VERSION=$(head -n 1 release-notes.md | cut -d' ' -f 2)" >> envvars
-      - echo "VERSION=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c5)" >> envvars
-      - export $VERSION
+      - export "VERSION=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c5)"
 
   version-tag:
     image: mcr.microsoft.com/dotnet/sdk:8.0.101-alpine3.19-amd64
@@ -42,8 +41,6 @@ steps:
   publish:
     image: woodpeckerci/plugin-docker-buildx
     depends_on: build
-    environment:
-      - VERSION=${VERSION}
     settings:
       platforms: linux/amd64
       repo: codeberg.org/${CI_REPO,,}
