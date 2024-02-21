@@ -61,6 +61,11 @@ type Layout =
                     chartsetUTF8
                     viewport "width=device-width, initial-scale=1.0"
                     defaultArg headerNode (title { $"Hashset" })
+
+                    link {
+                        href "https://github.com/kaeedo"
+                        rel "me"
+                    }
 #if DEBUG
                     script { src "https://cdn.tailwindcss.com?plugins=typography" }
 
