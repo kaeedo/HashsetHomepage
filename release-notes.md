@@ -1,3 +1,7 @@
+### 3.2.0
+
+- Add rel me link
+
 ### 3.1.2
 
 - Improve mobile styling
