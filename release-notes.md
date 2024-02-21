@@ -1,3 +1,7 @@
+### 3.4.0
+
+- Add webmention rel
+
 ### 3.3.0
 
 - Add rel me link
