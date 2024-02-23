@@ -1,3 +1,7 @@
+### 3.5.0
+
+- Remove rel links
+
 ### 3.4.0
 
 - Add webmention rel

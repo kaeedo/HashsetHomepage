@@ -62,15 +62,6 @@ type Layout =
                     viewport "width=device-width, initial-scale=1.0"
                     defaultArg headerNode (title { $"Hashset" })
 
-                    link {
-                        href "https://github.com/kaeedo"
-                        rel "me"
-                    }
-
-                    link {
-                        href "https://webmention.io/hashset.dev/webmention"
-                        rel "webmention"
-                    }
 #if DEBUG
                     script { src "https://cdn.tailwindcss.com?plugins=typography" }
 
