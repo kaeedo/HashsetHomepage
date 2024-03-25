@@ -47,8 +47,8 @@ let private openGraph (article: ParsedDocument) =
 
 let private article (article: ParsedDocument) =
     html.fragment [
-        div {
-            class' "prose prose-sm md:prose-base lg-prose-xl max-w-none"
+        Elts.article {
+            class' "prose prose-sm md:prose-base lg-prose-xl max-w-none break-words"
 
             html.raw article.Document
         }

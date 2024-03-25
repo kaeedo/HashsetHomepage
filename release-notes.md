@@ -1,3 +1,7 @@
+### 3.5.1
+
+- Fix styling of long words on mobile chromium and safari layout
+
 ### 3.5.0
 
 - Remove rel links
