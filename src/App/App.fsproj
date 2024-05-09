@@ -63,7 +63,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0"/>
     <PackageReference Update="FSharp.Core" Version="8.0.100"/>
     <PackageReference Include="Npgsql.DependencyInjection" Version="8.0.1"/>
-    <PackageReference Include="Npgsql" Version="8.0.1"/>
+    <PackageReference Include="Npgsql" Version="8.0.3"/>
     <PackageReference Include="SqlHydra.Query" Version="2.2.1"/>
     <PackageReference Include="supabase-csharp" Version="0.13.7"/>
     <PackageReference Include="Tailwind.MSBuild" Version="1.1.0">
