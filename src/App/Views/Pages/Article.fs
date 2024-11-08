@@ -47,10 +47,10 @@ let private openGraph (article: ParsedDocument) =
 
 let private article (article: ParsedDocument) =
     html.fragment [
-        Elts.article {
+        DslElements_generated.article {
             class' "prose prose-sm md:prose-base lg-prose-xl max-w-none break-words"
 
-            html.raw article.Document
+            childContent [ html.raw article.Document ]
         }
     ]
 

@@ -68,8 +68,7 @@ type Layout =
                     script {
                         type' "text/javascript"
 
-                        html.raw
-                            @"
+                        @"
                             tailwind.config = {
                                 theme: {
                                     extend: {
@@ -123,7 +122,7 @@ type Layout =
 
                     Footer.view ()
 
-                    script { src "https://unpkg.com/htmx.org@1.9.9" }
+                    script { src "https://unpkg.com/htmx.org@2.0.3" }
                 }
             }
         }
