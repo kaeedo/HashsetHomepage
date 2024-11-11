@@ -9,10 +9,17 @@ open App.Views.Components
 let private articleStub (stub: ArticleStub) =
     html.fragment [
         div {
-            h3 {
-                class' "text-2xl font-bold mb-2"
-                stub.Title
-            }
+            childContent (
+                h3 {
+                    childContent (
+                        a {
+                            class' "text-2xl font-bold mb-2"
+                            href $"article/%i{stub.Id}"
+                            stub.Title
+                        }
+                    )
+                }
+            )
         }
         div {
             class' "mb-4"
@@ -21,7 +28,7 @@ let private articleStub (stub: ArticleStub) =
 
         div {
             class' "mb-4 w-fit"
-            TagList.simple stub.Tags
+            childContent (TagList.simple stub.Tags)
         }
 
         div {
@@ -45,7 +52,7 @@ let private articleStub (stub: ArticleStub) =
             class' "absolute bottom-4 right-4 flex justify-end w-full"
 
             childContent [
-                (Button.round "→" (sprintf "article/%i" stub.Id))
+                (Button.round "→" $"article/%i{stub.Id}")
             ]
         }
     ]
@@ -80,7 +87,6 @@ let private html (articles: ArticleStub list) =
                         | _ -> "lg:col-span-3 lg:row-span-1"
 
                     let baseClasses = "col-span-6"
-
 
                     Card.simple ($"{xlClasses} {lgClasses} {baseClasses}") (articleStub a))
             )
