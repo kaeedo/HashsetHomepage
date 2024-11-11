@@ -83,4 +83,6 @@ let private title (article: ParsedDocument) =
     }
 
 let view (article: ParsedDocument) =
-    Layout.Create(title article, articleHtml article)
+    let header = DslElements_generated.title { $"{article.Title} - Hashset" }
+
+    Layout.Create(title article, articleHtml article, header)

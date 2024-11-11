@@ -60,7 +60,7 @@ type Layout =
                 head {
                     chartsetUTF8
                     viewport "width=device-width, initial-scale=1.0"
-                    defaultArg headerNode (title { $"Hashset" })
+                    defaultArg headerNode (title { "Hashset" })
 
 #if DEBUG
                     script { src "https://cdn.tailwindcss.com?plugins=typography" }

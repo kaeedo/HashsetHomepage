@@ -23,9 +23,9 @@ let private html =
 
                         a {
                             class' "underline"
-                            href "https://valora.digital/"
+                            href "https://iits-consulting.de/"
                             target "_blank"
-                            "Valora Digital"
+                            "iits-Consulting"
                         }
 
                         ". I have been a Full Stack .Net web developer since 2012. Back then, I mainly used Asp.net MVC, and mostly jQuery on the frontend, with a little bit of Knockout.js sprinkled in. I have since taken a liking to Functional Programming, especially F#. In my experience, the functional paradigm has since proven to be invaluable in writing bug free software, especially when combined with a powerful type system like F#"
@@ -131,4 +131,7 @@ let private html =
         }
     ]
 
-let view () = Layout.Create(h1 { "About" }, html)
+let view () =
+    let header = title { "About - Hashset" }
+
+    Layout.Create(h1 { "About" }, html, header)
