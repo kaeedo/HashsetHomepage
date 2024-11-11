@@ -87,14 +87,14 @@ type Layout =
                                         black: ""#000000"",
                                         gray: ""#a6a6a6"",
                                         white: ""#ffffff"",
-                                        purple: ""#dd7dff"",
-                                        ""purple-dark"": ""#620085"", // 65% darker
+                                        purple: ""#cd76ea"",
+                                        ""purple-dark"": ""#54106b"", // 65% darker
                                         green: ""#00ff75"",
-                                        yellow: ""#fff503"",
-                                        red: ""#ff5d5d"",
+                                        yellow: ""#fff500"",
+                                        red: ""#ff5e5e"",
                                         orange: ""#ffb443"",
-                                        ""blue-light"": ""#b9f2ff"", // 65% lighter
-                                        blue: ""#38dbff"",
+                                        ""blue-light"": ""#baf2ff"", // 65% lighter
+                                        blue: ""#39dbff"",
                                         ""blue-dark"": ""#00596d"", // 65% darker
                                     }
                                 }
