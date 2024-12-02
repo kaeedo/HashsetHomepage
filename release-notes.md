@@ -1,3 +1,9 @@
+### 3.6.0
+
+- Update About page
+- Minor styling adjustment
+- Make titles clickable in articles view
+
 ### 3.5.1
 
 - Fix styling of long words on mobile chromium and safari layout
